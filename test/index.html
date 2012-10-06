@@ -10,10 +10,8 @@
       <li><a href="#">Three</a></li>
     </ul>
 
-    <ul>
+    <ul id="list-two">
       <li><a href="#">One</a></li>
-      <li><a href="#">Two</a></li>
-      <li><a href="#">Three</a></li>
     </ul>
 
     <button>Button</button>
@@ -22,14 +20,22 @@
 
     <script>
       var delegate = require('delegate');
-      var ul = document.querySelector('ul');
+      var uls = document.querySelectorAll('ul');
       var n = 0;
 
-      var fn = delegate.bind(ul, 'li a', 'click', function(e){
+      var fn = delegate.bind(uls[0], 'li a', 'click', function(e){
         console.log(e.target);
-        if (++n == 3) {
+        if (++n >= 3) {
           console.log('unbind');
-          delegate.unbind('click', fn, false);
+          delegate.unbind(uls[0], 'click', fn, false);
+        }
+      }, false);
+
+      var fn2 = delegate.bind(uls[1], 'li a', 'click', function(e){
+        console.log(e.target);
+        if (++n >= 8) {
+          console.log('unbind');
+          delegate.unbind(uls[1], 'click', fn2, false);
         }
       }, false);
     </script>

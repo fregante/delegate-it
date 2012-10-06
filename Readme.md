@@ -29,7 +29,7 @@ var fn = delegate.bind(ul, 'li a', 'click', function(e){
 
   Bind and return a callback which may be passed to `.unbind()`.
 
-### .unbind(type, callback, [capture])
+### .unbind(el, type, callback, [capture])
 
   Unbind.
 
