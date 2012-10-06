@@ -1,0 +1,13 @@
+{
+  "name": "delegate",
+  "repo": "component/delegate",
+  "description": "Event delegation component",
+  "version": "0.0.1",
+  "keywords": ["event", "events", "delegate", "delegation"],
+  "dependencies": {
+    "component/matches-selector": "*"
+  },
+  "scripts": [
+    "index.js"
+  ]
+}

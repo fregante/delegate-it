@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <title>Event</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <ul>
+      <li><a href="#">One</a></li>
+      <li><a href="#">Two</a></li>
+      <li><a href="#">Three</a></li>
+    </ul>
+
+    <ul>
+      <li><a href="#">One</a></li>
+      <li><a href="#">Two</a></li>
+      <li><a href="#">Three</a></li>
+    </ul>
+
+    <button>Button</button>
+
+    <script src="../build/build.js"></script>
+
+    <script>
+      var delegate = require('delegate');
+      var ul = document.querySelector('ul');
+      var n = 0;
+
+      var fn = delegate.bind(ul, 'li a', 'click', function(e){
+        console.log(e.target);
+        if (++n == 3) {
+          console.log('unbind');
+          delegate.unbind('click', fn, false);
+        }
+      }, false);
+    </script>
+  </body>
+</html>
