@@ -18,7 +18,7 @@ var fn = delegate.bind(ul, 'li a', 'click', function(e){
   console.log(e.target);
   if (++n == 3) {
     console.log('unbind');
-    delegate.unbind('click', fn, false);
+    delegate.unbind(ul, 'click', fn, false);
   }
 }, false);
 ```
