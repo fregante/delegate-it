@@ -3,7 +3,8 @@
  * Module dependencies.
  */
 
-var matches = require('matches-selector');
+var matches = require('matches-selector')
+  , event = require('event');
 
 /**
  * Delegate event `type` to `selector`
@@ -20,12 +21,9 @@ var matches = require('matches-selector');
  */
 
 exports.bind = function(el, selector, type, fn, capture){
-  el.addEventListener(type, callback, capture);
-
-  function callback(e) {
+  return event.bind(el, type, function(e){
     if (matches(e.target, selector)) fn(e);
-  }
-
+  }, capture);
   return callback;
 };
 
@@ -40,5 +38,5 @@ exports.bind = function(el, selector, type, fn, capture){
  */
 
 exports.unbind = function(el, type, fn, capture){
-  el.removeEventListener(type, fn, capture);
+  event.unbind(el, type, fn, capture);
 };
