@@ -24,7 +24,6 @@ exports.bind = function(el, selector, type, fn, capture){
   return event.bind(el, type, function(e){
     if (matches(e.target, selector)) fn(e);
   }, capture);
-  return callback;
 };
 
 /**
