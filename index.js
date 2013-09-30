@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-var matches = require('matches-selector')
+var closest = require('closest')
   , event = require('event');
 
 /**
@@ -21,7 +21,9 @@ var matches = require('matches-selector')
 
 exports.bind = function(el, selector, type, fn, capture){
   return event.bind(el, type, function(e){
-    if (matches(e.target || e.srcElement, selector)) fn.call(el, e);
+    var target = e.target || e.srcElement;
+    e.delegateTarget = closest(target, selector, true);
+    if (e.delegateTarget) fn.call(el, e);
   }, capture);
 };
 

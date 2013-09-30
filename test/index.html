@@ -14,6 +14,10 @@
       <li><a href="#">One</a></li>
     </ul>
 
+    <ul>
+      <li><span>one</span></li>
+    </ul>
+
     <button>Button</button>
 
     <script src="../build/build.js"></script>
@@ -36,6 +40,14 @@
         if (++n >= 8) {
           console.log('unbind');
           delegate.unbind(uls[1], 'click', fn2, false);
+        }
+      }, false);
+
+      var fn3 = delegate.bind(uls[2], 'li', 'click', function(e){
+        console.log(e.target);
+        if (++n >= 8) {
+          console.log('unbind');
+          delegate.unbind(uls[2], 'click', fn2, false);
         }
       }, false);
     </script>

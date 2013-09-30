@@ -5,7 +5,7 @@
   "version": "0.1.0",
   "keywords": ["event", "events", "delegate", "delegation"],
   "dependencies": {
-    "component/matches-selector": "*",
+    "discore/closest": "*",
     "component/event": "*"
   },
   "scripts": [
