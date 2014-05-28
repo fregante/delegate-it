@@ -12,6 +12,10 @@
     "discore-closest": "*",
     "component-event": "*"
   },
+  "browser": {
+    "closest": "discore-closest",
+    "event": "component-event"
+  },
   "component": {
     "scripts": {
       "delegate/index.js": "index.js"
