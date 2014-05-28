@@ -1,4 +1,10 @@
 
+0.2.2 / 2014-05-27
+==================
+
+  * add package.json file
+  * component: beautify "keywords"
+
 0.2.1 / 2013-10-02
 ==================
 
