@@ -2,8 +2,8 @@
 0.2.2 / 2014-05-27
 ==================
 
-  * add package.json file
-  * component: beautify "keywords"
+ * add package.json file
+ * component: beautify "keywords"
 
 0.2.1 / 2013-10-02
 ==================
@@ -21,4 +21,4 @@
 0.1.0 / 2012-12-19
 ==================
 
-  * add "event" dependency for x-browser
+ * add "event" dependency for x-browser
