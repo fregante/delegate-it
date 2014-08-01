@@ -9,11 +9,11 @@
     "delegation"
   ],
   "dependencies": {
-    "discore-closest": "*",
+    "component-closest": "*",
     "component-event": "*"
   },
   "browser": {
-    "closest": "discore-closest",
+    "closest": "component-closest",
     "event": "component-event"
   },
   "component": {

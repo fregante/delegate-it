@@ -10,7 +10,7 @@
     "delegation"
   ],
   "dependencies": {
-    "discore/closest": "*",
+    "component/closest": "*",
     "component/event": "*"
   },
   "scripts": [
