@@ -3,7 +3,7 @@
  */
 
 var closest = require('closest')
-  , event = require('event');
+  , event = require('component-event');
 
 /**
  * Delegate event `type` to `selector`

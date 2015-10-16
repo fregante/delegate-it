@@ -10,9 +10,11 @@
     "delegation"
   ],
   "dependencies": {
-    "component-closest": "*",
-    "component-event": "*"
+    "closest": "0.0.1",
+    "component-event": "0.1.4"
   },
+  "devDependencies": {
+    "browserify": "^11.2.0"
   },
   }
 }
