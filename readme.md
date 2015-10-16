@@ -2,9 +2,21 @@
 
   Low-level event delegation component.
 
-## Installation
+## Install
 
-    $ npm install delegate
+You can get it on npm.
+
+```
+npm install delegate --save
+```
+
+Or bower, too.
+
+```
+bower install delegate --save
+```
+
+If you're not into package management, just [download a ZIP](https://github.com/zenorocha/delegate/archive/master.zip) file.
 
 ## Example
 

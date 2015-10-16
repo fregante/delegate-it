@@ -16,5 +16,7 @@
   "devDependencies": {
     "browserify": "^11.2.0"
   },
+  "scripts": {
+    "build": "browserify src/delegate.js -o dist/delegate.js"
   }
 }

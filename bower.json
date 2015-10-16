@@ -1,0 +1,13 @@
+{
+  "name": "delegate",
+  "version": "0.2.3",
+  "description": "Event delegation component",
+  "license": "MIT",
+  "main": "dist/delegate.js",
+  "keywords": [
+    "event",
+    "events",
+    "delegate",
+    "delegation"
+  ]
+}
