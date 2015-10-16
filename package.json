@@ -1,7 +1,8 @@
 {
-  "name": "component-delegate",
+  "name": "delegate",
   "description": "Event delegation component",
   "version": "0.2.3",
+  "repository": "zenorocha/delegate",
   "keywords": [
     "event",
     "events",
@@ -12,17 +13,6 @@
     "component-closest": "*",
     "component-event": "*"
   },
-  "browser": {
-    "closest": "component-closest",
-    "event": "component-event"
   },
-  "component": {
-    "scripts": {
-      "delegate/index.js": "index.js"
-    }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/component/delegate.git"
   }
 }

@@ -1,11 +1,10 @@
-
 # delegate
 
   Low-level event delegation component.
 
 ## Installation
 
-    $ component install component/delegate
+    $ npm install delegate
 
 ## Example
 
