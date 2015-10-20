@@ -1,8 +1,9 @@
 {
   "name": "delegate",
-  "description": "Event delegation component",
   "version": "0.2.3",
+  "description": "Lightweight event delegation",
   "repository": "zenorocha/delegate",
+  "main": "src/delegate.js",
   "keywords": [
     "event",
     "events",
@@ -17,6 +18,6 @@
     "browserify": "^11.2.0"
   },
   "scripts": {
-    "build": "browserify src/delegate.js -o dist/delegate.js"
+    "build": "browserify src/delegate.js -s delegate -o dist/delegate.js",
   }
 }

@@ -1,6 +1,6 @@
 # delegate
 
-  Low-level event delegation component.
+Lightweight event delegation.
 
 ## Install
 
@@ -35,16 +35,16 @@ var fn = delegate.bind(ul, 'li a', 'click', function(e){
 }, false);
 ```
 
-## API
+## Usage
 
-### .bind(el, selector, type, callback, [capture])
+### .bind(element, selector, type, callback, [capture])
 
-  Bind and return a callback which may be passed to `.unbind()`.
+Bind event and return a callback which may be passed to `.unbind()`.
 
-### .unbind(el, type, callback, [capture])
+### .unbind(element, type, callback, [capture])
 
-  Unbind.
+Unbind event.
 
 ## License
 
-  MIT
+[MIT License](http://zenorocha.mit-license.org/) © Zeno Rocha
