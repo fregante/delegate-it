@@ -1,7 +1,7 @@
 {
   "name": "delegate",
-  "version": "0.2.3",
   "description": "Lightweight event delegation",
+  "version": "1.0.0",
   "repository": "zenorocha/delegate",
   "main": "src/delegate.js",
   "keywords": [

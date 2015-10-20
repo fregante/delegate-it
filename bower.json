@@ -1,7 +1,7 @@
 {
   "name": "delegate",
-  "version": "0.2.3",
-  "description": "Event delegation component",
+  "version": "1.0.0",
+  "description": "Lightweight event delegation",
   "license": "MIT",
   "main": "dist/delegate.js",
   "keywords": [
