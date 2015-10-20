@@ -1,9 +1,4 @@
-/**
- * Module dependencies.
- */
-
-var closest = require('closest')
-  , event = require('component-event');
+var closest = require('closest');
 
 /**
  * Delegate event `type` to `selector`
@@ -16,11 +11,10 @@ var closest = require('closest')
  * @param {Function} fn
  * @param {Boolean} capture
  * @return {Function}
- * @api public
  */
 
 exports.bind = function(el, selector, type, fn, capture){
-  return event.bind(el, type, function(e){
+  return el.addEventListener(type, function(e){
     var target = e.target || e.srcElement;
     e.delegateTarget = closest(target, selector, true, el);
     if (e.delegateTarget) fn.call(el, e);
@@ -34,9 +28,8 @@ exports.bind = function(el, selector, type, fn, capture){
  * @param {String} type
  * @param {Function} fn
  * @param {Boolean} capture
- * @api public
  */
 
 exports.unbind = function(el, type, fn, capture){
-  event.unbind(el, type, fn, capture);
+  el.removeEventListener(type, fn, capture);
 };
