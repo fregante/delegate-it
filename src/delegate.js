@@ -14,11 +14,11 @@ var closest = require('closest');
  */
 
 exports.bind = function(el, selector, type, fn, capture){
-  return el.addEventListener(type, function(e){
-    var target = e.target || e.srcElement;
-    e.delegateTarget = closest(target, selector, true, el);
-    if (e.delegateTarget) fn.call(el, e);
-  }, capture);
+    return el.addEventListener(type, function(e){
+        var target = e.target || e.srcElement;
+        e.delegateTarget = closest(target, selector, true, el);
+        if (e.delegateTarget) fn.call(el, e);
+    }, capture);
 };
 
 /**
@@ -31,5 +31,5 @@ exports.bind = function(el, selector, type, fn, capture){
  */
 
 exports.unbind = function(el, type, fn, capture){
-  el.removeEventListener(type, fn, capture);
+    el.removeEventListener(type, fn, capture);
 };
