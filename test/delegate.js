@@ -4,11 +4,11 @@ var simulant = require('simulant');
 describe('delegate', function() {
     before(function() {
         var html = '<ul>' +
-                        '<li><a href="#">Item 1</a></li>' +
-                        '<li><a href="#">Item 2</a></li>' +
-                        '<li><a href="#">Item 3</a></li>' +
-                        '<li><a href="#">Item 4</a></li>' +
-                        '<li><a href="#">Item 5</a></li>' +
+                        '<li><a>Item 1</a></li>' +
+                        '<li><a>Item 2</a></li>' +
+                        '<li><a>Item 3</a></li>' +
+                        '<li><a>Item 4</a></li>' +
+                        '<li><a>Item 5</a></li>' +
                    '</ul>';
 
         document.body.innerHTML += html;
