@@ -32,11 +32,10 @@ function delegate(element, selector, type, callback) {
  * @param {Event} e
  */
 function listener(e) {
-    var target = e.target || e.srcElement;
+    var delegateTarget = closest(e.target, selector, true);
 
-    e.delegateTarget = closest(target, selector, true);
-
-    if (e.delegateTarget) {
+    if (delegateTarget) {
+        e.target = delegateTarget;
         callback.call(element, e);
     }
 }

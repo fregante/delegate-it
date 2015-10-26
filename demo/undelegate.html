@@ -21,8 +21,8 @@
     <script>
     var ul = document.querySelector('ul');
 
-    var delegation = delegate(ul, 'a', 'click', function(e) {
-        console.log(e.delegateTarget);
+    var delegation = delegate(ul, 'li a', 'click', function(e) {
+        console.log(e.target);
     });
 
     delegation.destroy();

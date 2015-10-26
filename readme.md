@@ -38,7 +38,7 @@ var delegate = require('delegate');
 
 ```js
 delegate(document.body, '.btn', 'click', function(e) {
-    console.log(e.delegateTarget);
+    console.log(e.target);
 });
 ```
 
@@ -46,7 +46,7 @@ delegate(document.body, '.btn', 'click', function(e) {
 
 ```js
 var delegation = delegate('.btn', 'click', function(e) {
-    console.log(e.delegateTarget);
+    console.log(e.target);
 });
 
 delegation.destroy();
