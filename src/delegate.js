@@ -1,7 +1,7 @@
 var closest = require('closest');
 
 /**
- * Delegates event `type` to `selector`.
+ * Delegates event to a selector.
  *
  * @param {Element} element
  * @param {String} selector
@@ -10,36 +10,37 @@ var closest = require('closest');
  * @return {Object}
  */
 function delegate(element, selector, type, callback) {
-    this.element  = element;
-    this.selector = selector;
-    this.type     = type;
-    this.callback = callback;
+    var listenerFn = listener.apply(this, arguments);
 
-    var cachedListener = listener.bind(this);
-
-    element.addEventListener(type, cachedListener);
+    element.addEventListener(type, listenerFn);
 
     return {
         destroy: function() {
-            element.removeEventListener(type, cachedListener);
+            element.removeEventListener(type, listenerFn);
         }
     }
 }
 
 /**
- * Finds closest match and invokes `callback(e)`.
+ * Finds closest match and invokes callback.
  *
- * @param {Event} e
+ * @param {Element} element
+ * @param {String} selector
+ * @param {String} type
+ * @param {Function} callback
+ * @return {Function}
  */
-function listener(e) {
-    var delegateTarget = closest(e.target, selector, true);
+function listener(element, selector, type, callback) {
+    return function(e) {
+        var delegateTarget = closest(e.target, selector, true);
 
-    if (delegateTarget) {
-        Object.defineProperty(e, 'target', {
-            value: delegateTarget
-        });
+        if (delegateTarget) {
+            Object.defineProperty(e, 'target', {
+                value: delegateTarget
+            });
 
-        callback.call(element, e);
+            callback.call(element, e);
+        }
     }
 }
 
