@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delegate</title>
+</head>
+<body>
+    <!-- 1. Write some markup -->
+    <ul>
+        <li><a href="#">Item 1</a></li>
+        <li><a href="#">Item 2</a></li>
+        <li><a href="#">Item 3</a></li>
+        <li><a href="#">Item 4</a></li>
+        <li><a href="#">Item 5</a></li>
+    </ul>
+    <ul>
+        <li><p>Item 6</p></li>
+        <li><p>Item 7</p></li>
+    </ul>
+
+    <!-- 2. Include library -->
+    <script src="../dist/delegate.js"></script>
+
+    <!-- 3. Add event delegation -->
+    <script>
+    var ul = document.querySelector('ul');
+
+    delegate(ul, 'a', 'click', function(e) {
+        console.log(e.target);
+    });
+
+    delegate(document.body, 'p', 'click', function(e) {
+        console.log(e.target);
+    });
+    </script>
+</body>
+</html>
