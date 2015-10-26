@@ -1,35 +1,44 @@
 var closest = require('closest');
 
 /**
- * Delegate event `type` to `selector`
- * and invoke `fn(e)`. A callback function
- * is returned which may be passed to `.unbind()`.
+ * Delegates event `type` to `selector`.
  *
- * @param {Element} el
+ * @param {Element} element
  * @param {String} selector
  * @param {String} type
- * @param {Function} fn
- * @param {Boolean} capture
- * @return {Function}
+ * @param {Function} callback
+ * @return {Object}
  */
+function delegate(element, selector, type, callback) {
+    this.element  = element;
+    this.selector = selector;
+    this.type     = type;
+    this.callback = callback;
 
-exports.bind = function(el, selector, type, fn, capture){
-    return el.addEventListener(type, function(e){
-        var target = e.target || e.srcElement;
-        e.delegateTarget = closest(target, selector, true, el);
-        if (e.delegateTarget) fn.call(el, e);
-    }, capture);
-};
+    var cachedListener = listener.bind(this);
+
+    element.addEventListener(type, cachedListener);
+
+    return {
+        destroy: function() {
+            element.removeEventListener(type, cachedListener);
+        }
+    }
+}
 
 /**
- * Unbind event `type`'s callback `fn`.
+ * Finds closest match and invokes `callback(e)`.
  *
- * @param {Element} el
- * @param {String} type
- * @param {Function} fn
- * @param {Boolean} capture
+ * @param {Event} e
  */
+function listener(e) {
+    var target = e.target || e.srcElement;
 
-exports.unbind = function(el, type, fn, capture){
-    el.removeEventListener(type, fn, capture);
-};
+    e.delegateTarget = closest(target, selector, true);
+
+    if (e.delegateTarget) {
+        callback.call(element, e);
+    }
+}
+
+module.exports = delegate;
