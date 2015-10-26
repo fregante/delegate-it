@@ -35,7 +35,10 @@ function listener(e) {
     var delegateTarget = closest(e.target, selector, true);
 
     if (delegateTarget) {
-        e.target = delegateTarget;
+        Object.defineProperty(e, 'target', {
+            value: delegateTarget
+        });
+
         callback.call(element, e);
     }
 }
