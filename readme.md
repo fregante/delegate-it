@@ -39,7 +39,7 @@ var delegate = require('delegate');
 ```js
 delegate(document.body, '.btn', 'click', function(e) {
     console.log(e.target);
-});
+}, false);
 ```
 
 ### Remove event delegation
@@ -47,7 +47,7 @@ delegate(document.body, '.btn', 'click', function(e) {
 ```js
 var delegation = delegate('.btn', 'click', function(e) {
     console.log(e.target);
-});
+}, false);
 
 delegation.destroy();
 ```
