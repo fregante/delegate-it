@@ -1,4 +1,4 @@
-var closest = require('closest');
+var closest = require('component-closest');
 
 /**
  * Delegates event to a selector.

@@ -10,7 +10,7 @@
     "delegation"
   ],
   "dependencies": {
-    "closest": "0.0.1"
+    "component-closest": "~1.0.1"
   },
   "devDependencies": {
     "browserify": "^11.2.0",
