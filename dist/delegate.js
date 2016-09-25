@@ -1,16 +1,51 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.delegate = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var matches = require('matches-selector')
+/**
+ * Module Dependencies
+ */
 
-module.exports = function (element, selector, checkYoSelf) {
-  var parent = checkYoSelf ? element : element.parentNode
-
-  while (parent && parent !== document) {
-    if (matches(parent, selector)) return parent;
-    parent = parent.parentNode
-  }
+try {
+  var matches = require('matches-selector')
+} catch (err) {
+  var matches = require('component-matches-selector')
 }
 
-},{"matches-selector":2}],2:[function(require,module,exports){
+/**
+ * Export `closest`
+ */
+
+module.exports = closest
+
+/**
+ * Closest
+ *
+ * @param {Element} el
+ * @param {String} selector
+ * @param {Element} scope (optional)
+ */
+
+function closest (el, selector, scope) {
+  scope = scope || document.documentElement;
+
+  // walk up the dom
+  while (el && el !== scope) {
+    if (matches(el, selector)) return el;
+    el = el.parentNode;
+  }
+
+  // check scope for match
+  return matches(el, selector) ? el : null;
+}
+
+},{"component-matches-selector":2,"matches-selector":2}],2:[function(require,module,exports){
+/**
+ * Module dependencies.
+ */
+
+try {
+  var query = require('query');
+} catch (err) {
+  var query = require('component-query');
+}
 
 /**
  * Element prototype.
@@ -22,7 +57,7 @@ var proto = Element.prototype;
  * Vendor function.
  */
 
-var vendor = proto.matchesSelector
+var vendor = proto.matches
   || proto.webkitMatchesSelector
   || proto.mozMatchesSelector
   || proto.msMatchesSelector
@@ -44,15 +79,40 @@ module.exports = match;
  */
 
 function match(el, selector) {
+  if (!el || el.nodeType !== 1) return false;
   if (vendor) return vendor.call(el, selector);
-  var nodes = el.parentNode.querySelectorAll(selector);
+  var nodes = query.all(selector, el.parentNode);
   for (var i = 0; i < nodes.length; ++i) {
     if (nodes[i] == el) return true;
   }
   return false;
 }
-},{}],3:[function(require,module,exports){
-var closest = require('closest');
+
+},{"component-query":3,"query":3}],3:[function(require,module,exports){
+function one(selector, el) {
+  return el.querySelector(selector);
+}
+
+exports = module.exports = function(selector, el){
+  el = el || document;
+  return one(selector, el);
+};
+
+exports.all = function(selector, el){
+  el = el || document;
+  return el.querySelectorAll(selector);
+};
+
+exports.engine = function(obj){
+  if (!obj.one) throw new Error('.one callback required');
+  if (!obj.all) throw new Error('.all callback required');
+  one = obj.one;
+  exports.all = obj.all;
+  return exports;
+};
+
+},{}],4:[function(require,module,exports){
+var closest = require('component-closest');
 
 /**
  * Delegates event to a selector.
@@ -97,5 +157,5 @@ function listener(element, selector, type, callback) {
 
 module.exports = delegate;
 
-},{"closest":1}]},{},[3])(3)
+},{"component-closest":1}]},{},[4])(4)
 });
