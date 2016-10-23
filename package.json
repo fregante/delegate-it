@@ -9,9 +9,6 @@
     "delegate",
     "delegation"
   ],
-  "dependencies": {
-    "component-matches-selector": "~0.1.6"
-  },
   "devDependencies": {
     "browserify": "^13.1.0",
     "chai": "^3.5.0",

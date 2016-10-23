@@ -1,4 +1,15 @@
-var matches = require('component-matches-selector');
+/**
+ * A polyfill for Element.matches()
+ */
+if (Element && !Element.prototype.matches) {
+    var proto = Element.prototype;
+
+    proto.matches = proto.matchesSelector ||
+                    proto.mozMatchesSelector ||
+                    proto.msMatchesSelector ||
+                    proto.oMatchesSelector ||
+                    proto.webkitMatchesSelector;
+}
 
 /**
  * Finds the closest parent that matches a selector.
@@ -9,7 +20,7 @@ var matches = require('component-matches-selector');
  */
 function closest (element, selector) {
   while (element && element !== document) {
-    if (matches(element, selector)) return element;
+    if (element.matches(selector)) return element;
     element = element.parentNode;
   }
 }
