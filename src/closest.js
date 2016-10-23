@@ -19,10 +19,10 @@ if (Element && !Element.prototype.matches) {
  * @return {Function}
  */
 function closest (element, selector) {
-  while (element && element !== document) {
-    if (element.matches(selector)) return element;
-    element = element.parentNode;
-  }
+    while (element && element !== document) {
+        if (element.matches(selector)) return element;
+        element = element.parentNode;
+    }
 }
 
 module.exports = closest;
