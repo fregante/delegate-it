@@ -3,6 +3,7 @@
   "description": "Lightweight event delegation",
   "version": "3.1.1",
   "repository": "zenorocha/delegate",
+  "license": "MIT",
   "main": "src/delegate.js",
   "keywords": [
     "event",
