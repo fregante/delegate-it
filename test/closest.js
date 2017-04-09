@@ -28,4 +28,18 @@ describe('closest', function() {
     it('should return itself if the same selector is passed', function() {
         assert.ok(closest(document.body, 'body'), document.body);
     });
+
+    it('should not throw on elements without matches()', function() {
+        var fakeElement = {
+            nodeType: -1, // anything but DOCUMENT_NODE_TYPE
+            parentNode: null,
+            matches: undefined // undefined to emulate Elements without this function
+        };
+
+        try {
+            closest(fakeElement, '#a')
+        } catch (err) {
+            assert.fail();
+        }
+    });
 });
