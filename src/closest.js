@@ -22,7 +22,10 @@ if (typeof Element !== 'undefined' && !Element.prototype.matches) {
  */
 function closest (element, selector) {
     while (element && element.nodeType !== DOCUMENT_NODE_TYPE) {
-        if (element.matches(selector)) return element;
+        if (typeof element.matches === 'function' &&
+            element.matches(selector)) {
+          return element;
+        }
         element = element.parentNode;
     }
 }
