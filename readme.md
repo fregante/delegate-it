@@ -45,7 +45,7 @@ delegate(document.body, '.btn', 'click', function(e) {
 ### Remove event delegation
 
 ```js
-var delegation = delegate('.btn', 'click', function(e) {
+var delegation = delegate(document.body, '.btn', 'click', function(e) {
     console.log(e.delegateTarget);
 }, false);
 
