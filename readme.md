@@ -30,13 +30,41 @@ var delegate = require('delegate');
 
 ### Add event delegation
 
+#### With the default base (`document`)
+
+```js
+delegate('.btn', 'click', function(e) {
+    console.log(e.delegateTarget);
+}, false);
+```
+
+#### With an element as base
+
 ```js
 delegate(document.body, '.btn', 'click', function(e) {
     console.log(e.delegateTarget);
 }, false);
 ```
 
+#### With a selector (of existing elements) as base
+
+```js
+delegate('.container', '.btn', 'click', function(e) {
+    console.log(e.delegateTarget);
+}, false);
+```
+
+#### With an array/array-like of elements as base
+
+```js
+delegate(document.querySelectorAll('.container'), '.btn', 'click', function(e) {
+    console.log(e.delegateTarget);
+}, false);
+```
+
 ### Remove event delegation
+
+#### With a single base element (default or specified)
 
 ```js
 var delegation = delegate(document.body, '.btn', 'click', function(e) {
@@ -44,6 +72,20 @@ var delegation = delegate(document.body, '.btn', 'click', function(e) {
 }, false);
 
 delegation.destroy();
+```
+
+#### With multiple elements (via selector or array)
+
+Note: selectors are always treated as multiple elements, even if one or none are matched. `delegate()` will return an array.
+
+```js
+var delegations = delegate('.container', '.btn', 'click', function(e) {
+    console.log(e.delegateTarget);
+}, false);
+
+delegations.forEach(function (delegation) {
+    delegation.destroy();
+});
 ```
 
 ## Browser Support
