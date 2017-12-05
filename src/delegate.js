@@ -37,22 +37,22 @@ function delegate(elements, selector, type, callback, useCapture) {
     if (typeof elements.addEventListener === 'function') {
         return _delegate.apply(null, arguments);
     }
-    
+
     // Handle Element-less usage, it defaults to global delegation
-	if (typeof type === 'function') {
+    if (typeof type === 'function') {
         // Use `document` as the first parameter, then apply arguments
         // This is a short way to .unshift `arguments` without running into deoptimizations
-		return _delegate.bind(null, document).apply(null, arguments);
-	}
-    
+        return _delegate.bind(null, document).apply(null, arguments);
+    }
+
     // Handle Selector-based usage
-	if (typeof elements === 'string') {
+    if (typeof elements === 'string') {
         elements = document.querySelectorAll(elements);
-	}
-    
+    }
+
     // Handle Array-like based usage
     return Array.prototype.map.call(elements, function (element) {
-		return _delegate(element, selector, type, callback, useCapture);
+        return _delegate(element, selector, type, callback, useCapture);
     });
 }
 
