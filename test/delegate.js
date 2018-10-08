@@ -113,4 +113,13 @@ describe('delegate', function() {
             return success;
         });
     });
+
+    it('should not fire when the selector matches an ancestor of the base element', function() {
+        var spy = sinon.spy();
+        delegate(global.container, 'body', 'click', spy);
+
+        simulant.fire(global.anchor, simulant('click'));
+        assert.ok(spy.notCalled);
+
+    });
 });
