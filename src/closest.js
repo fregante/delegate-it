@@ -1,17 +1,11 @@
-var DOCUMENT_NODE_TYPE = 9;
-
 /**
- * A polyfill for Element.matches()
+ * Local polyfills for Element.matches() and Element.closest()
  */
-if (typeof Element !== 'undefined' && !Element.prototype.matches) {
-    var proto = Element.prototype;
 
-    proto.matches = proto.matchesSelector ||
-                    proto.mozMatchesSelector ||
-                    proto.msMatchesSelector ||
-                    proto.oMatchesSelector ||
-                    proto.webkitMatchesSelector;
-}
+var matches = Element.prototype.matches ||
+    Element.prototype.msMatchesSelector ||
+    Element.prototype.webkitMatchesSelector;
+
 
 /**
  * Finds the closest parent that matches a selector.
@@ -21,13 +15,11 @@ if (typeof Element !== 'undefined' && !Element.prototype.matches) {
  * @return {Function}
  */
 function closest (element, selector) {
-    while (element && element.nodeType !== DOCUMENT_NODE_TYPE) {
-        if (typeof element.matches === 'function' &&
-            element.matches(selector)) {
-          return element;
-        }
-        element = element.parentNode;
-    }
+    do {
+        if (matches.call(element, selector)) return element;
+        element = element.parentElement || element.parentNode;
+    } while (element !== null && element.nodeType === 1);
+    return null;
 }
 
 module.exports = closest;
