@@ -19,109 +19,109 @@ const container = window.document.querySelector('ul');
 const anchor = window.document.querySelector('a');
 
 test.cb('should add an event listener', t => {
-    delegate(container, 'a', 'click', () => {
-        t.end();
-    });
-    anchor.click();
+	delegate(container, 'a', 'click', () => {
+		t.end();
+	});
+	anchor.click();
 });
 
 test.cb('should add an event listener only once', t => {
-    const handler = () => {
-        t.end();
-    };
-    delegate(container, 'a', 'click', handler);
-    delegate(container, 'a', 'click', handler);
-    anchor.click();
+	const handler = () => {
+		t.end();
+	};
+	delegate(container, 'a', 'click', handler);
+	delegate(container, 'a', 'click', handler);
+	anchor.click();
 });
 
 test('should remove an event listener', t => {
-    const spy = sinon.spy(container, 'removeEventListener');
+	const spy = sinon.spy(container, 'removeEventListener');
 
-    const delegation = delegate(container, 'a', 'click', () => {});
-    delegation.destroy();
+	const delegation = delegate(container, 'a', 'click', () => {});
+	delegation.destroy();
 
-    t.true(spy.calledOnce);
-    spy.restore();
+	t.true(spy.calledOnce);
+	spy.restore();
 });
 
 test.cb('should use `document` if the element is unspecified', t => {
-    delegate('a', 'click', () => {
-        t.end();
-    });
+	delegate('a', 'click', () => {
+		t.end();
+	});
 
-    anchor.click();
+	anchor.click();
 });
 
 test('should remove an event listener the unspecified base (`document`)', t => {
-    const delegation = delegate('a', 'click', () => {});
-    const spy = sinon.spy(document, 'removeEventListener');
+	const delegation = delegate('a', 'click', () => {});
+	const spy = sinon.spy(document, 'removeEventListener');
 
-    delegation.destroy();
-    t.true(spy.calledOnce);
-    spy.restore();
+	delegation.destroy();
+	t.true(spy.calledOnce);
+	spy.restore();
 });
 
 test('should add event listeners to all the elements in a base selector', t => {
-    const spy = sinon.spy();
-    delegate('li', 'a', 'click', spy);
+	const spy = sinon.spy();
+	delegate('li', 'a', 'click', spy);
 
-    const anchors = document.querySelectorAll('a');
-    anchors[0].click();
-    anchors[1].click();
-    t.true(spy.calledTwice);
+	const anchors = document.querySelectorAll('a');
+	anchors[0].click();
+	anchors[1].click();
+	t.true(spy.calledTwice);
 });
 
 test('should remove the event listeners from all the elements in a base selector', t => {
-    const items = document.querySelectorAll('li');
-    const spies = Array.prototype.map.call(items, li => {
-        return sinon.spy(li, 'removeEventListener');
-    });
+	const items = document.querySelectorAll('li');
+	const spies = Array.prototype.map.call(items, li => {
+		return sinon.spy(li, 'removeEventListener');
+	});
 
-    const delegations = delegate('li', 'a', 'click', () => {});
-    delegations.forEach(delegation => {
-        delegation.destroy();
-    });
+	const delegations = delegate('li', 'a', 'click', () => {});
+	delegations.forEach(delegation => {
+		delegation.destroy();
+	});
 
-    t.true(spies.every(spy => {
-        const success = spy.calledOnce;
-        spy.restore();
-        return success;
-    }));
+	t.true(spies.every(spy => {
+		const success = spy.calledOnce;
+		spy.restore();
+		return success;
+	}));
 });
 
 test('should add event listeners to all the elements in a base array', t => {
-    const spy = sinon.spy();
-    const items = document.querySelectorAll('li');
-    delegate(items, 'a', 'click', spy);
+	const spy = sinon.spy();
+	const items = document.querySelectorAll('li');
+	delegate(items, 'a', 'click', spy);
 
-    const anchors = document.querySelectorAll('a');
-    anchors[0].click();
-    anchors[1].click();
-    t.true(spy.calledTwice);
+	const anchors = document.querySelectorAll('a');
+	anchors[0].click();
+	anchors[1].click();
+	t.true(spy.calledTwice);
 });
 
 test('should remove the event listeners from all the elements in a base array', t => {
-    const items = document.querySelectorAll('li');
-    const spies = Array.prototype.map.call(items, li => {
-        return sinon.spy(li, 'removeEventListener');
-    });
+	const items = document.querySelectorAll('li');
+	const spies = Array.prototype.map.call(items, li => {
+		return sinon.spy(li, 'removeEventListener');
+	});
 
-    const delegations = delegate(items, 'a', 'click', () => {});
-    delegations.forEach(delegation => {
-        delegation.destroy();
-    });
+	const delegations = delegate(items, 'a', 'click', () => {});
+	delegations.forEach(delegation => {
+		delegation.destroy();
+	});
 
-    t.true(spies.every(spy => {
-        const success = spy.calledOnce;
-        spy.restore();
-        return success;
-    }));
+	t.true(spies.every(spy => {
+		const success = spy.calledOnce;
+		spy.restore();
+		return success;
+	}));
 });
 
 test('should not fire when the selector matches an ancestor of the base element', t => {
-    const spy = sinon.spy();
-    delegate(container, 'body', 'click', spy);
+	const spy = sinon.spy();
+	delegate(container, 'body', 'click', spy);
 
-    anchor.click();
-    t.true(spy.notCalled);
+	anchor.click();
+	t.true(spy.notCalled);
 });

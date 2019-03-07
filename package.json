@@ -1,20 +1,20 @@
 {
-  "name": "delegate-it",
-  "description": "Lightweight event delegation",
-  "version": "3.2.0",
-  "repository": "bfred-it/delegate-it",
-  "license": "MIT",
-  "keywords": [
-    "event",
-    "delegate",
-    "delegation"
-  ],
-  "devDependencies": {
-    "ava": "^1.3.1",
-    "jsdom": "^13.2.0",
-    "sinon": "^1.17.6"
-  },
-  "scripts": {
-    "test": "ava"
-  }
+	"name": "delegate-it",
+	"description": "Lightweight event delegation",
+	"version": "3.2.0",
+	"repository": "bfred-it/delegate-it",
+	"license": "MIT",
+	"keywords": [
+		"event",
+		"delegate",
+		"delegation"
+	],
+	"devDependencies": {
+		"ava": "^1.3.1",
+		"jsdom": "^13.2.0",
+		"sinon": "^1.17.6"
+	},
+	"scripts": {
+		"test": "ava"
+	}
 }
