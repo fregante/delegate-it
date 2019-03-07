@@ -1,5 +1,3 @@
-var closest = require('./closest');
-
 /**
  * Delegates event to a selector.
  *
@@ -67,11 +65,7 @@ function delegate(elements, selector, type, callback, useCapture) {
  */
 function listener(element, selector, type, callback) {
     return function(e) {
-        if (e.target.closest) {
-            e.delegateTarget = e.target.closest(selector);
-        } else {
-            e.delegateTarget = closest(e.target, selector);
-        }
+        e.delegateTarget = e.target.closest(selector);
 
         // Closest may match elements outside of the currentTarget
         // so it needs to be limited to elements inside it
