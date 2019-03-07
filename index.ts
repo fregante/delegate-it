@@ -1,23 +1,19 @@
 const elements = new WeakMap();
 
-/**
- * Delegates event to a selector.
- *
- * @param {Element} element
- * @param {String} selector
- * @param {String} type
- * @param {Function} callback
- * @param {Boolean} useCapture
- * @return {Object}
- */
-function _delegate(element, selector, type, callback, useCapture) {
-	const listenerFn = e => {
-		e.delegateTarget = e.target.closest(selector);
+function _delegate(
+	element: EventTarget,
+	selector: string,
+	type: string,
+	callback: () => any,
+	useCapture: boolean | AddEventListenerOptions
+) {
+	const listenerFn = event => {
+		event.delegateTarget = event.target.closest(selector);
 
 		// Closest may match elements outside of the currentTarget
 		// so it needs to be limited to elements inside it
-		if (e.delegateTarget && e.currentTarget.contains(e.delegateTarget)) {
-			callback.call(element, e);
+		if (event.delegateTarget && event.currentTarget.contains(event.delegateTarget)) {
+			callback.call(element, event);
 		}
 	};
 
@@ -66,23 +62,23 @@ function _delegate(element, selector, type, callback, useCapture) {
 
 /**
  * Delegates event to a selector.
- *
- * @param {Element|String|Array} [elements]
- * @param {String} selector
- * @param {String} type
- * @param {Function} callback
- * @param {Boolean} useCapture
- * @return {Object}
  */
-function delegate(elements, selector, type, callback, useCapture) {
+type CombinedElements = EventTarget | EventTarget[] | NodeListOf<Element> | String;
+export = function delegate(
+	elements: CombinedElements,
+	selector: string,
+	type: string,
+	callback: () => any,
+	useCapture: boolean | AddEventListenerOptions
+) {
 	// Handle the regular Element usage
-	if (typeof elements.addEventListener === 'function') {
-		return _delegate(...arguments);
+	if (typeof (elements as EventTarget).addEventListener === 'function') {
+		return _delegate(elements as EventTarget, selector, type, callback, useCapture);
 	}
 
 	// Handle Element-less usage, it defaults to global delegation
 	if (typeof type === 'function') {
-		return _delegate(document, ...arguments);
+		return _delegate(document, elements as string, selector as string, type as () => any, callback as boolean | AddEventListenerOptions);
 	}
 
 	// Handle Selector-based usage
@@ -91,9 +87,7 @@ function delegate(elements, selector, type, callback, useCapture) {
 	}
 
 	// Handle Array-like based usage
-	return Array.prototype.map.call(elements, element => {
+	return Array.prototype.map.call(elements, (element: EventTarget) => {
 		return _delegate(element, selector, type, callback, useCapture);
 	});
 }
-
-module.exports = delegate;
