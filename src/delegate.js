@@ -9,7 +9,15 @@
  * @return {Object}
  */
 function _delegate(element, selector, type, callback, useCapture) {
-    const listenerFn = listener.apply(this, arguments);
+    const listenerFn = e => {
+        e.delegateTarget = e.target.closest(selector);
+
+        // Closest may match elements outside of the currentTarget
+        // so it needs to be limited to elements inside it
+        if (e.delegateTarget && e.currentTarget.contains(e.delegateTarget)) {
+            callback.call(element, e);
+        }
+    };
 
     element.addEventListener(type, listenerFn, useCapture);
 
@@ -52,27 +60,6 @@ function delegate(elements, selector, type, callback, useCapture) {
     return Array.prototype.map.call(elements, element => {
         return _delegate(element, selector, type, callback, useCapture);
     });
-}
-
-/**
- * Finds closest match and invokes callback.
- *
- * @param {Element} element
- * @param {String} selector
- * @param {String} type
- * @param {Function} callback
- * @return {Function}
- */
-function listener(element, selector, type, callback) {
-    return e => {
-        e.delegateTarget = e.target.closest(selector);
-
-        // Closest may match elements outside of the currentTarget
-        // so it needs to be limited to elements inside it
-        if (e.delegateTarget && e.currentTarget.contains(e.delegateTarget)) {
-            callback.call(element, e);
-        }
-    };
 }
 
 module.exports = delegate;
