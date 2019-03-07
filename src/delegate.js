@@ -9,15 +9,15 @@
  * @return {Object}
  */
 function _delegate(element, selector, type, callback, useCapture) {
-    var listenerFn = listener.apply(this, arguments);
+    const listenerFn = listener.apply(this, arguments);
 
     element.addEventListener(type, listenerFn, useCapture);
 
     return {
-        destroy: function() {
+        destroy() {
             element.removeEventListener(type, listenerFn, useCapture);
         }
-    }
+    };
 }
 
 /**
@@ -33,7 +33,7 @@ function _delegate(element, selector, type, callback, useCapture) {
 function delegate(elements, selector, type, callback, useCapture) {
     // Handle the regular Element usage
     if (typeof elements.addEventListener === 'function') {
-        return _delegate.apply(null, arguments);
+        return _delegate(...arguments);
     }
 
     // Handle Element-less usage, it defaults to global delegation
@@ -49,7 +49,7 @@ function delegate(elements, selector, type, callback, useCapture) {
     }
 
     // Handle Array-like based usage
-    return Array.prototype.map.call(elements, function (element) {
+    return Array.prototype.map.call(elements, element => {
         return _delegate(element, selector, type, callback, useCapture);
     });
 }
@@ -64,7 +64,7 @@ function delegate(elements, selector, type, callback, useCapture) {
  * @return {Function}
  */
 function listener(element, selector, type, callback) {
-    return function(e) {
+    return e => {
         e.delegateTarget = e.target.closest(selector);
 
         // Closest may match elements outside of the currentTarget
@@ -72,7 +72,7 @@ function listener(element, selector, type, callback) {
         if (e.delegateTarget && e.currentTarget.contains(e.delegateTarget)) {
             callback.call(element, e);
         }
-    }
+    };
 }
 
 module.exports = delegate;

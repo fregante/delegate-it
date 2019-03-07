@@ -60,7 +60,7 @@ delegate(document.querySelectorAll('.container'), '.btn', 'click', event => {
 #### With a single base element (default or specified)
 
 ```js
-var delegation = delegate(document.body, '.btn', 'click', event => {
+const delegation = delegate(document.body, '.btn', 'click', event => {
     console.log(event.delegateTarget);
 });
 
@@ -72,7 +72,7 @@ delegation.destroy();
 Note: selectors are always treated as multiple elements, even if one or none are matched. `delegate()` will return an array.
 
 ```js
-var delegations = delegate('.container', '.btn', 'click', event => {
+const delegations = delegate('.container', '.btn', 'click', event => {
     console.log(event.delegateTarget);
 });
 
@@ -85,4 +85,4 @@ delegations.forEach(function (delegation) {
 
 | <img src="https://clipboardjs.com/assets/images/chrome.png" width="48px" height="48px" alt="Chrome logo"> | <img src="https://clipboardjs.com/assets/images/edge.png" width="48px" height="48px" alt="Edge logo"> | <img src="https://clipboardjs.com/assets/images/firefox.png" width="48px" height="48px" alt="Firefox logo"> | <img src="https://clipboardjs.com/assets/images/ie.png" width="48px" height="48px" alt="Internet Explorer logo"> | <img src="https://clipboardjs.com/assets/images/opera.png" width="48px" height="48px" alt="Opera logo"> | <img src="https://clipboardjs.com/assets/images/safari.png" width="48px" height="48px" alt="Safari logo"> |
 |:---:|:---:|:---:|:---:|:---:|:---:|
-| Latest ✔ | Latest ✔ | Latest ✔ | 9+ ✔ | Latest ✔ | Latest ✔ |
+| Latest ✔ | Latest ✔ | Latest ✔ | No ✕ | Latest ✔ | Latest ✔ |
