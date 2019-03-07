@@ -4,26 +4,17 @@
   "version": "3.2.0",
   "repository": "bfred-it/delegate-it",
   "license": "MIT",
-  "main": "src/delegate.js",
   "keywords": [
     "event",
     "delegate",
     "delegation"
   ],
   "devDependencies": {
-    "chai": "^3.5.0",
-    "karma": "^1.3.0",
-    "karma-browserify": "^5.1.0",
-    "karma-chai": "^0.1.0",
-    "karma-mocha": "^1.2.0",
-    "karma-phantomjs-launcher": "^1.0.2",
-    "karma-sinon": "^1.0.4",
-    "mocha": "^3.1.2",
-    "phantomjs-polyfill": "0.0.2",
-    "simulant": "^0.2.2",
+    "ava": "^1.3.1",
+    "jsdom": "^13.2.0",
     "sinon": "^1.17.6"
   },
   "scripts": {
-    "test": "karma start --single-run"
+    "test": "ava"
   }
 }
