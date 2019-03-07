@@ -25,6 +25,15 @@ test.cb('should add an event listener', t => {
     anchor.click();
 });
 
+test.cb('should add an event listener only once', t => {
+    const handler = () => {
+        t.end();
+    };
+    delegate(container, 'a', 'click', handler);
+    delegate(container, 'a', 'click', handler);
+    anchor.click();
+});
+
 test('should remove an event listener', t => {
     const spy = sinon.spy(container, 'removeEventListener');
 

@@ -1,3 +1,5 @@
+const elements = new WeakMap();
+
 /**
  * Delegates event to a selector.
  *
@@ -19,11 +21,45 @@ function _delegate(element, selector, type, callback, useCapture) {
         }
     };
 
+    const elementMap = elements.get(element) || new WeakMap();
+    const setups = elementMap.get(callback) || new Set();
+    if (setups.size > 0) {
+        for (const setup of setups) {
+            if (setup.selector === selector && setup.type === type && setup.useCapture === useCapture) {
+                return;
+            }
+        }
+    }
+    setups.add({selector, type, useCapture})
     element.addEventListener(type, listenerFn, useCapture);
+    elements.set(element, elementMap);
+    elementMap.set(callback, setups);
 
     return {
         destroy() {
             element.removeEventListener(type, listenerFn, useCapture);
+            if (!elements.has(element)) {
+                return;
+            }
+
+            const elementMap = elements.get(element);
+            if (!elementMap.has(callback)) {
+                return;
+            }
+
+            const setups = elementMap.get(callback);
+            for (const setup of setups) {
+                if (setup.selector === selector && setup.type === type && setup.useCapture === useCapture) {
+                    setups.delete(setup);
+                    if (setups.size === 0) {
+                        elementMap.delete(callback);
+                        if (elementMap.size === 0) {
+                            elements.delete(element);
+                        }
+                    }
+                    return;
+                }
+            }
         }
     };
 }
@@ -46,9 +82,7 @@ function delegate(elements, selector, type, callback, useCapture) {
 
     // Handle Element-less usage, it defaults to global delegation
     if (typeof type === 'function') {
-        // Use `document` as the first parameter, then apply arguments
-        // This is a short way to .unshift `arguments` without running into deoptimizations
-        return _delegate.bind(null, document).apply(null, arguments);
+        return _delegate(document, ...arguments);
     }
 
     // Handle Selector-based usage
