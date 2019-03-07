@@ -1,8 +1,8 @@
 {
-  "name": "delegate",
+  "name": "delegate-it",
   "description": "Lightweight event delegation",
   "version": "3.2.0",
-  "repository": "zenorocha/delegate",
+  "repository": "bfred-it/delegate-it",
   "license": "MIT",
   "main": "src/delegate.js",
   "keywords": [
