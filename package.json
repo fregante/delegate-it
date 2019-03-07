@@ -1,7 +1,7 @@
 {
 	"name": "delegate-it",
 	"description": "Lightweight event delegation",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"repository": "bfred-it/delegate-it",
 	"license": "MIT",
 	"files": [
