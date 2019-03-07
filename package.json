@@ -23,7 +23,7 @@
 	"scripts": {
 		"test": "xo !index.js && ava && tsc",
 		"prepublish": "tsc",
-		"preversion": "tsc"
+		"build": "tsc"
 	},
 	"xo": {
 		"envs": [

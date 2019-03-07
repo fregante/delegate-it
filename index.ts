@@ -4,8 +4,8 @@ function _delegate(
 	element: EventTarget,
 	selector: string,
 	type: string,
-	callback: () => any,
-	useCapture: boolean | AddEventListenerOptions
+	callback?: Function,
+	useCapture?: boolean | AddEventListenerOptions
 ) {
 	const listenerFn = event => {
 		event.delegateTarget = event.target.closest(selector);
@@ -64,12 +64,25 @@ function _delegate(
  * Delegates event to a selector.
  */
 type CombinedElements = EventTarget | EventTarget[] | NodeListOf<Element> | String;
-export = function delegate(
+function delegate(
+	selector: string,
+	type: string,
+	callback?: Function,
+	useCapture?: boolean | AddEventListenerOptions
+): object;
+function delegate(
 	elements: CombinedElements,
 	selector: string,
 	type: string,
-	callback: () => any,
-	useCapture: boolean | AddEventListenerOptions
+	callback?: Function,
+	useCapture?: boolean | AddEventListenerOptions
+	): object;
+function delegate(
+	elements,
+	selector,
+	type,
+	callback?,
+	useCapture?
 ) {
 	// Handle the regular Element usage
 	if (typeof (elements as EventTarget).addEventListener === 'function') {
@@ -78,7 +91,7 @@ export = function delegate(
 
 	// Handle Element-less usage, it defaults to global delegation
 	if (typeof type === 'function') {
-		return _delegate(document, elements as string, selector as string, type as () => any, callback as boolean | AddEventListenerOptions);
+		return _delegate(document, elements as string, selector as string, type as Function, callback as boolean | AddEventListenerOptions);
 	}
 
 	// Handle Selector-based usage
@@ -91,3 +104,5 @@ export = function delegate(
 		return _delegate(element, selector, type, callback, useCapture);
 	});
 }
+
+export = delegate;
