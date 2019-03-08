@@ -76,9 +76,13 @@ const delegations = delegate('.container', '.btn', 'click', event => {
     console.log(event.delegateTarget);
 });
 
+// Delete listeners by looping the array.
 delegations.forEach(function (delegation) {
     delegation.destroy();
 });
+
+// This also works as it is just a handy wrapper of above.
+delegations.destroy();
 ```
 
 ## Browser Support
