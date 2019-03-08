@@ -100,9 +100,13 @@ function delegate(
 	}
 
 	// Handle Array-like based usage
-	return Array.prototype.map.call(elements, (element: EventTarget) => {
+	const delegations =  Array.prototype.map.call(elements, (element: EventTarget) => {
 		return _delegate(element, selector, type, callback, useCapture);
 	});
+	delegations.destroy = () => {
+		delegations.forEach(delegation => delegation.destroy())
+	}
+	return delegations
 }
 
 export = delegate;
