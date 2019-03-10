@@ -85,8 +85,8 @@ function delegate(
 	useCapture?
 ) {
 	// Handle the regular Element usage
-	if (typeof (elements as EventTarget).addEventListener === 'function') {
-		return _delegate(elements as EventTarget, selector, type, callback, useCapture);
+	if (elements instanceof EventTarget) {
+		return _delegate(elements, selector, type, callback, useCapture);
 	}
 
 	// Handle Element-less usage, it defaults to global delegation
