@@ -63,7 +63,7 @@ function _delegate(
 /**
  * Delegates event to a selector.
  */
-type CombinedElements = EventTarget | EventTarget[] | NodeListOf<Element> | String;
+type CombinedElements = EventTarget | EventTarget[] | NodeListOf<Element> | string;
 function delegate(
 	selector: string,
 	type: string,
@@ -105,4 +105,8 @@ function delegate(
 	});
 }
 
-export = delegate;
+export default delegate;
+
+// For CommonJS default export support
+module.exports = delegate;
+module.exports.default = delegate;
