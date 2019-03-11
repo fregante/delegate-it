@@ -19,17 +19,21 @@ function _delegate(
 
 	const elementMap = elements.get(element) || new WeakMap();
 	const setups = elementMap.get(callback) || new Set();
-	if (setups.size > 0) {
-		for (const setup of setups) {
-			if (setup.selector === selector && setup.type === type && setup.useCapture === useCapture) {
-				return;
-			}
+	for (const setup of setups) {
+		if (setup.selector === selector && setup.type === type && setup.useCapture === useCapture) {
+			return;
 		}
 	}
-	setups.add({selector, type, useCapture});
+
+	// Remember event in tree
+	elements.set(element,
+		elementMap.set(callback,
+			setups.add({selector, type, useCapture})
+		)
+	);
+
+	// Add event on delegate
 	element.addEventListener(type, listenerFn, useCapture);
-	elements.set(element, elementMap);
-	elementMap.set(callback, setups);
 
 	return {
 		destroy() {
@@ -45,16 +49,17 @@ function _delegate(
 
 			const setups = elementMap.get(callback);
 			for (const setup of setups) {
-				if (setup.selector === selector && setup.type === type && setup.useCapture === useCapture) {
-					setups.delete(setup);
-					if (setups.size === 0) {
-						elementMap.delete(callback);
-						if (elementMap.size === 0) {
-							elements.delete(element);
-						}
-					}
-					return;
+				if (setup.selector !== selector || setup.type !== type || setup.useCapture !== useCapture) {
+					continue;
 				}
+				setups.delete(setup);
+				if (setups.size === 0) {
+					elementMap.delete(callback);
+					if (elementMap.size === 0) {
+						elements.delete(element);
+					}
+				}
+				return;
 			}
 		}
 	};
