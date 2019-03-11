@@ -17,25 +17,7 @@ function _delegate(
 		}
 	};
 
-	const elementMap = elements.get(element) || new WeakMap();
-	const setups = elementMap.get(callback) || new Set();
-	for (const setup of setups) {
-		if (setup.selector === selector && setup.type === type && setup.useCapture === useCapture) {
-			return;
-		}
-	}
-
-	// Remember event in tree
-	elements.set(element,
-		elementMap.set(callback,
-			setups.add({selector, type, useCapture})
-		)
-	);
-
-	// Add event on delegate
-	element.addEventListener(type, listenerFn, useCapture);
-
-	return {
+	const delegateSubscription = {
 		destroy() {
 			element.removeEventListener(type, listenerFn, useCapture);
 			if (!elements.has(element)) {
@@ -63,6 +45,26 @@ function _delegate(
 			}
 		}
 	};
+
+	const elementMap = elements.get(element) || new WeakMap();
+	const setups = elementMap.get(callback) || new Set();
+	for (const setup of setups) {
+		if (setup.selector === selector && setup.type === type && setup.useCapture === useCapture) {
+			return delegateSubscription;
+		}
+	}
+
+	// Remember event in tree
+	elements.set(element,
+		elementMap.set(callback,
+			setups.add({selector, type, useCapture})
+		)
+	);
+
+	// Add event on delegate
+	element.addEventListener(type, listenerFn, useCapture);
+
+	return delegateSubscription;
 }
 
 /**
