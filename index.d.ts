@@ -1,7 +1,10 @@
-/**
- * Delegates event to a selector.
- */
-declare type CombinedElements = EventTarget | EventTarget[] | NodeListOf<Element> | string;
-declare function delegate(selector: string, type: string, callback?: Function, useCapture?: boolean | AddEventListenerOptions): object;
-declare function delegate(elements: CombinedElements, selector: string, type: string, callback?: Function, useCapture?: boolean | AddEventListenerOptions): object;
-export default delegate;
+declare type EventType = keyof GlobalEventHandlersEventMap;
+declare type DelegateSubscription = {
+    destroy: VoidFunction;
+};
+declare type DelegateEvent<T extends Event = Event> = T & {
+    delegateTarget: EventTarget;
+};
+declare type DelegateEventHandler<T extends Event> = ((event: DelegateEvent<T>) => Promise<void>) | ((event: DelegateEvent<T>) => void);
+declare function delegate<TEvent extends Event = Event>(selector: string, type: EventType, callback?: DelegateEventHandler<TEvent>, useCapture?: boolean | AddEventListenerOptions): DelegateSubscription;
+export = delegate;

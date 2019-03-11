@@ -1,18 +1,30 @@
+type EventType = keyof GlobalEventHandlersEventMap
+
+type DelegateSubscription = {
+	destroy: VoidFunction;
+}
+
+type DelegateEvent<T extends Event = Event> = T & {
+	delegateTarget: EventTarget;
+}
+
+type DelegateEventHandler<T extends Event> = ((event: DelegateEvent<T>) => Promise<void>) | ((event: DelegateEvent<T>) => void);
+
 const elements = new WeakMap();
 
-function _delegate(
+function _delegate<TEvent extends Event = Event>(
 	element: EventTarget,
 	selector: string,
-	type: string,
-	callback?: Function,
+	type: EventType,
+	callback?: DelegateEventHandler<TEvent>,
 	useCapture?: boolean | AddEventListenerOptions
-) {
-	const listenerFn = event => {
-		event.delegateTarget = event.target.closest(selector);
+): DelegateSubscription {
+	const listenerFn: DelegateEventHandler<TEvent> = event => {
+		event.delegateTarget =(event.target as Element).closest(selector);
 
 		// Closest may match elements outside of the currentTarget
 		// so it needs to be limited to elements inside it
-		if (event.delegateTarget && event.currentTarget.contains(event.delegateTarget)) {
+		if (event.delegateTarget && (event.currentTarget as Element).contains(event.delegateTarget as Node)) {
 			callback.call(element, event);
 		}
 	};
@@ -71,26 +83,20 @@ function _delegate(
  * Delegates event to a selector.
  */
 type CombinedElements = EventTarget | EventTarget[] | NodeListOf<Element> | string;
-function delegate(
+
+function delegate<TEvent extends Event = Event>(
 	selector: string,
-	type: string,
-	callback?: Function,
+	type: EventType,
+	callback?: DelegateEventHandler<TEvent>,
 	useCapture?: boolean | AddEventListenerOptions
-): object;
-function delegate(
+): DelegateSubscription;
+function delegate<TEvent extends Event = Event>(
 	elements: CombinedElements,
 	selector: string,
-	type: string,
-	callback?: Function,
+	type: EventType,
+	callback?: DelegateEventHandler<TEvent>,
 	useCapture?: boolean | AddEventListenerOptions
-	): object;
-function delegate(
-	elements,
-	selector,
-	type,
-	callback?,
-	useCapture?
-) {
+): DelegateSubscription {
 	// Handle the regular Element usage
 	if (elements instanceof EventTarget) {
 		return _delegate(elements, selector, type, callback, useCapture);
@@ -98,7 +104,7 @@ function delegate(
 
 	// Handle Element-less usage, it defaults to global delegation
 	if (typeof type === 'function') {
-		return _delegate(document, elements as string, selector as string, type as Function, callback as boolean | AddEventListenerOptions);
+		return _delegate(document, elements as string, selector as EventType, type as DelegateEventHandler<TEvent>, callback as boolean | AddEventListenerOptions);
 	}
 
 	// Handle Selector-based usage
