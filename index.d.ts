@@ -7,4 +7,4 @@ declare type DelegateEvent<T extends Event = Event> = T & {
 };
 declare type DelegateEventHandler<T extends Event> = ((event: DelegateEvent<T>) => Promise<void>) | ((event: DelegateEvent<T>) => void);
 declare function delegate<TEvent extends Event = Event>(selector: string, type: EventType, callback?: DelegateEventHandler<TEvent>, useCapture?: boolean | AddEventListenerOptions): DelegateSubscription;
-export = delegate;
+export default delegate;
