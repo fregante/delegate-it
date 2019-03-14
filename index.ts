@@ -1,22 +1,18 @@
 type EventType = keyof GlobalEventHandlersEventMap;
-
 type DelegateSubscription = {
 	destroy: VoidFunction;
 };
-
 interface DelegateEvent extends Event {
 	delegateTarget?: EventTarget | null;
 }
-interface DelegateEventListener extends EventListener {
 
-}
 const elements = new WeakMap();
 
 function _delegate(
 	element: EventTarget,
 	selector: string,
 	type: EventType,
-	callback: DelegateEventListener,
+	callback: EventListener,
 	useCapture?: boolean | AddEventListenerOptions
 ): DelegateSubscription {
 	const listenerFn: EventListener = (event: DelegateEvent) => {
@@ -25,8 +21,8 @@ function _delegate(
 		// Closest may match elements outside of the currentTarget
 		// so it needs to be limited to elements inside it
 		if (
-			event.delegateTarget &&
-			(event.currentTarget as Element).contains(event.delegateTarget as Node)
+			event.delegateTarget instanceof Element &&
+			(event.currentTarget as Element).contains(event.delegateTarget)
 		) {
 			callback.call(element, event);
 		}
@@ -92,7 +88,7 @@ function _delegate(
 function delegate<TEvent extends Event = Event>(
 	selector: string,
 	type: EventType,
-	callback: DelegateEventListener,
+	callback: EventListener,
 	useCapture?: boolean | AddEventListenerOptions
 ): DelegateSubscription;
 
@@ -101,7 +97,7 @@ function delegate<TEvent extends Event = Event>(
 	elements: EventTarget,
 	selector: string,
 	type: EventType,
-	callback: DelegateEventListener,
+	callback: EventListener,
 	useCapture?: boolean | AddEventListenerOptions
 ): DelegateSubscription;
 
@@ -110,7 +106,7 @@ function delegate<TEvent extends Event = Event>(
 	elements: NodeListOf<Element> | EventTarget[] | string,
 	selector: string,
 	type: EventType,
-	callback: DelegateEventListener,
+	callback: EventListener,
 	useCapture?: boolean | AddEventListenerOptions
 ): DelegateSubscription[];
 
@@ -131,13 +127,7 @@ function delegate(
 
 	// Handle Element-less usage, it defaults to global delegation
 	if (typeof type === 'function') {
-		return _delegate(
-			document,
-			elements,
-			selector,
-			type,
-			callback
-		);
+		return _delegate(document, elements, selector, type, callback);
 	}
 
 	// Handle Selector-based usage
