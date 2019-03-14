@@ -4,9 +4,9 @@
 
 This is a fork of the popular [`delegate`](https://github.com/zenorocha/delegate) with some improvements:
 
-- debugged ([2d54c11](https://github.com/bfred-it/delegate-it/commit/2d54c1182aefd3ec9d8250fda76290971f5d7166), [c6bb88c](https://github.com/bfred-it/delegate-it/commit/c6bb88c2aa8097b25f22993a237cf09c96bcbfb8))
 - modern: ES6, TypeScript, Edge 15+ (it uses `WeakMap` and `Element.closest()`)
 - idempotent: identical listeners aren't added multiple times, just like the native `addEventListener`
+- debugged ([2d54c11](https://github.com/bfred-it/delegate-it/commit/2d54c1182aefd3ec9d8250fda76290971f5d7166), [c6bb88c](https://github.com/bfred-it/delegate-it/commit/c6bb88c2aa8097b25f22993a237cf09c96bcbfb8))
 
 If you need IE support, you can keep using [`delegate`](https://github.com/zenorocha/delegate)
 
