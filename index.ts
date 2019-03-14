@@ -4,24 +4,22 @@ type DelegateSubscription = {
 	destroy: VoidFunction;
 };
 
-type DelegateEvent<T extends Event = Event> = T & {
-	delegateTarget: EventTarget;
-};
+interface DelegateEvent extends Event {
+	delegateTarget?: EventTarget | null;
+}
+interface DelegateEventListener extends EventListener {
 
-type DelegateEventHandler<T extends Event> =
-	| ((event: DelegateEvent<T>) => Promise<void>)
-	| ((event: DelegateEvent<T>) => void);
-
+}
 const elements = new WeakMap();
 
-function _delegate<TEvent extends Event = Event>(
+function _delegate(
 	element: EventTarget,
 	selector: string,
 	type: EventType,
-	callback?: DelegateEventHandler<TEvent>,
+	callback: DelegateEventListener,
 	useCapture?: boolean | AddEventListenerOptions
 ): DelegateSubscription {
-	const listenerFn: DelegateEventHandler<TEvent> = event => {
+	const listenerFn: EventListener = (event: DelegateEvent) => {
 		event.delegateTarget = (event.target as Element).closest(selector);
 
 		// Closest may match elements outside of the currentTarget
@@ -90,28 +88,42 @@ function _delegate<TEvent extends Event = Event>(
 	return delegateSubscription;
 }
 
+// No base element specified, defaults to `document`
+function delegate<TEvent extends Event = Event>(
+	selector: string,
+	type: EventType,
+	callback: DelegateEventListener,
+	useCapture?: boolean | AddEventListenerOptions
+): DelegateSubscription;
+
+// Single base element specified
+function delegate<TEvent extends Event = Event>(
+	elements: EventTarget,
+	selector: string,
+	type: EventType,
+	callback: DelegateEventListener,
+	useCapture?: boolean | AddEventListenerOptions
+): DelegateSubscription;
+
+// Array(-like) of elements or selector string
+function delegate<TEvent extends Event = Event>(
+	elements: NodeListOf<Element> | EventTarget[] | string,
+	selector: string,
+	type: EventType,
+	callback: DelegateEventListener,
+	useCapture?: boolean | AddEventListenerOptions
+): DelegateSubscription[];
+
 /**
  * Delegates event to a selector.
  */
-type CombinedElements =
-	| EventTarget
-	| EventTarget[]
-	| NodeListOf<Element>
-	| string;
-
-function delegate<TEvent extends Event = Event>(
-	selector: string,
-	type: EventType,
-	callback?: DelegateEventHandler<TEvent>,
-	useCapture?: boolean | AddEventListenerOptions
-): DelegateSubscription;
-function delegate<TEvent extends Event = Event>(
-	elements: CombinedElements,
-	selector: string,
-	type: EventType,
-	callback?: DelegateEventHandler<TEvent>,
-	useCapture?: boolean | AddEventListenerOptions
-): DelegateSubscription {
+function delegate(
+	elements: any,
+	selector: any,
+	type: any,
+	callback?: any,
+	useCapture?: any
+): any {
 	// Handle the regular Element usage
 	if (elements instanceof EventTarget) {
 		return _delegate(elements, selector, type, callback, useCapture);
@@ -121,10 +133,10 @@ function delegate<TEvent extends Event = Event>(
 	if (typeof type === 'function') {
 		return _delegate(
 			document,
-			elements as string,
-			selector as EventType,
-			type as DelegateEventHandler<TEvent>,
-			callback as boolean | AddEventListenerOptions
+			elements,
+			selector,
+			type,
+			callback
 		);
 	}
 
