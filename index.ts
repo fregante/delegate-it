@@ -7,7 +7,7 @@ export type DelegateSubscription = {
 export type DelegateEventHandler<T extends Event> = (event: DelegateEvent<T>) => any;
 
 export type DelegateEvent<T extends Event = Event> = T & {
-	delegateTarget: EventTarget;
+	delegateTarget: Element;
 }
 
 const elements = new WeakMap();
