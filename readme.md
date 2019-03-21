@@ -1,4 +1,8 @@
-# delegate-it [![Build Status](https://api.travis-ci.com/bfred-it/delegate-it.svg?branch=master)](https://travis-ci.com/bfred-it/delegate-it)
+# delegate-it [![(size)][badge-gzip]](#no-link) [![(status)][badge-travis]][link-travis]
+
+  [badge-gzip]: https://img.shields.io/bundlephobia/minzip/delegate-it.svg?label=gzipped
+  [badge-travis]: https://api.travis-ci.com/bfred-it/delegate-it.svg
+  [link-travis]: https://travis-ci.org/bfred-it/delegate-it
 
 > Lightweight event delegation
 
