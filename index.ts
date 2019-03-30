@@ -4,10 +4,10 @@ export type DelegateSubscription = {
 	destroy: VoidFunction;
 };
 
-export type DelegateEventHandler<TElement extends Element, T extends Event> = (event: DelegateEvent<T, TElement>) => any;
+export type DelegateEventHandler<TEvent extends Event, TElement extends Element> = (event: DelegateEvent<TEvent, TElement>) => void;
 
-export type DelegateEvent<T extends Event = Event, E extends Element = Element> = T & {
-	delegateTarget: E;
+export type DelegateEvent<TEvent extends Event = Event, TElement extends Element = Element> = TEvent & {
+	delegateTarget: TElement;
 }
 
 const elements = new WeakMap();
@@ -16,7 +16,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 	element: EventTarget,
 	selector: string,
 	type: EventType,
-	callback: DelegateEventHandler<TElement, TEvent>,
+	callback: DelegateEventHandler<TEvent, TElement>,
 	useCapture?: boolean | AddEventListenerOptions
 ): DelegateSubscription {
 	const listenerFn: EventListener = (event: Partial<DelegateEvent>) => {
@@ -92,7 +92,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
 	selector: string,
 	type: EventType,
-	callback: DelegateEventHandler<TElement, TEvent>,
+	callback: DelegateEventHandler<TEvent, TElement>,
 	useCapture?: boolean | AddEventListenerOptions
 ): DelegateSubscription;
 
@@ -101,7 +101,7 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 	elements: EventTarget | Document,
 	selector: string,
 	type: EventType,
-	callback: DelegateEventHandler<TElement, TEvent>,
+	callback: DelegateEventHandler<TEvent, TElement>,
 	useCapture?: boolean | AddEventListenerOptions
 ): DelegateSubscription;
 
@@ -110,7 +110,7 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 	elements: NodeListOf<Element> | EventTarget[] | string,
 	selector: string,
 	type: EventType,
-	callback: DelegateEventHandler<TElement, TEvent>,
+	callback: DelegateEventHandler<TEvent, TElement>,
 	useCapture?: boolean | AddEventListenerOptions
 ): DelegateSubscription[];
 
