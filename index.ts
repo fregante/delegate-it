@@ -4,13 +4,19 @@ export type DelegateSubscription = {
 	destroy: VoidFunction;
 };
 
-export type DelegateEventHandler<TEvent extends Event, TElement extends Element> = (event: DelegateEvent<TEvent, TElement>) => void;
+export type Setup = {
+	selector: string;
+	type: EventType;
+	useCapture: boolean | AddEventListenerOptions | undefined;
+}
+
+export type DelegateEventHandler<TEvent extends Event = Event, TElement extends Element = Element> = (event: DelegateEvent<TEvent, TElement>) => void;
 
 export type DelegateEvent<TEvent extends Event = Event, TElement extends Element = Element> = TEvent & {
 	delegateTarget: TElement;
 }
 
-const elements = new WeakMap();
+const elements = new WeakMap<EventTarget, Map<DelegateEventHandler<any, any>, Set<Setup>>>();
 
 function _delegate<TElement extends Element = Element, TEvent extends Event = Event>(
 	element: EventTarget,
@@ -39,12 +45,17 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 				return;
 			}
 
-			const elementMap = elements.get(element);
+			const elementMap = elements.get(element)!;
 			if (!elementMap.has(callback)) {
 				return;
 			}
 
 			const setups = elementMap.get(callback);
+
+			if (!setups) {
+				return;
+			}
+
 			for (const setup of setups) {
 				if (
 					setup.selector !== selector ||
@@ -67,8 +78,8 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 		}
 	};
 
-	const elementMap = elements.get(element) || new WeakMap();
-	const setups = elementMap.get(callback) || new Set();
+	const elementMap = elements.get(element) || new Map<DelegateEventHandler<TEvent, TElement>, Set<Setup>>();
+	const setups = elementMap.get(callback) || new Set<Setup>();
 	for (const setup of setups) {
 		if (
 			setup.selector === selector &&
