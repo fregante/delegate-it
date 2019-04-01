@@ -16,7 +16,7 @@ export type DelegateEvent<TEvent extends Event = Event, TElement extends Element
 	delegateTarget: TElement;
 }
 
-const elements = new WeakMap<EventTarget, Map<DelegateEventHandler<any, any>, Set<Setup>>>();
+const elements = new WeakMap<EventTarget, WeakMap<DelegateEventHandler<any, any>, Set<Setup>>>();
 
 function _delegate<TElement extends Element = Element, TEvent extends Event = Event>(
 	element: EventTarget,
@@ -65,9 +65,6 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 					setups.delete(setup);
 					if (setups.size === 0) {
 						elementMap.delete(callback);
-						if (elementMap.size === 0) {
-							elements.delete(element);
-						}
 					}
 
 					return;
@@ -78,7 +75,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 		}
 	};
 
-	const elementMap = elements.get(element) || new Map<DelegateEventHandler<TEvent, TElement>, Set<Setup>>();
+	const elementMap = elements.get(element) || new WeakMap<DelegateEventHandler<TEvent, TElement>, Set<Setup>>();
 	const setups = elementMap.get(callback) || new Set<Setup>();
 	for (const setup of setups) {
 		if (
