@@ -88,16 +88,20 @@ delegations.forEach(function (delegation) {
 });
 ```
 
-If you're using TypeScript and have event types that are custom, you can override the `EventType` via declaration merging. e.g. say you have a `types/globals.d.ts` file, you can add the following.
+If you're using TypeScript and have event types that are custom, you can override the `AllowedEventTypes` interface via declaration merging. e.g. say you have a `types/globals.d.ts` file, you can add the following.
 
 ```js
+import 'delegate-it';
+
 declare module "delegate-it" {
   // Custom event types used in RGH
-  export type EventType = keyof GlobalEventHandlersEventMap | 'details:toggled';
+  export interface AllowedEventTypes extends GlobalEventHandlersEventMap {
+      'details:toggled': UIEvent;
+  }
 }
 ```
 
-In the file that import `EventType`, you will now be able to set an event type to `'details:toggled'`.
+In the file that imports `EventType`, you will now be able to set the event type to `'details:toggled'`.
 
 ```js
 import { EventType } from "delegate-it";
