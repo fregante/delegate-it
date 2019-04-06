@@ -6,6 +6,7 @@
 	"license": "MIT",
 	"files": [
 		"index.js",
+		"types.d.ts",
 		"index.d.ts"
 	],
 	"keywords": [
