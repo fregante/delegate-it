@@ -7,7 +7,7 @@ export type DelegateSubscription = {
 export type Setup = {
 	selector: string;
 	type: EventType;
-	useCapture: boolean | AddEventListenerOptions | undefined;
+	useCapture?: boolean | AddEventListenerOptions;
 }
 
 export type DelegateEventHandler<TEvent extends Event = Event, TElement extends Element = Element> = (event: DelegateEvent<TEvent, TElement>) => void;
@@ -26,14 +26,17 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 	useCapture?: boolean | AddEventListenerOptions
 ): DelegateSubscription {
 	const listenerFn: EventListener = (event: Partial<DelegateEvent>) => {
-		event.delegateTarget = (event.target as Element).closest(selector) as TElement;
+		const delegateTarget = (event.target as Element).closest(selector) as TElement;
+
+		if (!delegateTarget) {
+			return;
+		}
+
+		event.delegateTarget = delegateTarget;
 
 		// Closest may match elements outside of the currentTarget
 		// so it needs to be limited to elements inside it
-		if (
-			event.delegateTarget instanceof Element &&
-			(event.currentTarget as Element).contains(event.delegateTarget)
-		) {
+		if ((event.currentTarget as Element).contains(event.delegateTarget)) {
 			callback.call(element, event as DelegateEvent<TEvent, TElement>);
 		}
 	};
@@ -62,12 +65,11 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 					setup.type !== type ||
 					setup.useCapture === useCapture
 				) {
-					setups.delete(setup);
-					if (setups.size === 0) {
-						elementMap.delete(callback);
-					}
-
-					return;
+					continue;
+				}
+				setups.delete(setup);
+				if (setups.size === 0) {
+					elementMap.delete(callback);
 				}
 
 				return;
@@ -88,7 +90,11 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 	}
 
 	// Remember event in tree
-	elements.set(element, elementMap.set(callback, setups.add({selector, type, useCapture})));
+	elements.set(element,
+		elementMap.set(callback,
+			setups.add({ selector, type, useCapture })
+		)
+	);
 
 	// Add event on delegate
 	element.addEventListener(type, listenerFn, useCapture);
@@ -115,7 +121,7 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 
 // Array(-like) of elements or selector string
 function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
-	elements: NodeListOf<Element> | EventTarget[] | string,
+	elements: ArrayLike<Element> | string,
 	selector: string,
 	type: EventType,
 	callback: DelegateEventHandler<TEvent, TElement>,
