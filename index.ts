@@ -1,5 +1,4 @@
-export interface AllowedEventTypes extends GlobalEventHandlersEventMap {};
-export type EventType<T extends GlobalEventHandlersEventMap = AllowedEventTypes> = keyof T;
+export type EventType = keyof GlobalEventHandlersEventMap;
 
 export type DelegateSubscription = {
 	destroy: VoidFunction;
