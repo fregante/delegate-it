@@ -1,4 +1,7 @@
-import { DelegateEventHandler, EventType, DelegateSubscription, DelegateEvent, Setup } from './types';
+// The eslint rule doesn't recognize types being imported from a d.ts file
+// but it works fine when tsc runs to compile.
+// eslint-disable-next-line import/no-unresolved
+import {DelegateEventHandler, EventType, DelegateSubscription, DelegateEvent, Setup} from './types';
 
 const elements = new WeakMap<EventTarget, WeakMap<DelegateEventHandler<any, any>, Set<Setup>>>();
 
@@ -9,7 +12,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 	callback: DelegateEventHandler<TEvent, TElement>,
 	useCapture?: boolean | AddEventListenerOptions
 ): DelegateSubscription {
-	const listenerFn: EventListener = (event: Partial<DelegateEvent>) => {
+	const listenerFn: EventListener = (event: Partial<DelegateEvent>): void => {
 		const delegateTarget = (event.target as Element).closest(selector) as TElement;
 
 		if (!delegateTarget) {
@@ -51,6 +54,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 				) {
 					continue;
 				}
+
 				setups.delete(setup);
 				if (setups.size === 0) {
 					elementMap.delete(callback);
@@ -76,7 +80,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 	// Remember event in tree
 	elements.set(element,
 		elementMap.set(callback,
-			setups.add({ selector, type, useCapture })
+			setups.add({selector, type, useCapture})
 		)
 	);
 
