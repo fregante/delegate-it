@@ -92,6 +92,24 @@ delegations.forEach(function (delegation) {
 });
 ```
 
+If you're using TypeScript and have event types that are custom, you can override the global `GlobalEventHandlersEventMap` interface via declaration merging. e.g. say you have a `types/globals.d.ts` file, you can add the following.
+
+```js
+interface GlobalEventHandlersEventMap  {
+    'details:toggle': UIEvent;
+}
+```
+
+In the file that imports `EventType`, you will now be able to set the event type to `'details:toggled'`.
+
+```js
+import {EventType} from "delegate-it";
+
+const someEventType1: EventType = 'details:toggled'; // all good
+const someEventType2: EventType = 'click'; // all good
+const someEventType3: EventType = 'some-invalid-event-type'; // no good
+```
+
 ## Browser Support
 
 | <img src="https://clipboardjs.com/assets/images/chrome.png" width="48px" height="48px" alt="Chrome logo"> | <img src="https://clipboardjs.com/assets/images/edge.png" width="48px" height="48px" alt="Edge logo"> | <img src="https://clipboardjs.com/assets/images/firefox.png" width="48px" height="48px" alt="Firefox logo"> | <img src="https://clipboardjs.com/assets/images/ie.png" width="48px" height="48px" alt="Internet Explorer logo"> | <img src="https://clipboardjs.com/assets/images/opera.png" width="48px" height="48px" alt="Opera logo"> | <img src="https://clipboardjs.com/assets/images/safari.png" width="48px" height="48px" alt="Safari logo"> |

@@ -1,7 +1,7 @@
-const test = require('ava');
-const sinon = require('sinon');
-const {JSDOM} = require('jsdom');
-const delegate = require('.');
+import test from 'ava';
+import sinon from 'sinon';
+import {JSDOM} from 'jsdom';
+import delegate from '.';
 
 const {window} = new JSDOM(`
     <ul>
@@ -14,6 +14,7 @@ const {window} = new JSDOM(`
 `);
 
 global.Event = window.Event;
+global.Element = window.Element;
 global.EventTarget = window.EventTarget;
 global.document = window.document;
 const container = window.document.querySelector('ul');
@@ -30,6 +31,7 @@ test.cb('should add an event listener only once', t => {
 	const handler = () => {
 		t.end();
 	};
+
 	const first = delegate(container, 'a', 'click', handler);
 	const second = delegate(container, 'a', 'click', handler);
 	anchor.click();
