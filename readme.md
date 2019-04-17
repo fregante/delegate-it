@@ -99,7 +99,7 @@ interface GlobalEventHandlersEventMap  {
 In the file that imports `EventType`, you will now be able to set the event type to `'details:toggled'`.
 
 ```js
-import { EventType } from "delegate-it";
+import {EventType} from "delegate-it";
 
 const someEventType1: EventType = 'details:toggled'; // all good
 const someEventType2: EventType = 'click'; // all good
