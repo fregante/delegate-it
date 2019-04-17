@@ -1,12 +1,11 @@
 {
 	"name": "delegate-it",
 	"description": "Lightweight event delegation",
-	"version": "1.1.0-5",
+	"version": "1.1.0-7",
 	"repository": "bfred-it/delegate-it",
 	"license": "MIT",
 	"files": [
 		"index.js",
-		"types.d.ts",
 		"index.d.ts"
 	],
 	"keywords": [
@@ -45,7 +44,8 @@
 			"prefer-rest-params": 0,
 			"valid-jsdoc": 0,
 			"max-params": 0,
-			"@typescript-eslint/promise-function-async": 0
+			"@typescript-eslint/promise-function-async": 0,
+			"@typescript-eslint/no-namespace": 0
 		}
 	}
 }

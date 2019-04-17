@@ -1,18 +1,33 @@
-// The eslint rule doesn't recognize types being imported from a d.ts file
-// but it works fine when tsc runs to compile.
-// eslint-disable-next-line import/no-unresolved
-import {DelegateEventHandler, EventType, DelegateSubscription, DelegateEvent, Setup} from './types';
+namespace delegate {
+	export type EventType = keyof GlobalEventHandlersEventMap;
 
-const elements = new WeakMap<EventTarget, WeakMap<DelegateEventHandler<any, any>, Set<Setup>>>();
+	export type DelegateSubscription = {
+		destroy: VoidFunction;
+	};
+
+	export type Setup = {
+		selector: string;
+		type: EventType;
+		useCapture?: boolean | AddEventListenerOptions;
+	}
+
+	export type DelegateEventHandler<TEvent extends Event = Event, TElement extends Element = Element> = (event: DelegateEvent<TEvent, TElement>) => void;
+
+	export type DelegateEvent<TEvent extends Event = Event, TElement extends Element = Element> = TEvent & {
+		delegateTarget: TElement;
+	}
+}
+
+const elements = new WeakMap<EventTarget, WeakMap<delegate.DelegateEventHandler<any, any>, Set<delegate.Setup>>>();
 
 function _delegate<TElement extends Element = Element, TEvent extends Event = Event>(
 	element: EventTarget,
 	selector: string,
-	type: EventType,
-	callback: DelegateEventHandler<TEvent, TElement>,
+	type: delegate.EventType,
+	callback: delegate.DelegateEventHandler<TEvent, TElement>,
 	useCapture?: boolean | AddEventListenerOptions
-): DelegateSubscription {
-	const listenerFn: EventListener = (event: Partial<DelegateEvent>): void => {
+): delegate.DelegateSubscription {
+	const listenerFn: EventListener = (event: Partial<delegate.DelegateEvent>): void => {
 		const delegateTarget = (event.target as Element).closest(selector) as TElement;
 
 		if (!delegateTarget) {
@@ -24,7 +39,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 		// Closest may match elements outside of the currentTarget
 		// so it needs to be limited to elements inside it
 		if ((event.currentTarget as Element).contains(event.delegateTarget)) {
-			callback.call(element, event as DelegateEvent<TEvent, TElement>);
+			callback.call(element, event as delegate.DelegateEvent<TEvent, TElement>);
 		}
 	};
 
@@ -65,8 +80,8 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 		}
 	};
 
-	const elementMap = elements.get(element) || new WeakMap<DelegateEventHandler<TEvent, TElement>, Set<Setup>>();
-	const setups = elementMap.get(callback) || new Set<Setup>();
+	const elementMap = elements.get(element) || new WeakMap<delegate.DelegateEventHandler<TEvent, TElement>, Set<delegate.Setup>>();
+	const setups = elementMap.get(callback) || new Set<delegate.Setup>();
 	for (const setup of setups) {
 		if (
 			setup.selector === selector &&
@@ -93,32 +108,33 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 // No base element specified, defaults to `document`
 function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
 	selector: string,
-	type: EventType,
-	callback: DelegateEventHandler<TEvent, TElement>,
+	type: delegate.EventType,
+	callback: delegate.DelegateEventHandler<TEvent, TElement>,
 	useCapture?: boolean | AddEventListenerOptions
-): DelegateSubscription;
+): delegate.DelegateSubscription;
 
 // Single base element specified
 function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
 	elements: EventTarget | Document,
 	selector: string,
-	type: EventType,
-	callback: DelegateEventHandler<TEvent, TElement>,
+	type: delegate.EventType,
+	callback: delegate.DelegateEventHandler<TEvent, TElement>,
 	useCapture?: boolean | AddEventListenerOptions
-): DelegateSubscription;
+): delegate.DelegateSubscription;
 
 // Array(-like) of elements or selector string
 function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
 	elements: ArrayLike<Element> | string,
 	selector: string,
-	type: EventType,
-	callback: DelegateEventHandler<TEvent, TElement>,
+	type: delegate.EventType,
+	callback: delegate.DelegateEventHandler<TEvent, TElement>,
 	useCapture?: boolean | AddEventListenerOptions
-): DelegateSubscription[];
+): delegate.DelegateSubscription[];
 
 /**
  * Delegates event to a selector.
  */
+// eslint-disable-next-line no-redeclare
 function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
 	elements: any,
 	selector: any,
