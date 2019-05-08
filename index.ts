@@ -115,7 +115,7 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 
 // Single base element specified
 function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
-	elements: EventTarget | Document,
+	elements: EventTarget | Document | HTMLElement,
 	selector: string,
 	type: delegate.EventType,
 	callback: delegate.DelegateEventHandler<TEvent, TElement>,
