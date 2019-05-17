@@ -15,7 +15,8 @@ namespace delegate {
 	}
 }
 
-const getDelegateListener = mem(<TElement extends Element = Element, TEvent extends Event = Event>(
+// `mem` ensures that there's only ever 1 handler per `DelegateEventHandler + selector` callback, so the same DelegateEventHandler can't be attached twice
+const getDelegatingHandler = mem(<TElement extends Element = Element, TEvent extends Event = Event>(
 	selector: string,
 	callback: delegate.DelegateEventHandler<TEvent, TElement>
 ) => (event: Partial<delegate.DelegateEvent>): void => {
@@ -41,12 +42,12 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 	callback: delegate.DelegateEventHandler<TEvent, TElement>,
 	useCapture?: boolean | AddEventListenerOptions
 ): delegate.DelegateSubscription {
-	const listener = getDelegateListener<TElement, TEvent>(selector, callback);
-	element.addEventListener(type, listener, useCapture);
+	const handler = getDelegatingHandler<TElement, TEvent>(selector, callback);
+	element.addEventListener(type, handler, useCapture);
 
 	return {
 		destroy() {
-			element.removeEventListener(type, listener, useCapture);
+			element.removeEventListener(type, handler, useCapture);
 		}
 	};
 }
