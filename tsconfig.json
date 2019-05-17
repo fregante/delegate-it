@@ -5,6 +5,7 @@
 		"target": "es2015"
 	},
 	"files": [
+		"globals.d.ts",
 		"index.ts"
 	]
 }

@@ -20,23 +20,18 @@ global.document = window.document;
 const container = window.document.querySelector('ul');
 const anchor = window.document.querySelector('a');
 
-test.cb('should add an event listener', t => {
-	delegate(container, 'a', 'click', () => {
-		t.end();
-	});
+test('should add an event listener', t => {
+	delegate(container, 'a', 'click', t.pass);
 	anchor.click();
 });
 
-test.cb('should add an event listener only once', t => {
-	const handler = () => {
-		t.end();
-	};
+test('should add an event listener only once', t => {
+	t.plan(2);
 
-	const first = delegate(container, 'a', 'click', handler);
-	const second = delegate(container, 'a', 'click', handler);
+	delegate(container, 'a', 'click', t.pass, {passive: true});
+	delegate(container, 'a', 'click', t.pass, {passive: true});
+	delegate(container, 'a', 'click', t.pass, {capture: true});
 	anchor.click();
-	t.is(first && typeof first.destroy, 'function');
-	t.is(second && typeof second.destroy, 'function');
 });
 
 test('should remove an event listener', t => {
@@ -49,10 +44,8 @@ test('should remove an event listener', t => {
 	spy.restore();
 });
 
-test.cb('should use `document` if the element is unspecified', t => {
-	delegate('a', 'click', () => {
-		t.end();
-	});
+test('should use `document` if the element is unspecified', t => {
+	delegate('a', 'click', t.pass);
 
 	anchor.click();
 });

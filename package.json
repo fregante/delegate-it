@@ -29,7 +29,7 @@
 		"prepare": "tsc",
 		"build": "tsc",
 		"_watch-build": "tsc --watch",
-		"_watch-test": "ava --watch",
+		"_watch-test": "ava --watch --verbose",
 		"watch": "run-p --silent _watch-*"
 	},
 	"xo": {
@@ -47,5 +47,9 @@
 			"@typescript-eslint/promise-function-async": 0,
 			"@typescript-eslint/no-namespace": 0
 		}
+	},
+	"dependencies": {
+		"many-keys-map": "^1.0.2",
+		"mem": "^4.3.0"
 	}
 }
