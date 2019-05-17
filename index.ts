@@ -5,7 +5,7 @@ namespace delegate {
 	export type EventType = keyof GlobalEventHandlersEventMap;
 
 	export type DelegateSubscription = {
-		destroy: VoidFunction;
+		remove: VoidFunction;
 	};
 
 	export type DelegateEventHandler<TEvent extends Event = Event, TElement extends Element = Element> = (event: DelegateEvent<TEvent, TElement>) => void;
@@ -46,7 +46,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 	element.addEventListener(type, handler, useCapture);
 
 	return {
-		destroy() {
+		remove() {
 			element.removeEventListener(type, handler, useCapture);
 		}
 	};

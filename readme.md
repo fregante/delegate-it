@@ -75,7 +75,7 @@ const delegation = delegate(document.body, '.btn', 'click', event => {
     console.log(event.delegateTarget);
 });
 
-delegation.destroy();
+delegation.remove();
 ```
 
 #### With multiple elements (via selector or array)
@@ -88,7 +88,7 @@ const delegations = delegate('.container', '.btn', 'click', event => {
 });
 
 delegations.forEach(function (delegation) {
-    delegation.destroy();
+    delegation.remove();
 });
 ```
 
