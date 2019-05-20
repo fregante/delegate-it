@@ -143,8 +143,8 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 	useCapture?: any
 ): any {
 	// Handle the regular Element usage
-	if (elements instanceof EventTarget) {
-		return _delegate<TElement, TEvent>(elements, selector, type, callback, useCapture);
+	if (typeof (elements as EventTarget).addEventListener === 'function') {
+		return _delegate<TElement, TEvent>(elements as EventTarget, selector, type, callback, useCapture);
 	}
 
 	// Handle Element-less usage, it defaults to global delegation
