@@ -27,7 +27,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 	callback: delegate.DelegateEventHandler<TEvent, TElement>,
 	options?: boolean | AddEventListenerOptions
 ): delegate.DelegateSubscription {
-	const capture: boolean = Boolean(typeof options === 'object' ? options.capture : options);
+	const capture = Boolean(typeof options === 'object' ? options.capture : options);
 	const listenerFn: EventListener = (event: Partial<delegate.DelegateEvent>): void => {
 		const delegateTarget = (event.target as Element).closest(selector) as TElement;
 
