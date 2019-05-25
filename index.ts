@@ -8,7 +8,7 @@ namespace delegate {
 	export type Setup = {
 		selector: string;
 		type: EventType;
-		optionsHash: string;
+		capture: boolean;
 	}
 
 	export type DelegateEventHandler<TEvent extends Event = Event, TElement extends Element = Element> = (event: DelegateEvent<TEvent, TElement>) => void;
@@ -27,7 +27,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 	callback: delegate.DelegateEventHandler<TEvent, TElement>,
 	options?: boolean | AddEventListenerOptions
 ): delegate.DelegateSubscription {
-	const optionsHash = JSON.stringify(options);
+	const capture: boolean = Boolean(typeof options === 'object' ? options.capture : options);
 	const listenerFn: EventListener = (event: Partial<delegate.DelegateEvent>): void => {
 		const delegateTarget = (event.target as Element).closest(selector) as TElement;
 
@@ -66,7 +66,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 				if (
 					setup.selector !== selector ||
 					setup.type !== type ||
-					setup.optionsHash === optionsHash
+					setup.capture === capture
 				) {
 					continue;
 				}
@@ -87,7 +87,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 		if (
 			setup.selector === selector &&
 			setup.type === type &&
-			setup.optionsHash === optionsHash
+			setup.capture === capture
 		) {
 			return delegateSubscription;
 		}
@@ -96,7 +96,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 	// Remember event in tree
 	elements.set(element,
 		elementMap.set(callback,
-			setups.add({selector, type, optionsHash})
+			setups.add({selector, type, capture})
 		)
 	);
 
