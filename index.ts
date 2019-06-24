@@ -9,13 +9,13 @@ namespace delegate {
 		selector: string;
 		type: EventType;
 		capture: boolean;
-	}
+	};
 
 	export type DelegateEventHandler<TEvent extends Event = Event, TElement extends Element = Element> = (event: DelegateEvent<TEvent, TElement>) => void;
 
 	export type DelegateEvent<TEvent extends Event = Event, TElement extends Element = Element> = TEvent & {
 		delegateTarget: TElement;
-	}
+	};
 }
 
 const elements = new WeakMap<EventTarget, WeakMap<delegate.DelegateEventHandler<any, any>, Set<delegate.Setup>>>();
@@ -135,7 +135,6 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 /**
  * Delegates event to a selector.
  */
-// eslint-disable-next-line no-redeclare
 function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
 	elements: any,
 	selector: any,
