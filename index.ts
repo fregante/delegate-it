@@ -8,7 +8,7 @@ namespace delegate {
 	export type Setup = {
 		selector: string;
 		type: EventType;
-		useCapture?: boolean | AddEventListenerOptions;
+		capture: boolean;
 	}
 
 	export type DelegateEventHandler<TEvent extends Event = Event, TElement extends Element = Element> = (event: DelegateEvent<TEvent, TElement>) => void;
@@ -25,8 +25,9 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 	selector: string,
 	type: delegate.EventType,
 	callback: delegate.DelegateEventHandler<TEvent, TElement>,
-	useCapture?: boolean | AddEventListenerOptions
+	options?: boolean | AddEventListenerOptions
 ): delegate.DelegateSubscription {
+	const capture = Boolean(typeof options === 'object' ? options.capture : options);
 	const listenerFn: EventListener = (event: Partial<delegate.DelegateEvent>): void => {
 		const delegateTarget = (event.target as Element).closest(selector) as TElement;
 
@@ -45,7 +46,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 
 	const delegateSubscription = {
 		destroy() {
-			element.removeEventListener(type, listenerFn, useCapture);
+			element.removeEventListener(type, listenerFn, options);
 			if (!elements.has(element)) {
 				return;
 			}
@@ -65,7 +66,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 				if (
 					setup.selector !== selector ||
 					setup.type !== type ||
-					setup.useCapture === useCapture
+					setup.capture === capture
 				) {
 					continue;
 				}
@@ -86,7 +87,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 		if (
 			setup.selector === selector &&
 			setup.type === type &&
-			setup.useCapture === useCapture
+			setup.capture === capture
 		) {
 			return delegateSubscription;
 		}
@@ -95,12 +96,12 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 	// Remember event in tree
 	elements.set(element,
 		elementMap.set(callback,
-			setups.add({selector, type, useCapture})
+			setups.add({selector, type, capture})
 		)
 	);
 
 	// Add event on delegate
-	element.addEventListener(type, listenerFn, useCapture);
+	element.addEventListener(type, listenerFn, options);
 
 	return delegateSubscription;
 }
@@ -110,7 +111,7 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 	selector: string,
 	type: delegate.EventType,
 	callback: delegate.DelegateEventHandler<TEvent, TElement>,
-	useCapture?: boolean | AddEventListenerOptions
+	options?: boolean | AddEventListenerOptions
 ): delegate.DelegateSubscription;
 
 // Single base element specified
@@ -119,7 +120,7 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 	selector: string,
 	type: delegate.EventType,
 	callback: delegate.DelegateEventHandler<TEvent, TElement>,
-	useCapture?: boolean | AddEventListenerOptions
+	options?: boolean | AddEventListenerOptions
 ): delegate.DelegateSubscription;
 
 // Array(-like) of elements or selector string
@@ -128,7 +129,7 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 	selector: string,
 	type: delegate.EventType,
 	callback: delegate.DelegateEventHandler<TEvent, TElement>,
-	useCapture?: boolean | AddEventListenerOptions
+	options?: boolean | AddEventListenerOptions
 ): delegate.DelegateSubscription[];
 
 /**
@@ -140,11 +141,11 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 	selector: any,
 	type: any,
 	callback?: any,
-	useCapture?: any
+	options?: any
 ): any {
 	// Handle the regular Element usage
 	if (typeof (elements as EventTarget).addEventListener === 'function') {
-		return _delegate<TElement, TEvent>(elements as EventTarget, selector, type, callback, useCapture);
+		return _delegate<TElement, TEvent>(elements as EventTarget, selector, type, callback, options);
 	}
 
 	// Handle Element-less usage, it defaults to global delegation
@@ -159,7 +160,7 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 
 	// Handle Array-like based usage
 	return Array.prototype.map.call(elements, (element: EventTarget) => {
-		return _delegate<TElement, TEvent>(element, selector, type, callback, useCapture);
+		return _delegate<TElement, TEvent>(element, selector, type, callback, options);
 	});
 }
 
