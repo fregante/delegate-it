@@ -6,13 +6,16 @@
 	"license": "MIT",
 	"files": [
 		"index.js",
-		"index.d.ts"
+		"index.d.ts",
+		"index.esm.js"
 	],
 	"keywords": [
 		"event",
 		"delegate",
 		"delegation"
 	],
+	"main": "index.js",
+	"module": "index.esm.js",
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^0.4.0",
 		"@typescript-eslint/eslint-plugin": "^1.6.0",
@@ -27,8 +30,10 @@
 	},
 	"scripts": {
 		"test": "tsc && xo && ava",
-		"prepare": "tsc",
-		"build": "tsc",
+		"prepare": "npm run build",
+		"build": "npm run build:esm && npm run build:cjs",
+		"build:cjs": "tsc",
+		"build:esm": "tsc -p tsconfig.esm.json && mv index.js index.esm.js",
 		"_watch-build": "tsc --watch",
 		"_watch-test": "ava --watch",
 		"watch": "run-p --silent _watch-*"

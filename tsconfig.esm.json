@@ -1,0 +1,10 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"module": "esnext",
+		"target": "es2015"
+	},
+	"files": [
+		"index.ts"
+	]
+}
