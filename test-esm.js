@@ -1,4 +1,4 @@
 import suite from './suite';
-import delegate from '.';
+import delegate from './index.esm';
 
 suite({delegate});
