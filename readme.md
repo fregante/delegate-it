@@ -22,12 +22,20 @@ npm install delegate-it
 
 ## Setup
 
+### CommonJS build
+
 ```js
 const delegate = require('delegate-it');
 ```
 
 ```js
 import delegate from 'delegate-it';
+```
+
+### ES module (for use with `esm` or similar)
+
+```js
+import delegate from 'delegate-it/delegate.es';
 ```
 
 ## Usage

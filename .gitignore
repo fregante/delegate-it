@@ -1,5 +1,5 @@
 node_modules
+delegate.es.js
 index.js
-index.esm.js
 index.d.ts
 *.map
