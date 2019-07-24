@@ -163,4 +163,4 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 	});
 }
 
-export = delegate;
+export default delegate;

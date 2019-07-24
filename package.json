@@ -13,12 +13,13 @@
     "index.js",
     "index.d.ts"
   ],
+  "module": "index.js",
   "scripts": {
     "_watch-build": "tsc --watch",
     "_watch-test": "ava --watch",
     "build": "tsc",
     "prepare": "tsc",
-    "test": "tsc && xo && ava",
+    "test": "tsc && xo && ava --require esm",
     "watch": "run-p --silent _watch-*"
   },
   "xo": {
@@ -43,10 +44,12 @@
     "@typescript-eslint/parser": "^1.11.0",
     "ava": "^2.1.0",
     "eslint-config-xo-typescript": "^0.14.0",
+    "esm": "^3.2.25",
     "jsdom": "^15.1.1",
     "npm-run-all": "^4.1.5",
     "sinon": "^7.3.2",
     "typescript": "^3.4.3",
     "xo": "*"
-  }
+  },
+  "type": "module"
 }
