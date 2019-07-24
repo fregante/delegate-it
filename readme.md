@@ -1,8 +1,8 @@
 # delegate-it [![(size)][badge-gzip]](#no-link) [![(status)][badge-travis]][link-travis]
 
   [badge-gzip]: https://img.shields.io/bundlephobia/minzip/delegate-it.svg?label=gzipped
-  [badge-travis]: https://api.travis-ci.com/bfred-it/delegate-it.svg
-  [link-travis]: https://travis-ci.org/bfred-it/delegate-it
+  [badge-travis]: https://api.travis-ci.com/fregante/delegate-it.svg
+  [link-travis]: https://travis-ci.org/fregante/delegate-it
 
 > Lightweight event delegation
 
@@ -10,7 +10,7 @@ This is a fork of the popular [`delegate`](https://github.com/zenorocha/delegate
 
 - modern: ES6, TypeScript, Edge 15+ (it uses `WeakMap` and `Element.closest()`)
 - idempotent: identical listeners aren't added multiple times, just like the native `addEventListener`
-- debugged ([2d54c11](https://github.com/bfred-it/delegate-it/commit/2d54c1182aefd3ec9d8250fda76290971f5d7166), [c6bb88c](https://github.com/bfred-it/delegate-it/commit/c6bb88c2aa8097b25f22993a237cf09c96bcbfb8))
+- debugged ([2d54c11](https://github.com/fregante/delegate-it/commit/2d54c1182aefd3ec9d8250fda76290971f5d7166), [c6bb88c](https://github.com/fregante/delegate-it/commit/c6bb88c2aa8097b25f22993a237cf09c96bcbfb8))
 
 If you need IE support, you can keep using [`delegate`](https://github.com/zenorocha/delegate)
 
@@ -119,6 +119,6 @@ const someEventType3: EventType = 'some-invalid-event-type'; // no good
 
 ## Related
 
-- [select-dom](https://github.com/bfred-it/select-dom) - Lightweight `querySelector`/`All` wrapper that outputs an Array.
-- [doma](https://github.com/bfred-it/doma) - Parse an HTML string into `DocumentFragment` or one `Element`, in a few bytes.
+- [select-dom](https://github.com/fregante/select-dom) - Lightweight `querySelector`/`All` wrapper that outputs an Array.
+- [doma](https://github.com/fregante/doma) - Parse an HTML string into `DocumentFragment` or one `Element`, in a few bytes.
 - [Refined GitHub](https://github.com/sindresorhus/refined-github) - Uses this module.

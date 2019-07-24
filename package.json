@@ -1,52 +1,52 @@
 {
-	"name": "delegate-it",
-	"description": "Lightweight event delegation",
-	"version": "1.1.0",
-	"repository": "bfred-it/delegate-it",
-	"license": "MIT",
-	"files": [
-		"index.js",
-		"index.d.ts"
-	],
-	"keywords": [
-		"event",
-		"delegate",
-		"delegation"
-	],
-	"devDependencies": {
-		"@sindresorhus/tsconfig": "^0.4.0",
-		"@typescript-eslint/eslint-plugin": "^1.6.0",
-		"@typescript-eslint/parser": "^1.11.0",
-		"ava": "^2.1.0",
-		"eslint-config-xo-typescript": "^0.14.0",
-		"jsdom": "^15.1.1",
-		"npm-run-all": "^4.1.5",
-		"sinon": "^7.3.2",
-		"typescript": "^3.4.3",
-		"xo": "*"
-	},
-	"scripts": {
-		"test": "tsc && xo && ava",
-		"prepare": "tsc",
-		"build": "tsc",
-		"_watch-build": "tsc --watch",
-		"_watch-test": "ava --watch",
-		"watch": "run-p --silent _watch-*"
-	},
-	"xo": {
-		"extends": "xo-typescript",
-		"extensions": [
-			"ts"
-		],
-		"envs": [
-			"browser"
-		],
-		"rules": {
-			"prefer-rest-params": 0,
-			"valid-jsdoc": 0,
-			"max-params": 0,
-			"@typescript-eslint/promise-function-async": 0,
-			"@typescript-eslint/no-namespace": 0
-		}
-	}
+  "name": "delegate-it",
+  "version": "1.1.0",
+  "description": "Lightweight event delegation",
+  "keywords": [
+    "delegate",
+    "delegation",
+    "event"
+  ],
+  "repository": "fregante/delegate-it",
+  "license": "MIT",
+  "files": [
+    "index.js",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "_watch-build": "tsc --watch",
+    "_watch-test": "ava --watch",
+    "build": "tsc",
+    "prepare": "tsc",
+    "test": "tsc && xo && ava",
+    "watch": "run-p --silent _watch-*"
+  },
+  "xo": {
+    "envs": [
+      "browser"
+    ],
+    "extends": "xo-typescript",
+    "extensions": [
+      "ts"
+    ],
+    "rules": {
+      "prefer-rest-params": 0,
+      "valid-jsdoc": 0,
+      "max-params": 0,
+      "@typescript-eslint/promise-function-async": 0,
+      "@typescript-eslint/no-namespace": 0
+    }
+  },
+  "devDependencies": {
+    "@sindresorhus/tsconfig": "^0.4.0",
+    "@typescript-eslint/eslint-plugin": "^1.6.0",
+    "@typescript-eslint/parser": "^1.11.0",
+    "ava": "^2.1.0",
+    "eslint-config-xo-typescript": "^0.14.0",
+    "jsdom": "^15.1.1",
+    "npm-run-all": "^4.1.5",
+    "sinon": "^7.3.2",
+    "typescript": "^3.4.3",
+    "xo": "*"
+  }
 }

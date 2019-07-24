@@ -28,7 +28,7 @@ test('should add an event listener only once', t => {
 	t.plan(2);
 
 	// Only deduplicates the `capture` flag
-	// https://github.com/bfred-it/delegate-it/pull/11#discussion_r285481625
+	// https://github.com/fregante/delegate-it/pull/11#discussion_r285481625
 
 	// Capture: false
 	delegate(container, 'a', 'click', t.pass);
