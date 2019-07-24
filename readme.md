@@ -22,9 +22,7 @@ npm install delegate-it
 
 ## Setup
 
-```js
-const delegate = require('delegate-it');
-```
+Only `import` is supported:
 
 ```js
 import delegate from 'delegate-it';
