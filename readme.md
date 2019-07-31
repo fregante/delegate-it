@@ -20,11 +20,8 @@ If you need IE support, you can keep using [`delegate`](https://github.com/zenor
 npm install delegate-it
 ```
 
-## Setup
-
-Only `import` is supported:
-
 ```js
+// This module is only offered as a ES Module
 import delegate from 'delegate-it';
 ```
 
