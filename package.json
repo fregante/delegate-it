@@ -33,10 +33,6 @@
     ],
     "rules": {
       "prefer-rest-params": 0,
-      "valid-jsdoc": 0,
-      "max-params": 0,
-      "@typescript-eslint/promise-function-async": 0,
-      "@typescript-eslint/no-namespace": 0,
       "import/extensions": 0,
       "unicorn/import-index": 0,
       "import/no-useless-path-segments": 0
