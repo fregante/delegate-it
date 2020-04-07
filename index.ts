@@ -82,8 +82,8 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 		}
 	};
 
-	const elementMap = elements.get(element) || new WeakMap<delegate.EventHandler<TEvent, TElement>, Set<delegate.Setup>>();
-	const setups = elementMap.get(callback) || new Set<delegate.Setup>();
+	const elementMap = elements.get(element) ?? new WeakMap<delegate.EventHandler<TEvent, TElement>, Set<delegate.Setup>>();
+	const setups = elementMap.get(callback) ?? new Set<delegate.Setup>();
 	for (const setup of setups) {
 		if (
 			setup.selector === selector &&

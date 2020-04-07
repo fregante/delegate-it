@@ -1,7 +1,7 @@
-import test from 'ava';
-import sinon from 'sinon';
-import {JSDOM} from 'jsdom';
-import delegate from '.';
+const test = require('ava');
+const sinon = require('sinon');
+const {JSDOM} = require('jsdom');
+const delegate = require('.');
 
 const {window} = new JSDOM(`
     <ul>
