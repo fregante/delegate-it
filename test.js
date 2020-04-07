@@ -52,21 +52,6 @@ test('should remove an event listener', t => {
 	spy.restore();
 });
 
-test('should use `document` if the element is unspecified', t => {
-	delegate('a', 'click', t.pass);
-
-	anchor.click();
-});
-
-test('should remove an event listener the unspecified base (`document`)', t => {
-	const delegation = delegate('a', 'click', () => {});
-	const spy = sinon.spy(document, 'removeEventListener');
-
-	delegation.destroy();
-	t.true(spy.calledOnce);
-	spy.restore();
-});
-
 test('should add event listeners to all the elements in a base selector', t => {
 	const spy = sinon.spy();
 	delegate('li', 'a', 'click', spy);

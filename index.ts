@@ -106,14 +106,6 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 	return delegateSubscription;
 }
 
-// No base element specified, defaults to `document`
-function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
-	selector: string,
-	type: delegate.EventType,
-	callback: delegate.DelegateEventHandler<TEvent, TElement>,
-	options?: boolean | AddEventListenerOptions
-): delegate.DelegateSubscription;
-
 // Single base element specified
 function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
 	elements: EventTarget | Document,
@@ -136,20 +128,15 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
  * Delegates event to a selector.
  */
 function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
-	elements: any,
-	selector: any,
-	type: any,
-	callback?: any,
-	options?: any
+	elements: EventTarget | Document | ArrayLike<Element> | string,
+	selector: string,
+	type: delegate.EventType,
+	callback: delegate.DelegateEventHandler<TEvent, TElement>,
+	options?: boolean | AddEventListenerOptions
 ): any {
 	// Handle the regular Element usage
 	if (typeof (elements as EventTarget).addEventListener === 'function') {
 		return _delegate<TElement, TEvent>(elements as EventTarget, selector, type, callback, options);
-	}
-
-	// Handle Element-less usage, it defaults to global delegation
-	if (typeof type === 'function') {
-		return _delegate<TElement, TEvent>(document, elements, selector, type, callback);
 	}
 
 	// Handle Selector-based usage

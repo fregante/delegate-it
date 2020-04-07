@@ -34,14 +34,6 @@ import delegate from 'delegate-it';
 
 ### Add event delegation
 
-#### With the default base (`document`)
-
-```js
-delegate('.btn', 'click', event => {
-    console.log(event.delegateTarget);
-});
-```
-
 #### With an element as base
 
 ```js
@@ -68,7 +60,7 @@ delegate(document.querySelectorAll('.container'), '.btn', 'click', event => {
 
 ### Remove event delegation
 
-#### With a single base element (default or specified)
+#### With a single base element
 
 ```js
 const delegation = delegate(document.body, '.btn', 'click', event => {
