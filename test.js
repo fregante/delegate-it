@@ -1,7 +1,7 @@
-import test  from 'ava';
-import sinon  from 'sinon';
+import test from 'ava';
+import sinon from 'sinon';
 import {JSDOM} from './test.jsdom.js';
-import delegate  from './index.js';
+import delegate from './index.js';
 
 const {window} = new JSDOM(`
     <ul>
