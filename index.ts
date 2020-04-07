@@ -6,12 +6,6 @@ namespace delegate {
 		destroy: VoidFunction;
 	};
 
-	export type Setup = {
-		type: EventType;
-		selector: string;
-		capture: boolean;
-	};
-
 	export type EventHandler<TEvent extends GlobalEvent = GlobalEvent, TElement extends Element = Element> = (event: Event<TEvent, TElement>) => void;
 
 	export type Event<TEvent extends GlobalEvent = GlobalEvent, TElement extends Element = Element> = TEvent & {
@@ -19,15 +13,74 @@ namespace delegate {
 	};
 }
 
-const elements = new WeakMap<EventTarget, WeakMap<delegate.EventHandler<any, any>, Set<delegate.Setup>>>();
+/** Keeps track of raw listeners added to the base elements to avoid duplication */
+const ledger = new WeakMap<EventTarget, WeakMap<delegate.EventHandler, Set<string>>>();
 
-function _delegate<TElement extends Element = Element, TEvent extends Event = Event>(
-	element: EventTarget,
-	type: EventType,
+function editLedger(
+	wanted: boolean,
+	baseElement: EventTarget | Document,
+	callback: delegate.EventHandler<any, any>,
+	setup: string
+): boolean {
+	if (!wanted && !ledger.has(baseElement)) {
+		return false;
+	}
+
+	const elementMap = ledger.get(baseElement) ?? new WeakMap<delegate.EventHandler, Set<string>>();
+	ledger.set(baseElement, elementMap);
+
+	if (!wanted && !ledger.has(baseElement)) {
+		return false;
+	}
+
+	const setups = elementMap.get(callback) ?? new Set<string>();
+	elementMap.set(callback, setups);
+
+	const existed = setups.has(setup);
+	if (wanted) {
+		setups.add(setup);
+	} else {
+		setups.delete(setup);
+	}
+
+	return existed && wanted;
+}
+
+function isEventTarget(elements: EventTarget | Document | ArrayLike<Element> | string): elements is EventTarget {
+	return typeof (elements as EventTarget).addEventListener === 'function';
+}
+
+/**
+ * Delegates event to a selector.
+ */
+function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
+	base: EventTarget | Document | ArrayLike<Element> | string,
 	selector: string,
+	type: EventType,
 	callback: delegate.EventHandler<TEvent, TElement>,
 	options?: boolean | AddEventListenerOptions
 ): delegate.Subscription {
+	// Handle Selector-based usage
+	if (typeof base === 'string') {
+		base = document.querySelectorAll(base);
+	}
+
+	// Handle Array-like based usage
+	if (!isEventTarget(base)) {
+		const subscriptions = Array.prototype.map.call(base, (element: EventTarget) => {
+			return delegate<TElement, TEvent>(element, selector, type, callback, options);
+		}) as delegate.Subscription[];
+
+		return {
+			destroy(): void {
+				subscriptions.forEach(subscription => subscription.destroy());
+			}
+		};
+	}
+
+	const baseElement = base; // Required for TypeScript
+
+	// Handle the regular Element usage
 	const capture = Boolean(typeof options === 'object' ? options.capture : options);
 	const listenerFn: EventListener = (event: Partial<delegate.Event>): void => {
 		const delegateTarget = (event.target as Element).closest(selector) as TElement;
@@ -41,127 +94,24 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 		// Closest may match elements outside of the currentTarget
 		// so it needs to be limited to elements inside it
 		if ((event.currentTarget as Element).contains(event.delegateTarget)) {
-			callback.call(element, event as delegate.Event<TEvent, TElement>);
+			callback.call(baseElement, event as delegate.Event<TEvent, TElement>);
 		}
 	};
 
+	const setup = JSON.stringify({selector, type, capture});
+	const isAlreadyListening = editLedger(true, baseElement, callback, setup);
 	const delegateSubscription = {
 		destroy() {
-			element.removeEventListener(type, listenerFn, options);
-			if (!elements.has(element)) {
-				return;
-			}
-
-			const elementMap = elements.get(element)!;
-			if (!elementMap.has(callback)) {
-				return;
-			}
-
-			const setups = elementMap.get(callback);
-
-			if (!setups) {
-				return;
-			}
-
-			for (const setup of setups) {
-				if (
-					setup.selector !== selector ||
-					setup.type !== type ||
-					setup.capture === capture
-				) {
-					continue;
-				}
-
-				setups.delete(setup);
-				if (setups.size === 0) {
-					elementMap.delete(callback);
-				}
-
-				return;
-			}
+			baseElement.removeEventListener(type, listenerFn, options);
+			editLedger(false, baseElement, callback, setup);
 		}
 	};
 
-	const elementMap = elements.get(element) ?? new WeakMap<delegate.EventHandler<TEvent, TElement>, Set<delegate.Setup>>();
-	const setups = elementMap.get(callback) ?? new Set<delegate.Setup>();
-	for (const setup of setups) {
-		if (
-			setup.selector === selector &&
-			setup.type === type &&
-			setup.capture === capture
-		) {
-			return delegateSubscription;
-		}
+	if (!isAlreadyListening) {
+		baseElement.addEventListener(type, listenerFn, options);
 	}
-
-	// Remember event in tree
-	elements.set(element,
-		elementMap.set(callback,
-			setups.add({selector, type, capture})
-		)
-	);
-
-	// Add event on delegate
-	element.addEventListener(type, listenerFn, options);
 
 	return delegateSubscription;
-}
-
-// No base element specified, defaults to `document`
-function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
-	type: EventType,
-	selector: string,
-	callback: delegate.EventHandler<TEvent, TElement>,
-	options?: boolean | AddEventListenerOptions
-): delegate.Subscription;
-
-// Single base element specified
-function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
-	elements: EventTarget | Document,
-	type: EventType,
-	selector: string,
-	callback: delegate.EventHandler<TEvent, TElement>,
-	options?: boolean | AddEventListenerOptions
-): delegate.Subscription;
-
-// Array(-like) of elements or selector string
-function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
-	elements: ArrayLike<Element> | string,
-	type: EventType,
-	selector: string,
-	callback: delegate.EventHandler<TEvent, TElement>,
-	options?: boolean | AddEventListenerOptions
-): delegate.Subscription[];
-
-/**
- * Delegates event to a selector.
- */
-function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
-	elements: any,
-	selector: any,
-	type: any,
-	callback?: any,
-	options?: any
-): any {
-	// Handle the regular Element usage
-	if (typeof (elements as EventTarget).addEventListener === 'function') {
-		return _delegate<TElement, TEvent>(elements as EventTarget, selector, type, callback, options);
-	}
-
-	// Handle Element-less usage, it defaults to global delegation
-	if (typeof type === 'function') {
-		return _delegate<TElement, TEvent>(document, elements, selector, type, callback);
-	}
-
-	// Handle Selector-based usage
-	if (typeof elements === 'string') {
-		elements = document.querySelectorAll(elements);
-	}
-
-	// Handle Array-like based usage
-	return Array.prototype.map.call(elements, (element: EventTarget) => {
-		return _delegate<TElement, TEvent>(element, selector, type, callback, options);
-	});
 }
 
 export default delegate;

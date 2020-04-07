@@ -52,21 +52,6 @@ test('should remove an event listener', t => {
 	spy.restore();
 });
 
-test('should use `document` if the element is unspecified', t => {
-	delegate('a', 'click', t.pass);
-
-	anchor.click();
-});
-
-test('should remove an event listener the unspecified base (`document`)', t => {
-	const delegation = delegate('a', 'click', () => {});
-	const spy = sinon.spy(document, 'removeEventListener');
-
-	delegation.destroy();
-	t.true(spy.calledOnce);
-	spy.restore();
-});
-
 test('should add event listeners to all the elements in a base selector', t => {
 	const spy = sinon.spy();
 	delegate('li', 'a', 'click', spy);
@@ -83,10 +68,8 @@ test('should remove the event listeners from all the elements in a base selector
 		return sinon.spy(li, 'removeEventListener');
 	});
 
-	const delegations = delegate('li', 'a', 'click', () => {});
-	delegations.forEach(delegation => {
-		delegation.destroy();
-	});
+	const delegation = delegate('li', 'a', 'click', () => {});
+	delegation.destroy();
 
 	t.true(spies.every(spy => {
 		const success = spy.calledOnce;
@@ -112,10 +95,8 @@ test('should remove the event listeners from all the elements in a base array', 
 		return sinon.spy(li, 'removeEventListener');
 	});
 
-	const delegations = delegate(items, 'a', 'click', () => {});
-	delegations.forEach(delegation => {
-		delegation.destroy();
-	});
+	const delegation = delegate(items, 'a', 'click', () => {});
+	delegation.destroy();
 
 	t.true(spies.every(spy => {
 		const success = spy.calledOnce;
