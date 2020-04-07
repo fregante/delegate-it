@@ -5,12 +5,6 @@ namespace delegate {
 		destroy: VoidFunction;
 	};
 
-	export type Setup = {
-		selector: string;
-		type: EventType;
-		capture: boolean;
-	};
-
 	export type DelegateEventHandler<TEvent extends Event = Event, TElement extends Element = Element> = (event: DelegateEvent<TEvent, TElement>) => void;
 
 	export type DelegateEvent<TEvent extends Event = Event, TElement extends Element = Element> = TEvent & {
@@ -18,7 +12,38 @@ namespace delegate {
 	};
 }
 
-const ledger = new WeakMap<EventTarget, WeakMap<delegate.DelegateEventHandler<any, any>, Set<delegate.Setup>>>();
+/** Keeps track of raw listeners added to the base elements to avoid duplication */
+const ledger = new WeakMap<EventTarget, WeakMap<delegate.DelegateEventHandler, Set<string>>>();
+
+function editLedger(
+	wanted: boolean,
+	baseElement: EventTarget | Document,
+	callback: delegate.DelegateEventHandler<any, any>,
+	setup: string
+): boolean {
+	if (!wanted && !ledger.has(baseElement)) {
+		return false;
+	}
+
+	const elementMap = ledger.get(baseElement) ?? new WeakMap<delegate.DelegateEventHandler, Set<string>>();
+	ledger.set(baseElement, elementMap);
+
+	if (!wanted && !ledger.has(baseElement)) {
+		return false;
+	}
+
+	const setups = elementMap.get(callback) ?? new Set<string>();
+	elementMap.set(callback, setups);
+
+	const existed = setups.has(setup);
+	if (wanted) {
+		setups.add(setup);
+	} else {
+		setups.delete(setup);
+	}
+
+	return existed && wanted;
+}
 
 function isEventTarget(elements: EventTarget | Document | ArrayLike<Element> | string): elements is EventTarget {
 	return typeof (elements as EventTarget).addEventListener === 'function';
@@ -72,64 +97,18 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 		}
 	};
 
+	const setup = JSON.stringify({selector, type, capture});
+	const isAlreadyListening = editLedger(true, baseElement, callback, setup);
 	const delegateSubscription = {
 		destroy() {
 			baseElement.removeEventListener(type, listenerFn, options);
-			if (!ledger.has(baseElement)) {
-				return;
-			}
-
-			const elementMap = ledger.get(baseElement)!;
-			if (!elementMap.has(callback)) {
-				return;
-			}
-
-			const setups = elementMap.get(callback);
-
-			if (!setups) {
-				return;
-			}
-
-			for (const setup of setups) {
-				if (
-					setup.selector !== selector ||
-					setup.type !== type ||
-					setup.capture === capture
-				) {
-					continue;
-				}
-
-				setups.delete(setup);
-				if (setups.size === 0) {
-					elementMap.delete(callback);
-				}
-
-				return;
-			}
+			editLedger(false, baseElement, callback, setup);
 		}
 	};
 
-	const elementMap = ledger.get(baseElement) ?? new WeakMap<delegate.DelegateEventHandler<TEvent, TElement>, Set<delegate.Setup>>();
-	const setups = elementMap.get(callback) ?? new Set<delegate.Setup>();
-	for (const setup of setups) {
-		if (
-			setup.selector === selector &&
-			setup.type === type &&
-			setup.capture === capture
-		) {
-			return delegateSubscription;
-		}
+	if (!isAlreadyListening) {
+		baseElement.addEventListener(type, listenerFn, options);
 	}
-
-	// Remember event in tree
-	ledger.set(baseElement,
-		elementMap.set(callback,
-			setups.add({selector, type, capture})
-		)
-	);
-
-	// Add event on delegate
-	baseElement.addEventListener(type, listenerFn, options);
 
 	return delegateSubscription;
 }
