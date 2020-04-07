@@ -1,34 +1,35 @@
-namespace delegate {
-	export type EventType = keyof GlobalEventHandlersEventMap;
+export type EventType = keyof GlobalEventHandlersEventMap;
+type GlobalEvent = Event;
 
-	export type DelegateSubscription = {
+namespace delegate {
+	export type Subscription = {
 		destroy: VoidFunction;
 	};
 
 	export type Setup = {
-		selector: string;
 		type: EventType;
+		selector: string;
 		capture: boolean;
 	};
 
-	export type DelegateEventHandler<TEvent extends Event = Event, TElement extends Element = Element> = (event: DelegateEvent<TEvent, TElement>) => void;
+	export type EventHandler<TEvent extends GlobalEvent = GlobalEvent, TElement extends Element = Element> = (event: Event<TEvent, TElement>) => void;
 
-	export type DelegateEvent<TEvent extends Event = Event, TElement extends Element = Element> = TEvent & {
+	export type Event<TEvent extends GlobalEvent = GlobalEvent, TElement extends Element = Element> = TEvent & {
 		delegateTarget: TElement;
 	};
 }
 
-const elements = new WeakMap<EventTarget, WeakMap<delegate.DelegateEventHandler<any, any>, Set<delegate.Setup>>>();
+const elements = new WeakMap<EventTarget, WeakMap<delegate.EventHandler<any, any>, Set<delegate.Setup>>>();
 
 function _delegate<TElement extends Element = Element, TEvent extends Event = Event>(
 	element: EventTarget,
+	type: EventType,
 	selector: string,
-	type: delegate.EventType,
-	callback: delegate.DelegateEventHandler<TEvent, TElement>,
+	callback: delegate.EventHandler<TEvent, TElement>,
 	options?: boolean | AddEventListenerOptions
-): delegate.DelegateSubscription {
+): delegate.Subscription {
 	const capture = Boolean(typeof options === 'object' ? options.capture : options);
-	const listenerFn: EventListener = (event: Partial<delegate.DelegateEvent>): void => {
+	const listenerFn: EventListener = (event: Partial<delegate.Event>): void => {
 		const delegateTarget = (event.target as Element).closest(selector) as TElement;
 
 		if (!delegateTarget) {
@@ -40,7 +41,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 		// Closest may match elements outside of the currentTarget
 		// so it needs to be limited to elements inside it
 		if ((event.currentTarget as Element).contains(event.delegateTarget)) {
-			callback.call(element, event as delegate.DelegateEvent<TEvent, TElement>);
+			callback.call(element, event as delegate.Event<TEvent, TElement>);
 		}
 	};
 
@@ -81,7 +82,7 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 		}
 	};
 
-	const elementMap = elements.get(element) || new WeakMap<delegate.DelegateEventHandler<TEvent, TElement>, Set<delegate.Setup>>();
+	const elementMap = elements.get(element) || new WeakMap<delegate.EventHandler<TEvent, TElement>, Set<delegate.Setup>>();
 	const setups = elementMap.get(callback) || new Set<delegate.Setup>();
 	for (const setup of setups) {
 		if (
@@ -108,29 +109,29 @@ function _delegate<TElement extends Element = Element, TEvent extends Event = Ev
 
 // No base element specified, defaults to `document`
 function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
+	type: EventType,
 	selector: string,
-	type: delegate.EventType,
-	callback: delegate.DelegateEventHandler<TEvent, TElement>,
+	callback: delegate.EventHandler<TEvent, TElement>,
 	options?: boolean | AddEventListenerOptions
-): delegate.DelegateSubscription;
+): delegate.Subscription;
 
 // Single base element specified
 function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
 	elements: EventTarget | Document,
+	type: EventType,
 	selector: string,
-	type: delegate.EventType,
-	callback: delegate.DelegateEventHandler<TEvent, TElement>,
+	callback: delegate.EventHandler<TEvent, TElement>,
 	options?: boolean | AddEventListenerOptions
-): delegate.DelegateSubscription;
+): delegate.Subscription;
 
 // Array(-like) of elements or selector string
 function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
 	elements: ArrayLike<Element> | string,
+	type: EventType,
 	selector: string,
-	type: delegate.EventType,
-	callback: delegate.DelegateEventHandler<TEvent, TElement>,
+	callback: delegate.EventHandler<TEvent, TElement>,
 	options?: boolean | AddEventListenerOptions
-): delegate.DelegateSubscription[];
+): delegate.Subscription[];
 
 /**
  * Delegates event to a selector.
