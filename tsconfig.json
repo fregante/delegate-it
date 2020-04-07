@@ -1,8 +1,8 @@
 {
 	"extends": "@sindresorhus/tsconfig",
 	"compilerOptions": {
-		"outDir": ".",
-		"target": "es2015"
+		"target": "es2015",
+		"module": "es2015"
 	},
 	"files": [
 		"index.ts"

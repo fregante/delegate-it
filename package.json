@@ -1,6 +1,6 @@
 {
   "name": "delegate-it",
-  "version": "1.1.0",
+  "version": "2.0.0-1",
   "description": "Lightweight event delegation",
   "keywords": [
     "delegate",
@@ -9,6 +9,9 @@
   ],
   "repository": "fregante/delegate-it",
   "license": "MIT",
+  "type": "module",
+  "main": "index.js",
+  "module": "index.js",
   "files": [
     "index.js",
     "index.d.ts"
@@ -25,17 +28,25 @@
     "envs": [
       "browser"
     ],
+    "ignore": [
+      "test.jsdom.js"
+    ],
     "rules": {
       "prefer-rest-params": 0,
-      "valid-jsdoc": 0,
-      "max-params": 0,
-      "@typescript-eslint/promise-function-async": 0,
-      "@typescript-eslint/no-namespace": 0
+      "import/extensions": 0,
+      "unicorn/import-index": 0,
+      "import/no-useless-path-segments": 0
     }
+  },
+  "ava": {
+    "require": [
+      "esm"
+    ]
   },
   "devDependencies": {
     "@sindresorhus/tsconfig": "^0.7.0",
     "ava": "^3.6.0",
+    "esm": "^3.2.25",
     "jsdom": "^16.2.2",
     "npm-run-all": "^4.1.5",
     "sinon": "^9.0.1",
