@@ -68,10 +68,8 @@ test('should remove the event listeners from all the elements in a base selector
 		return sinon.spy(li, 'removeEventListener');
 	});
 
-	const delegations = delegate('li', 'a', 'click', () => {});
-	delegations.forEach(delegation => {
-		delegation.destroy();
-	});
+	const delegation = delegate('li', 'a', 'click', () => {});
+	delegation.destroy();
 
 	t.true(spies.every(spy => {
 		const success = spy.calledOnce;
@@ -97,10 +95,8 @@ test('should remove the event listeners from all the elements in a base array', 
 		return sinon.spy(li, 'removeEventListener');
 	});
 
-	const delegations = delegate(items, 'a', 'click', () => {});
-	delegations.forEach(delegation => {
-		delegation.destroy();
-	});
+	const delegation = delegate(items, 'a', 'click', () => {});
+	delegation.destroy();
 
 	t.true(spies.every(spy => {
 		const success = spy.calledOnce;
