@@ -53,8 +53,6 @@ delegate(document.querySelectorAll('.container'), '.btn', 'click', event => {
 
 ### Remove event delegation
 
-#### With a single base element
-
 ```js
 const delegation = delegate(document.body, '.btn', 'click', event => {
     console.log(event.delegateTarget);
@@ -63,19 +61,7 @@ const delegation = delegate(document.body, '.btn', 'click', event => {
 delegation.destroy();
 ```
 
-#### With multiple elements (via selector or array)
-
-Note: selectors are always treated as multiple elements, even if one or none are matched. `delegate()` will return an array.
-
-```js
-const delegations = delegate('.container', '.btn', 'click', event => {
-    console.log(event.delegateTarget);
-});
-
-delegations.forEach(function (delegation) {
-    delegation.destroy();
-});
-```
+### Custom event types in Typescript
 
 If you're using TypeScript and have event types that are custom, you can override the global `GlobalEventHandlersEventMap` interface via declaration merging. e.g. say you have a `types/globals.d.ts` file, you can add the following.
 
