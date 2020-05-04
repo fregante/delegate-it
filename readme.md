@@ -1,6 +1,7 @@
-# delegate-it [![(size)][badge-gzip]](#no-link)
+# delegate-it [![][badge-gzip]][link-bundlephobia]
 
   [badge-gzip]: https://img.shields.io/bundlephobia/minzip/delegate-it.svg?label=gzipped
+	[link-bundlephobia]: https://bundlephobia.com/result?p=delegate-it
 
 > Lightweight event delegation
 
