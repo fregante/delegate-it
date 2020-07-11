@@ -19,12 +19,12 @@ global.document = window.document;
 const container = window.document.querySelector('ul');
 const anchor = window.document.querySelector('a');
 
-test('should add an event listener', t => {
+test.serial('should add an event listener', t => {
 	delegate(container, 'a', 'click', t.pass);
 	anchor.click();
 });
 
-test('should add an event listener only once', t => {
+test.serial('should add an event listener only once', t => {
 	t.plan(2);
 
 	// Only deduplicates the `capture` flag
@@ -42,7 +42,7 @@ test('should add an event listener only once', t => {
 	anchor.click();
 });
 
-test('should remove an event listener', t => {
+test.serial('should remove an event listener', t => {
 	const spy = sinon.spy(container, 'removeEventListener');
 
 	const delegation = delegate(container, 'a', 'click', () => {});
@@ -52,7 +52,7 @@ test('should remove an event listener', t => {
 	spy.restore();
 });
 
-test('should add event listeners to all the elements in a base selector', t => {
+test.serial('should add event listeners to all the elements in a base selector', t => {
 	const spy = sinon.spy();
 	delegate('li', 'a', 'click', spy);
 
@@ -62,7 +62,7 @@ test('should add event listeners to all the elements in a base selector', t => {
 	t.true(spy.calledTwice);
 });
 
-test('should remove the event listeners from all the elements in a base selector', t => {
+test.serial('should remove the event listeners from all the elements in a base selector', t => {
 	const items = document.querySelectorAll('li');
 	const spies = Array.prototype.map.call(items, li => {
 		return sinon.spy(li, 'removeEventListener');
@@ -78,7 +78,7 @@ test('should remove the event listeners from all the elements in a base selector
 	}));
 });
 
-test('should add event listeners to all the elements in a base array', t => {
+test.serial('should add event listeners to all the elements in a base array', t => {
 	const spy = sinon.spy();
 	const items = document.querySelectorAll('li');
 	delegate(items, 'a', 'click', spy);
@@ -89,7 +89,7 @@ test('should add event listeners to all the elements in a base array', t => {
 	t.true(spy.calledTwice);
 });
 
-test('should remove the event listeners from all the elements in a base array', t => {
+test.serial('should remove the event listeners from all the elements in a base array', t => {
 	const items = document.querySelectorAll('li');
 	const spies = Array.prototype.map.call(items, li => {
 		return sinon.spy(li, 'removeEventListener');
@@ -105,7 +105,7 @@ test('should remove the event listeners from all the elements in a base array', 
 	}));
 });
 
-test('should not fire when the selector matches an ancestor of the base element', t => {
+test.serial('should not fire when the selector matches an ancestor of the base element', t => {
 	const spy = sinon.spy();
 	delegate(container, 'body', 'click', spy);
 
