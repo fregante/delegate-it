@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "tsc --sourceMap false",
+    "prepack": "tsc --sourceMap false",
     "test": "tsc && xo && ava",
     "watch": "run-p --silent watch:*",
     "watch:build": "tsc --watch",
@@ -28,9 +28,6 @@
     "envs": [
       "browser"
     ],
-    "ignore": [
-      "test.jsdom.js"
-    ],
     "rules": {
       "prefer-rest-params": 0,
       "import/extensions": 0,
@@ -38,19 +35,13 @@
       "import/no-useless-path-segments": 0
     }
   },
-  "ava": {
-    "require": [
-      "esm"
-    ]
-  },
   "devDependencies": {
     "@sindresorhus/tsconfig": "^0.7.0",
-    "ava": "^3.10.1",
-    "esm": "^3.2.25",
-    "jsdom": "^16.3.0",
+    "ava": "^3.12.1",
+    "jsdom": "^16.4.0",
     "npm-run-all": "^4.1.5",
-    "sinon": "^9.0.2",
-    "typescript": "^3.9.6",
-    "xo": "^0.32.1"
+    "sinon": "^9.0.3",
+    "typescript": "^4.0.2",
+    "xo": "^0.33.1"
   }
 }
