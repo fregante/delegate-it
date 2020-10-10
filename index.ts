@@ -6,15 +6,24 @@ namespace delegate {
 		destroy: VoidFunction;
 	};
 
-	export type EventHandler<TEvent extends GlobalEvent = GlobalEvent, TElement extends Element = Element> = (event: Event<TEvent, TElement>) => void;
+	export type EventHandler<
+		TEvent extends GlobalEvent = GlobalEvent,
+		TElement extends Element = Element
+	> = (event: Event<TEvent, TElement>) => void;
 
-	export type Event<TEvent extends GlobalEvent = GlobalEvent, TElement extends Element = Element> = TEvent & {
+	export type Event<
+		TEvent extends GlobalEvent = GlobalEvent,
+		TElement extends Element = Element
+	> = TEvent & {
 		delegateTarget: TElement;
 	};
 }
 
 /** Keeps track of raw listeners added to the base elements to avoid duplication */
-const ledger = new WeakMap<EventTarget, WeakMap<delegate.EventHandler, Set<string>>>();
+const ledger = new WeakMap<
+EventTarget,
+WeakMap<delegate.EventHandler, Set<string>>
+>();
 
 function editLedger(
 	wanted: boolean,
@@ -26,7 +35,9 @@ function editLedger(
 		return false;
 	}
 
-	const elementMap = ledger.get(baseElement) ?? new WeakMap<delegate.EventHandler, Set<string>>();
+	const elementMap =
+		ledger.get(baseElement) ??
+		new WeakMap<delegate.EventHandler, Set<string>>();
 	ledger.set(baseElement, elementMap);
 
 	if (!wanted && !ledger.has(baseElement)) {
@@ -46,14 +57,19 @@ function editLedger(
 	return existed && wanted;
 }
 
-function isEventTarget(elements: EventTarget | Document | ArrayLike<Element> | string): elements is EventTarget {
+function isEventTarget(
+	elements: EventTarget | Document | ArrayLike<Element> | string
+): elements is EventTarget {
 	return typeof (elements as EventTarget).addEventListener === 'function';
 }
 
 /**
  * Delegates event to a selector.
  */
-function delegate<TElement extends Element = Element, TEvent extends Event = Event>(
+function delegate<
+	TElement extends Element = Element,
+	TEvent extends Event = Event
+>(
 	base: EventTarget | Document | ArrayLike<Element> | string,
 	selector: string,
 	type: EventType,

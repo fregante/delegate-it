@@ -1,6 +1,6 @@
 # delegate-it [![][badge-gzip]][link-bundlephobia]
 
-  [badge-gzip]: https://img.shields.io/bundlephobia/minzip/delegate-it.svg?label=gzipped
+	[badge-gzip]: https://img.shields.io/bundlephobia/minzip/delegate-it.svg?label=gzipped
 	[link-bundlephobia]: https://bundlephobia.com/result?p=delegate-it
 
 > Lightweight event delegation
@@ -32,7 +32,7 @@ import delegate from 'delegate-it';
 
 ```js
 delegate(document.body, '.btn', 'click', event => {
-    console.log(event.delegateTarget);
+	console.log(event.delegateTarget);
 });
 ```
 
@@ -40,7 +40,7 @@ delegate(document.body, '.btn', 'click', event => {
 
 ```js
 delegate('.container', '.btn', 'click', event => {
-    console.log(event.delegateTarget);
+	console.log(event.delegateTarget);
 });
 ```
 
@@ -48,7 +48,7 @@ delegate('.container', '.btn', 'click', event => {
 
 ```js
 delegate(document.querySelectorAll('.container'), '.btn', 'click', event => {
-    console.log(event.delegateTarget);
+	console.log(event.delegateTarget);
 });
 ```
 
@@ -56,7 +56,7 @@ delegate(document.querySelectorAll('.container'), '.btn', 'click', event => {
 
 ```js
 const delegation = delegate(document.body, '.btn', 'click', event => {
-    console.log(event.delegateTarget);
+	console.log(event.delegateTarget);
 });
 
 delegation.destroy();
@@ -67,15 +67,15 @@ delegation.destroy();
 If you're using TypeScript and have event types that are custom, you can override the global `GlobalEventHandlersEventMap` interface via declaration merging. e.g. say you have a `types/globals.d.ts` file, you can add the following.
 
 ```js
-interface GlobalEventHandlersEventMap  {
-    'details:toggle': UIEvent;
+interface GlobalEventHandlersEventMap {
+	'details:toggle': UIEvent;
 }
 ```
 
 In the file that imports `EventType`, you will now be able to set the event type to `'details:toggled'`.
 
 ```js
-import {EventType} from "delegate-it";
+import {EventType} from 'delegate-it';
 
 const someEventType1: EventType = 'details:toggled'; // all good
 const someEventType2: EventType = 'click'; // all good
