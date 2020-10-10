@@ -78,7 +78,8 @@ function delegate<TElement extends Element = Element, TEvent extends Event = Eve
 		};
 	}
 
-	const baseElement = base; // Required for TypeScript
+	// `document` should never be the base, it's just an easy way to define "global event listeners"
+	const baseElement = base instanceof Document ? base.documentElement : base;
 
 	// Handle the regular Element usage
 	const capture = Boolean(typeof options === 'object' ? options.capture : options);

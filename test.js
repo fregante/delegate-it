@@ -18,6 +18,7 @@ const {window} = new JSDOM(`
 
 global.Event = window.Event;
 global.Element = window.Element;
+global.Document = window.Document;
 global.document = window.document;
 const container = window.document.querySelector('ul');
 const anchor = window.document.querySelector('a');
