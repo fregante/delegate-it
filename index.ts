@@ -75,7 +75,7 @@ function safeClosest(event: Event, selector: string): Element | void {
 
 	const closest = target.closest(selector);
 
-	// Closest may match elements outside of the currentTarget so it needs to be limited to elements inside it
+	// `.closest()` may match ancestors of `currentTarget` but we only need its children
 	if (closest && event.currentTarget.contains(closest)) {
 		return closest;
 	}
