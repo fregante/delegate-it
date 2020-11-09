@@ -118,13 +118,10 @@ function delegate<
 	// Handle the regular Element usage
 	const capture = Boolean(typeof options === 'object' ? options.capture : options);
 	const listenerFn: EventListener = (event: Event): void => {
-		console.log(event);
-
 		const delegateTarget = safeClosest(event, selector);
 		if (delegateTarget) {
-			const delegateEvent = event as delegate.Event<TEvent, TElement>;
-			delegateEvent.delegateTarget = delegateTarget as TElement;
-			callback.call(baseElement, delegateEvent);
+			(event as any).delegateTarget = delegateTarget;
+			callback.call(baseElement, event as delegate.Event<TEvent, TElement>);
 		}
 	};
 
