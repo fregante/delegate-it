@@ -63,6 +63,21 @@ function isEventTarget(
 	return typeof (elements as EventTarget).addEventListener === 'function';
 }
 
+function safeClosest(event: Event, selector: string): Element | void {
+	let target = event.target;
+	if (target instanceof Text) {
+		target = target.parentElement;
+	}
+
+	if (target instanceof Element && event.currentTarget instanceof Element) {
+		// `.closest()` may match ancestors of `currentTarget` but we only need its children
+		const closest = target.closest(selector);
+		if (closest && event.currentTarget.contains(closest)) {
+			return closest;
+		}
+	}
+}
+
 /**
  * Delegates event to a selector.
  */
@@ -99,18 +114,10 @@ function delegate<
 
 	// Handle the regular Element usage
 	const capture = Boolean(typeof options === 'object' ? options.capture : options);
-	const listenerFn: EventListener = (event: Partial<delegate.Event>): void => {
-		const delegateTarget = (event.target as Element).closest(selector) as TElement;
-
-		if (!delegateTarget) {
-			return;
-		}
-
-		event.delegateTarget = delegateTarget;
-
-		// Closest may match elements outside of the currentTarget
-		// so it needs to be limited to elements inside it
-		if ((event.currentTarget as Element).contains(event.delegateTarget)) {
+	const listenerFn: EventListener = (event: Event): void => {
+		const delegateTarget = safeClosest(event, selector);
+		if (delegateTarget) {
+			(event as any).delegateTarget = delegateTarget;
 			callback.call(baseElement, event as delegate.Event<TEvent, TElement>);
 		}
 	};
