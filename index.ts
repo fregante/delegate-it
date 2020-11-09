@@ -98,9 +98,18 @@ function delegate<
 
 	// Handle Array-like based usage
 	if (!isEventTarget(base)) {
-		const subscriptions = Array.prototype.map.call(base, (element: EventTarget) => {
-			return delegate<TElement, TEvent>(element, selector, type, callback, options);
-		}) as delegate.Subscription[];
+		const subscriptions = Array.prototype.map.call(
+			base,
+			(element: EventTarget) => {
+				return delegate<TElement, TEvent>(
+					element,
+					selector,
+					type,
+					callback,
+					options
+				);
+			}
+		) as delegate.Subscription[];
 
 		return {
 			destroy(): void {
