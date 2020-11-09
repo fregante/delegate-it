@@ -69,15 +69,12 @@ function safeClosest(event: Event, selector: string): Element | void {
 		target = target.parentElement;
 	}
 
-	if (!(target instanceof Element && event.currentTarget instanceof Element)) {
-		return;
-	}
-
-	const closest = target.closest(selector);
-
-	// `.closest()` may match ancestors of `currentTarget` but we only need its children
-	if (closest && event.currentTarget.contains(closest)) {
-		return closest;
+	if (target instanceof Element && event.currentTarget instanceof Element) {
+		// `.closest()` may match ancestors of `currentTarget` but we only need its children
+		const closest = target.closest(selector);
+		if (closest && event.currentTarget.contains(closest)) {
+			return closest;
+		}
 	}
 }
 
