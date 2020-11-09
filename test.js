@@ -19,6 +19,7 @@ const {window} = new JSDOM(`
 global.Event = window.Event;
 global.Element = window.Element;
 global.Document = window.Document;
+global.MouseEvent = window.MouseEvent;
 global.document = window.document;
 const container = window.document.querySelector('ul');
 const anchor = window.document.querySelector('a');
@@ -44,6 +45,11 @@ test.serial('should add an event listener only once', t => {
 	delegate(container, 'a', 'click', t.pass, {capture: true});
 
 	anchor.click();
+});
+
+test.serial('should handle events on text nodes', t => {
+	delegate(container, 'a', 'click', t.pass);
+	anchor.firstChild.dispatchEvent(new MouseEvent('click', {bubbles: true}));
 });
 
 test.serial('should remove an event listener', t => {
