@@ -16,6 +16,7 @@ const {window} = new JSDOM(`
     </ul>
 `);
 
+global.Text = window.Text;
 global.Event = window.Event;
 global.Element = window.Element;
 global.Document = window.Document;
