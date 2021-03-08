@@ -83,12 +83,12 @@ function safeClosest(event: Event, selector: string): Element | void {
  */
 function delegate<
 	TElement extends Element = Element,
-	TEvent extends Event = Event
+	TEventType extends EventType = EventType
 >(
 	base: EventTarget | Document | ArrayLike<Element> | string,
 	selector: string,
-	type: EventType,
-	callback: delegate.EventHandler<TEvent, TElement>,
+	type: TEventType,
+	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: boolean | AddEventListenerOptions
 ): delegate.Subscription {
 	// Handle Selector-based usage
@@ -101,7 +101,7 @@ function delegate<
 		const subscriptions = Array.prototype.map.call(
 			base,
 			(element: EventTarget) => {
-				return delegate<TElement, TEvent>(
+				return delegate<TElement, TEventType>(
 					element,
 					selector,
 					type,
@@ -127,7 +127,7 @@ function delegate<
 		const delegateTarget = safeClosest(event, selector);
 		if (delegateTarget) {
 			(event as any).delegateTarget = delegateTarget;
-			callback.call(baseElement, event as delegate.Event<TEvent, TElement>);
+			callback.call(baseElement, event as delegate.Event<GlobalEventHandlersEventMap[TEventType], TElement>);
 		}
 	};
 
