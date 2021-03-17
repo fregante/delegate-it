@@ -89,7 +89,7 @@ function delegate<
 	TEventType extends EventType = EventType
 >(
 	base: EventTarget | Document | ArrayLike<Element> | string,
-	selector: string,
+	selector: Selector,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: boolean | AddEventListenerOptions
