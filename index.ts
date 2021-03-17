@@ -113,7 +113,9 @@ function delegate<
 
 		return {
 			destroy(): void {
-				subscriptions.forEach(subscription => subscription.destroy());
+				for (const subscription of subscriptions) {
+					subscription.destroy();
+				}
 			}
 		};
 	}
