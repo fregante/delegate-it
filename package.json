@@ -1,6 +1,6 @@
 {
 	"name": "delegate-it",
-	"version": "2.0.2",
+	"version": "3.0.0-1",
 	"description": "Lightweight event delegation",
 	"keywords": [
 		"delegate",
@@ -43,5 +43,8 @@
 		"sinon": "^9.2.4",
 		"typescript": "^4.2.3",
 		"xo": "^0.38.2"
+	},
+	"dependencies": {
+		"typed-query-selector": "^2.4.1"
 	}
 }

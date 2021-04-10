@@ -1,3 +1,5 @@
+import type {ParseSelector} from 'typed-query-selector/parser';
+
 export type EventType = keyof GlobalEventHandlersEventMap;
 type GlobalEvent = Event;
 
@@ -82,7 +84,31 @@ function safeClosest(event: Event, selector: string): Element | void {
  * Delegates event to a selector.
  */
 function delegate<
-	TElement extends Element = Element,
+	Selector extends string,
+	TElement extends Element = ParseSelector<Selector, HTMLElement>,
+	TEventType extends EventType = EventType
+>(
+	base: EventTarget | Document | ArrayLike<Element> | string,
+	selector: Selector,
+	type: TEventType,
+	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
+	options?: boolean | AddEventListenerOptions
+): delegate.Subscription;
+
+function delegate<
+	TElement extends Element = HTMLElement,
+	TEventType extends EventType = EventType
+>(
+	base: EventTarget | Document | ArrayLike<Element> | string,
+	selector: string,
+	type: TEventType,
+	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
+	options?: boolean | AddEventListenerOptions
+): delegate.Subscription;
+
+// This type isn't exported as a declaration, so it needs to be duplicated above
+function delegate<
+	TElement extends Element,
 	TEventType extends EventType = EventType
 >(
 	base: EventTarget | Document | ArrayLike<Element> | string,
@@ -101,7 +127,7 @@ function delegate<
 		const subscriptions = Array.prototype.map.call(
 			base,
 			(element: EventTarget) => {
-				return delegate<TElement, TEventType>(
+				return delegate(
 					element,
 					selector,
 					type,
