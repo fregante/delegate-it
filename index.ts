@@ -82,6 +82,7 @@ function safeClosest(event: Event, selector: string): Element | void {
 
 /**
  * Delegates event to a selector.
+ * @param options A boolean value setting options.capture or an options object of type AddEventListenerOptions
  */
 function delegate<
 	Selector extends string,
