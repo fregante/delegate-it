@@ -54,13 +54,13 @@ test.serial('should handle events on text nodes', t => {
 });
 
 test.serial('should remove an event listener', t => {
-	const spy = sinon.spy(container, 'removeEventListener');
+	const spy = sinon.spy();
+	const controller = delegate(container, 'a', 'click', spy);
+	controller.abort();
 
-	const delegation = delegate(container, 'a', 'click', () => {});
-	delegation.destroy();
-
-	t.true(spy.calledOnce);
-	spy.restore();
+	const anchor = document.querySelector('a');
+	anchor.click();
+	t.true(spy.notCalled);
 });
 
 test.serial('should add event listeners to all the elements in a base selector', t => {
@@ -74,24 +74,20 @@ test.serial('should add event listeners to all the elements in a base selector',
 });
 
 test.serial('should remove the event listeners from all the elements in a base selector', t => {
-	const items = document.querySelectorAll('li');
-	const spies = Array.prototype.map.call(items, li => {
-		return sinon.spy(li, 'removeEventListener');
-	});
+	const spy = sinon.spy();
+	const controller = delegate('li', 'a', 'click', spy);
+	controller.abort();
 
-	const delegation = delegate('li', 'a', 'click', () => {});
-	delegation.destroy();
-
-	t.true(spies.every(spy => {
-		const success = spy.calledOnce;
-		spy.restore();
-		return success;
+	const anchors = document.querySelectorAll('a');
+	t.true(Array.prototype.every.call(anchors, a => {
+		a.click();
+		return spy.notCalled;
 	}));
 });
 
 test.serial('should add event listeners to all the elements in a base array', t => {
 	const spy = sinon.spy();
-	const items = document.querySelectorAll('li');
+	const items = document.querySelectorAll('a');
 	delegate(items, 'a', 'click', spy);
 
 	const anchors = document.querySelectorAll('a');
@@ -101,18 +97,15 @@ test.serial('should add event listeners to all the elements in a base array', t 
 });
 
 test.serial('should remove the event listeners from all the elements in a base array', t => {
+	const spy = sinon.spy();
 	const items = document.querySelectorAll('li');
-	const spies = Array.prototype.map.call(items, li => {
-		return sinon.spy(li, 'removeEventListener');
-	});
+	const controller = delegate(items, 'a', 'click', () => {});
+	controller.abort();
 
-	const delegation = delegate(items, 'a', 'click', () => {});
-	delegation.destroy();
-
-	t.true(spies.every(spy => {
-		const success = spy.calledOnce;
-		spy.restore();
-		return success;
+	const anchors = document.querySelectorAll('a');
+	t.true(Array.prototype.every.call(anchors, a => {
+		a.click();
+		return spy.notCalled;
 	}));
 });
 
