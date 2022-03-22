@@ -63,6 +63,17 @@ test.serial('should remove an event listener', t => {
 	t.true(spy.notCalled);
 });
 
+test.serial('should pass an AbortSignal to an event listener', t => {
+	const spy = sinon.spy();
+	const controller = new AbortController();
+	delegate(container, 'a', 'click', spy, {signal: controller.signal});
+	controller.abort();
+
+	const anchor = document.querySelector('a');
+	anchor.click();
+	t.true(spy.notCalled);
+});
+
 test.serial('should add event listeners to all the elements in a base selector', t => {
 	const spy = sinon.spy();
 	delegate('li', 'a', 'click', spy);
@@ -76,6 +87,19 @@ test.serial('should add event listeners to all the elements in a base selector',
 test.serial('should remove the event listeners from all the elements in a base selector', t => {
 	const spy = sinon.spy();
 	const controller = delegate('li', 'a', 'click', spy);
+	controller.abort();
+
+	const anchors = document.querySelectorAll('a');
+	t.true(Array.prototype.every.call(anchors, a => {
+		a.click();
+		return spy.notCalled;
+	}));
+});
+
+test.serial('should pass an AbortSignal to the event listeners on all the elements in a base selector', t => {
+	const spy = sinon.spy();
+	const controller = new AbortController();
+	delegate('li', 'a', 'click', spy, {signal: controller.signal});
 	controller.abort();
 
 	const anchors = document.querySelectorAll('a');
@@ -109,9 +133,31 @@ test.serial('should remove the event listeners from all the elements in a base a
 	}));
 });
 
+test.serial('should pass an AbortSignal to the event listeners on all the elements in a base array', t => {
+	const spy = sinon.spy();
+	const items = document.querySelectorAll('li');
+	const controller = new AbortController();
+	delegate(items, 'a', 'click', () => {}, {signal: controller.signal});
+	controller.abort();
+
+	const anchors = document.querySelectorAll('a');
+	t.true(Array.prototype.every.call(anchors, a => {
+		a.click();
+		return spy.notCalled;
+	}));
+});
+
 test.serial('should not fire when the selector matches an ancestor of the base element', t => {
 	const spy = sinon.spy();
 	delegate(container, 'body', 'click', spy);
+
+	anchor.click();
+	t.true(spy.notCalled);
+});
+
+test.serial('should not add an event listener when passed an already aborted signal', t => {
+	const spy = sinon.spy(container, 'addEventListener');
+	delegate(container, 'a', 'click', () => {}, {signal: AbortSignal.abort()});
 
 	anchor.click();
 	t.true(spy.notCalled);
