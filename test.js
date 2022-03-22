@@ -87,7 +87,7 @@ test.serial('should remove the event listeners from all the elements in a base s
 
 test.serial('should add event listeners to all the elements in a base array', t => {
 	const spy = sinon.spy();
-	const items = document.querySelectorAll('a');
+	const items = document.querySelectorAll('li');
 	delegate(items, 'a', 'click', spy);
 
 	const anchors = document.querySelectorAll('a');
