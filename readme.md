@@ -10,7 +10,7 @@ This is a fork of the popular [`delegate`](https://github.com/zenorocha/delegate
 - modern: ES6, TypeScript, Edge 15+ (it uses `WeakMap` and `Element.closest()`)
 - idempotent: identical listeners aren't added multiple times, just like the native `addEventListener`
 - debugged ([2d54c11](https://github.com/fregante/delegate-it/commit/2d54c1182aefd3ec9d8250fda76290971f5d7166), [c6bb88c](https://github.com/fregante/delegate-it/commit/c6bb88c2aa8097b25f22993a237cf09c96bcbfb8))
-- supports `AbortSignal`
+- supports [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)
 
 If you need IE support, you can keep using [`delegate`](https://github.com/zenorocha/delegate)
 
