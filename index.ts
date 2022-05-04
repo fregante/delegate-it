@@ -76,8 +76,6 @@ function safeClosest(event: Event, selector: string): Element | void {
 	}
 }
 
-type TReturnType<TOptionsType extends undefined | boolean | AddEventListenerOptions> = TOptionsType extends {signal: AbortSignal} ? undefined : AbortController;
-
 /**
  * Delegates event to a selector.
  * @param options A boolean value setting options.capture or an options object of type AddEventListenerOptions
@@ -85,49 +83,51 @@ type TReturnType<TOptionsType extends undefined | boolean | AddEventListenerOpti
 function delegate<
 	Selector extends string,
 	TElement extends Element = ParseSelector<Selector, HTMLElement>,
-	TEventType extends EventType = EventType,
-	TOptionsType extends undefined | boolean | AddEventListenerOptions = undefined
+	TEventType extends EventType = EventType
 >(
 	base: EventTarget | Document | ArrayLike<Element> | string,
 	selector: Selector,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: TOptionsType
-): TReturnType<TOptionsType>;
+	options?: boolean | AddEventListenerOptions
+): AbortController;
 
 function delegate<
 	TElement extends Element = HTMLElement,
-	TEventType extends EventType = EventType,
-	TOptionsType extends undefined | boolean | AddEventListenerOptions = undefined
+	TEventType extends EventType = EventType
 >(
 	base: EventTarget | Document | ArrayLike<Element> | string,
 	selector: string,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: TOptionsType
-): TReturnType<TOptionsType>;
+	options?: boolean | AddEventListenerOptions
+): AbortController;
 
 // This type isn't exported as a declaration, so it needs to be duplicated above
 function delegate<
 	TElement extends Element,
-	TEventType extends EventType = EventType,
-	TOptionsType extends undefined | boolean | AddEventListenerOptions = undefined
+	TEventType extends EventType = EventType
 >(
 	base: EventTarget | Document | ArrayLike<Element> | string,
 	selector: string,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: TOptionsType
-): TReturnType<TOptionsType> {
+	options?: boolean | AddEventListenerOptions
+): AbortController {
 	const listenerOptions: AddEventListenerOptions = typeof options === 'object' ? options : {capture: options};
-	let controller: AbortController | undefined;
-	if (!listenerOptions.signal) {
-		controller = new AbortController();
-		listenerOptions.signal = controller.signal;
-	}
+	const internalController = new AbortController();
 
-	if (listenerOptions.signal.aborted) {
-		return controller as TReturnType<TOptionsType>;
+	if (listenerOptions.signal) {
+		if (listenerOptions.signal.aborted) {
+			internalController.abort();
+			return internalController;
+		}
+
+		listenerOptions.signal.addEventListener('abort', () => {
+			internalController.abort();
+		}, {
+			once: true
+		});
 	}
 
 	// Handle Selector-based usage
@@ -141,7 +141,7 @@ function delegate<
 			delegate(element, selector, type, callback, listenerOptions);
 		});
 
-		return controller as TReturnType<TOptionsType>;
+		return internalController;
 	}
 
 	// `document` should never be the base, it's just an easy way to define "global event listeners"
@@ -163,13 +163,13 @@ function delegate<
 		baseElement.addEventListener(type, listenerFn, listenerOptions);
 	}
 
-	listenerOptions.signal.addEventListener('abort', () => {
+	internalController.signal.addEventListener('abort', () => {
 		editLedger(false, baseElement, callback, setup);
 	}, {
 		once: true
 	});
 
-	return controller as TReturnType<TOptionsType>;
+	return internalController;
 }
 
 export default delegate;
