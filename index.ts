@@ -160,6 +160,11 @@ function delegate<
 		}
 	};
 
+	// Drop unsupported `once` option https://github.com/fregante/delegate-it/pull/28#discussion_r863467939
+	if (typeof options === 'object') {
+		delete options.once;
+	}
+
 	const setup = JSON.stringify({selector, type, capture});
 	const isAlreadyListening = editLedger(true, baseElement, callback, setup);
 	const delegateSubscription = {

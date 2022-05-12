@@ -123,3 +123,12 @@ test.serial('should not fire when the selector matches an ancestor of the base e
 	anchor.click();
 	t.true(spy.notCalled);
 });
+
+test.serial('should not consider the `once` option', t => {
+	const spy = sinon.spy();
+	delegate(container, 'a', 'click', spy, {once: true});
+
+	anchor.click();
+	anchor.click();
+	t.true(spy.calledTwice);
+});
