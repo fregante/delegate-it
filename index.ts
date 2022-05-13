@@ -1,4 +1,3 @@
-import type {Except} from 'type-fest';
 import type {ParseSelector} from 'typed-query-selector/parser';
 
 export type EventType = keyof GlobalEventHandlersEventMap;
@@ -94,7 +93,7 @@ function delegate<
 	selector: Selector,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: boolean | Except<AddEventListenerOptions, 'once'>
+	options?: boolean | Omit<AddEventListenerOptions, 'once'>
 ): delegate.Subscription;
 
 function delegate<
@@ -105,7 +104,7 @@ function delegate<
 	selector: string,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: boolean | Except<AddEventListenerOptions, 'once'>
+	options?: boolean | Omit<AddEventListenerOptions, 'once'>
 ): delegate.Subscription;
 
 // This type isn't exported as a declaration, so it needs to be duplicated above
@@ -117,7 +116,7 @@ function delegate<
 	selector: string,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: boolean | Except<AddEventListenerOptions, 'once'>
+	options?: boolean | Omit<AddEventListenerOptions, 'once'>
 ): delegate.Subscription {
 	// Handle Selector-based usage
 	if (typeof base === 'string') {
