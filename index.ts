@@ -1,3 +1,4 @@
+import type {Except} from 'type-fest';
 import type {ParseSelector} from 'typed-query-selector/parser';
 
 export type EventType = keyof GlobalEventHandlersEventMap;
@@ -82,7 +83,7 @@ function safeClosest(event: Event, selector: string): Element | void {
 
 /**
  * Delegates event to a selector.
- * @param options A boolean value setting options.capture or an options object of type AddEventListenerOptions
+ * @param options A boolean value setting options.capture or an options object of type AddEventListenerOptions without the `once` option
  */
 function delegate<
 	Selector extends string,
@@ -93,7 +94,7 @@ function delegate<
 	selector: Selector,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: boolean | AddEventListenerOptions
+	options?: boolean | Except<AddEventListenerOptions, 'once'>
 ): delegate.Subscription;
 
 function delegate<
@@ -104,7 +105,7 @@ function delegate<
 	selector: string,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: boolean | AddEventListenerOptions
+	options?: boolean | Except<AddEventListenerOptions, 'once'>
 ): delegate.Subscription;
 
 // This type isn't exported as a declaration, so it needs to be duplicated above
@@ -116,7 +117,7 @@ function delegate<
 	selector: string,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: boolean | AddEventListenerOptions
+	options?: boolean | Except<AddEventListenerOptions, 'once'>
 ): delegate.Subscription {
 	// Handle Selector-based usage
 	if (typeof base === 'string') {
@@ -162,7 +163,7 @@ function delegate<
 
 	// Drop unsupported `once` option https://github.com/fregante/delegate-it/pull/28#discussion_r863467939
 	if (typeof options === 'object') {
-		delete options.once;
+		delete (options as AddEventListenerOptions).once;
 	}
 
 	const setup = JSON.stringify({selector, type, capture});
