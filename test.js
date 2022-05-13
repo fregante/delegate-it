@@ -1,10 +1,7 @@
 import test from 'ava';
 import sinon from 'sinon';
-import {createRequire} from 'module';
+import {JSDOM} from 'jsdom';
 import delegate from './index.js';
-
-const require = createRequire(import.meta.url);
-export const {JSDOM} = require('jsdom');
 
 const {window} = new JSDOM(`
     <ul>
@@ -75,9 +72,7 @@ test.serial('should add event listeners to all the elements in a base selector',
 
 test.serial('should remove the event listeners from all the elements in a base selector', t => {
 	const items = document.querySelectorAll('li');
-	const spies = Array.prototype.map.call(items, li => {
-		return sinon.spy(li, 'removeEventListener');
-	});
+	const spies = Array.prototype.map.call(items, li => sinon.spy(li, 'removeEventListener'));
 
 	const delegation = delegate('li', 'a', 'click', () => {});
 	delegation.destroy();
@@ -102,9 +97,7 @@ test.serial('should add event listeners to all the elements in a base array', t 
 
 test.serial('should remove the event listeners from all the elements in a base array', t => {
 	const items = document.querySelectorAll('li');
-	const spies = Array.prototype.map.call(items, li => {
-		return sinon.spy(li, 'removeEventListener');
-	});
+	const spies = Array.prototype.map.call(items, li => sinon.spy(li, 'removeEventListener'));
 
 	const delegation = delegate(items, 'a', 'click', () => {});
 	delegation.destroy();

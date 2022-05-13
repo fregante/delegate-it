@@ -1,6 +1,5 @@
 import type {ParseSelector} from 'typed-query-selector/parser';
 
-// eslint-disable-next-line @typescript-eslint/ban-types -- It's a single property, no mistakes possible
 export type DelegateOptions = boolean | Omit<AddEventListenerOptions, 'once'>;
 export type EventType = keyof GlobalEventHandlersEventMap;
 type GlobalEvent = Event;
@@ -12,12 +11,12 @@ namespace delegate {
 
 	export type EventHandler<
 		TEvent extends GlobalEvent = GlobalEvent,
-		TElement extends Element = Element
+		TElement extends Element = Element,
 	> = (event: Event<TEvent, TElement>) => void;
 
 	export type Event<
 		TEvent extends GlobalEvent = GlobalEvent,
-		TElement extends Element = Element
+		TElement extends Element = Element,
 	> = TEvent & {
 		delegateTarget: TElement;
 	};
@@ -33,15 +32,15 @@ function editLedger(
 	wanted: boolean,
 	baseElement: EventTarget | Document,
 	callback: delegate.EventHandler<any, any>,
-	setup: string
+	setup: string,
 ): boolean {
 	if (!wanted && !ledger.has(baseElement)) {
 		return false;
 	}
 
-	const elementMap =
-		ledger.get(baseElement) ??
-		new WeakMap<delegate.EventHandler, Set<string>>();
+	const elementMap
+		= ledger.get(baseElement)
+		?? new WeakMap<delegate.EventHandler, Set<string>>();
 	ledger.set(baseElement, elementMap);
 
 	if (!wanted && !ledger.has(baseElement)) {
@@ -62,7 +61,7 @@ function editLedger(
 }
 
 function isEventTarget(
-	elements: EventTarget | Document | ArrayLike<Element> | string
+	elements: EventTarget | Document | ArrayLike<Element> | string,
 ): elements is EventTarget {
 	return typeof (elements as EventTarget).addEventListener === 'function';
 }
@@ -89,7 +88,7 @@ function safeClosest(event: Event, selector: string): Element | void {
 function delegate<
 	Selector extends string,
 	TElement extends Element = ParseSelector<Selector, HTMLElement>,
-	TEventType extends EventType = EventType
+	TEventType extends EventType = EventType,
 >(
 	base: EventTarget | Document | ArrayLike<Element> | string,
 	selector: Selector,
@@ -100,7 +99,7 @@ function delegate<
 
 function delegate<
 	TElement extends Element = HTMLElement,
-	TEventType extends EventType = EventType
+	TEventType extends EventType = EventType,
 >(
 	base: EventTarget | Document | ArrayLike<Element> | string,
 	selector: string,
@@ -112,13 +111,13 @@ function delegate<
 // This type isn't exported as a declaration, so it needs to be duplicated above
 function delegate<
 	TElement extends Element,
-	TEventType extends EventType = EventType
+	TEventType extends EventType = EventType,
 >(
 	base: EventTarget | Document | ArrayLike<Element> | string,
 	selector: string,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: DelegateOptions
+	options?: DelegateOptions,
 ): delegate.Subscription {
 	// Handle Selector-based usage
 	if (typeof base === 'string') {
@@ -129,15 +128,13 @@ function delegate<
 	if (!isEventTarget(base)) {
 		const subscriptions = Array.prototype.map.call(
 			base,
-			(element: EventTarget) => {
-				return delegate(
-					element,
-					selector,
-					type,
-					callback,
-					options
-				);
-			}
+			(element: EventTarget) => delegate(
+				element,
+				selector,
+				type,
+				callback,
+				options,
+			),
 		) as delegate.Subscription[];
 
 		return {
@@ -145,7 +142,7 @@ function delegate<
 				for (const subscription of subscriptions) {
 					subscription.destroy();
 				}
-			}
+			},
 		};
 	}
 
@@ -173,7 +170,7 @@ function delegate<
 		destroy() {
 			baseElement.removeEventListener(type, listenerFn, options);
 			editLedger(false, baseElement, callback, setup);
-		}
+		},
 	};
 
 	if (!isAlreadyListening) {
