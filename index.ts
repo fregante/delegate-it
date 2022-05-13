@@ -1,5 +1,7 @@
 import type {ParseSelector} from 'typed-query-selector/parser';
 
+// eslint-disable-next-line @typescript-eslint/ban-types -- It's a single property, no mistakes possible
+export type DelegateOptions = boolean | Omit<AddEventListenerOptions, 'once'>;
 export type EventType = keyof GlobalEventHandlersEventMap;
 type GlobalEvent = Event;
 
@@ -82,7 +84,7 @@ function safeClosest(event: Event, selector: string): Element | void {
 
 /**
  * Delegates event to a selector.
- * @param options A boolean value setting options.capture or an options object of type AddEventListenerOptions
+ * @param options A boolean value setting options.capture or an options object of type AddEventListenerOptions without the `once` option
  */
 function delegate<
 	Selector extends string,
@@ -93,7 +95,7 @@ function delegate<
 	selector: Selector,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: boolean | AddEventListenerOptions
+	options?: DelegateOptions
 ): delegate.Subscription;
 
 function delegate<
@@ -104,7 +106,7 @@ function delegate<
 	selector: string,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: boolean | AddEventListenerOptions
+	options?: DelegateOptions
 ): delegate.Subscription;
 
 // This type isn't exported as a declaration, so it needs to be duplicated above
@@ -116,7 +118,7 @@ function delegate<
 	selector: string,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: boolean | AddEventListenerOptions
+	options?: DelegateOptions
 ): delegate.Subscription {
 	// Handle Selector-based usage
 	if (typeof base === 'string') {
@@ -159,6 +161,11 @@ function delegate<
 			callback.call(baseElement, event as delegate.Event<GlobalEventHandlersEventMap[TEventType], TElement>);
 		}
 	};
+
+	// Drop unsupported `once` option https://github.com/fregante/delegate-it/pull/28#discussion_r863467939
+	if (typeof options === 'object') {
+		delete (options as AddEventListenerOptions).once;
+	}
 
 	const setup = JSON.stringify({selector, type, capture});
 	const isAlreadyListening = editLedger(true, baseElement, callback, setup);

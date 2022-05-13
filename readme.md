@@ -52,6 +52,23 @@ delegate(document.querySelectorAll('.container'), '.btn', 'click', event => {
 });
 ```
 
+#### With listener options
+
+```js
+delegate(document.body, '.btn', 'click', event => {
+	console.log(event.delegateTarget);
+}, true);
+
+// Or equivalent:
+delegate(document.body, '.btn', 'click', event => {
+	console.log(event.delegateTarget);
+}, {
+	capture: true
+});
+```
+
+**Note:** the `once` option is currently not supported.
+
 ### Remove event delegation
 
 ```js
