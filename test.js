@@ -1,10 +1,7 @@
 import test from 'ava';
 import sinon from 'sinon';
-import {createRequire} from 'module';
+import {JSDOM} from 'jsdom';
 import delegate from './index.js';
-
-const require = createRequire(import.meta.url);
-export const {JSDOM} = require('jsdom');
 
 const {window} = new JSDOM(`
     <ul>
