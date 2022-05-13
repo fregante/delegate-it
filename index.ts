@@ -1,5 +1,7 @@
 import type {ParseSelector} from 'typed-query-selector/parser';
 
+// eslint-disable-next-line @typescript-eslint/ban-types -- It's a single property, no mistakes possible
+export type DelegateOptions = boolean | Omit<AddEventListenerOptions, 'once'>;
 export type EventType = keyof GlobalEventHandlersEventMap;
 type GlobalEvent = Event;
 
@@ -93,7 +95,7 @@ function delegate<
 	selector: Selector,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: boolean | Omit<AddEventListenerOptions, 'once'>
+	options?: DelegateOptions
 ): delegate.Subscription;
 
 function delegate<
@@ -104,7 +106,7 @@ function delegate<
 	selector: string,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: boolean | Omit<AddEventListenerOptions, 'once'>
+	options?: DelegateOptions
 ): delegate.Subscription;
 
 // This type isn't exported as a declaration, so it needs to be duplicated above
@@ -116,7 +118,7 @@ function delegate<
 	selector: string,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: boolean | Omit<AddEventListenerOptions, 'once'>
+	options?: DelegateOptions
 ): delegate.Subscription {
 	// Handle Selector-based usage
 	if (typeof base === 'string') {
