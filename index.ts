@@ -113,7 +113,7 @@ function delegate<
 	selector: string,
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: DelegateOptions
+	options?: DelegateOptions,
 ): AbortController {
 	const internalController = new AbortController();
 	const listenerOptions: AddEventListenerOptions = typeof options === 'object' ? options : {capture: options};
@@ -129,7 +129,7 @@ function delegate<
 		listenerOptions.signal.addEventListener('abort', () => {
 			internalController.abort();
 		}, {
-			once: true
+			once: true,
 		});
 	} else {
 		listenerOptions.signal = internalController.signal;
@@ -171,7 +171,7 @@ function delegate<
 	internalController.signal.addEventListener('abort', () => {
 		editLedger(false, baseElement, callback, setup);
 	}, {
-		once: true
+		once: true,
 	});
 
 	return internalController;
