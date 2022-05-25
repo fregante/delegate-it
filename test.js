@@ -86,11 +86,11 @@ test.serial('should remove the event listeners from all the elements in a base s
 	const controller = delegate('li', 'a', 'click', spy);
 	controller.abort();
 
-	const anchors = document.querySelectorAll('a');
-	t.true(Array.prototype.every.call(anchors, a => {
-		a.click();
-		return spy.notCalled;
-	}));
+	for (const anchor of document.querySelectorAll('a')) {
+		anchor.click();
+	}
+
+	t.true(spy.notCalled);
 });
 
 test.serial('should pass an AbortSignal to the event listeners on all the elements in a base selector', t => {
@@ -99,11 +99,11 @@ test.serial('should pass an AbortSignal to the event listeners on all the elemen
 	delegate('li', 'a', 'click', spy, {signal: controller.signal});
 	controller.abort();
 
-	const anchors = document.querySelectorAll('a');
-	t.true(Array.prototype.every.call(anchors, a => {
-		a.click();
-		return spy.notCalled;
-	}));
+	for (const anchor of document.querySelectorAll('a')) {
+		anchor.click();
+	}
+
+	t.true(spy.notCalled);
 });
 
 test.serial('should add event listeners to all the elements in a base array', t => {
@@ -120,28 +120,28 @@ test.serial('should add event listeners to all the elements in a base array', t 
 test.serial('should remove the event listeners from all the elements in a base array', t => {
 	const spy = sinon.spy();
 	const items = document.querySelectorAll('li');
-	const controller = delegate(items, 'a', 'click', () => {});
+	const controller = delegate(items, 'a', 'click', spy);
 	controller.abort();
 
-	const anchors = document.querySelectorAll('a');
-	t.true(Array.prototype.every.call(anchors, a => {
-		a.click();
-		return spy.notCalled;
-	}));
+	for (const anchor of document.querySelectorAll('a')) {
+		anchor.click();
+	}
+
+	t.true(spy.notCalled);
 });
 
 test.serial('should pass an AbortSignal to the event listeners on all the elements in a base array', t => {
 	const spy = sinon.spy();
 	const items = document.querySelectorAll('li');
 	const controller = new AbortController();
-	delegate(items, 'a', 'click', () => {}, {signal: controller.signal});
+	delegate(items, 'a', 'click', spy, {signal: controller.signal});
 	controller.abort();
 
-	const anchors = document.querySelectorAll('a');
-	t.true(Array.prototype.every.call(anchors, a => {
-		a.click();
-		return spy.notCalled;
-	}));
+	for (const anchor of document.querySelectorAll('a')) {
+		anchor.click();
+	}
+
+	t.true(spy.notCalled);
 });
 
 test.serial('should not fire when the selector matches an ancestor of the base element', t => {
@@ -154,7 +154,7 @@ test.serial('should not fire when the selector matches an ancestor of the base e
 
 test.serial('should not add an event listener when passed an already aborted signal', t => {
 	const spy = sinon.spy(container, 'addEventListener');
-	delegate(container, 'a', 'click', () => {}, {signal: AbortSignal.abort()});
+	delegate(container, 'a', 'click', spy, {signal: AbortSignal.abort()});
 
 	anchor.click();
 	t.true(spy.notCalled);
