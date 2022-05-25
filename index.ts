@@ -131,6 +131,8 @@ function delegate<
 		}, {
 			once: true
 		});
+	} else {
+		listenerOptions.signal = internalController.signal;
 	}
 
 	// Handle Selector-based usage
