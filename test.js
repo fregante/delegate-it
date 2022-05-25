@@ -159,3 +159,12 @@ test.serial('should not add an event listener when passed an already aborted sig
 	anchor.click();
 	t.true(spy.notCalled);
 });
+
+test.serial('should not consider the `once` option', t => {
+	const spy = sinon.spy();
+	delegate(container, 'a', 'click', spy, {once: true});
+
+	anchor.click();
+	anchor.click();
+	t.true(spy.calledTwice);
+});

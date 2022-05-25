@@ -115,8 +115,10 @@ function delegate<
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions
 ): AbortController {
-	const listenerOptions: AddEventListenerOptions = typeof options === 'object' ? options : {capture: options};
 	const internalController = new AbortController();
+	const listenerOptions: AddEventListenerOptions = typeof options === 'object' ? options : {capture: options};
+	// Drop unsupported `once` option https://github.com/fregante/delegate-it/pull/28#discussion_r863467939
+	delete listenerOptions.once;
 
 	if (listenerOptions.signal) {
 		if (listenerOptions.signal.aborted) {
@@ -157,11 +159,6 @@ function delegate<
 			callback.call(baseElement, event as delegate.Event<GlobalEventHandlersEventMap[TEventType], TElement>);
 		}
 	};
-
-	// Drop unsupported `once` option https://github.com/fregante/delegate-it/pull/28#discussion_r863467939
-	if (typeof options === 'object') {
-		delete (options as AddEventListenerOptions).once;
-	}
 
 	const setup = JSON.stringify({selector, type, capture});
 	const isAlreadyListening = editLedger(true, baseElement, callback, setup);
