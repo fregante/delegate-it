@@ -1,10 +1,7 @@
 {
 	"extends": "@sindresorhus/tsconfig",
 	"compilerOptions": {
-		"target": "es2015",
-		"lib": [
-			"DOM"
-		]
+		"target": "es2021"
 	},
 	"files": [
 		"index.ts"

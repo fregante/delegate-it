@@ -4,13 +4,13 @@ import {JSDOM} from 'jsdom';
 import delegate from './index.js';
 
 const {window} = new JSDOM(`
-    <ul>
-        <li><a>Item 1</a></li>
-        <li><a>Item 2</a></li>
-        <li><a>Item 3</a></li>
-        <li><a>Item 4</a></li>
-        <li><a>Item 5</a></li>
-    </ul>
+	<ul>
+		<li><a>Item 1</a></li>
+		<li><a>Item 2</a></li>
+		<li><a>Item 3</a></li>
+		<li><a>Item 4</a></li>
+		<li><a>Item 5</a></li>
+	</ul>
 `);
 
 global.Text = window.Text;

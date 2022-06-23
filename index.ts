@@ -2,32 +2,29 @@ import type {ParseSelector} from 'typed-query-selector/parser';
 
 export type DelegateOptions = boolean | Omit<AddEventListenerOptions, 'once'>;
 export type EventType = keyof GlobalEventHandlersEventMap;
-type GlobalEvent = Event;
 
-namespace delegate {
-	export type EventHandler<
-		TEvent extends GlobalEvent = GlobalEvent,
-		TElement extends Element = Element,
-	> = (event: Event<TEvent, TElement>) => void;
+export type DelegateEventHandler<
+	TEvent extends Event = Event,
+	TElement extends Element = Element,
+> = (event: DelegateEvent<TEvent, TElement>) => void;
 
-	export type Event<
-		TEvent extends GlobalEvent = GlobalEvent,
-		TElement extends Element = Element,
-	> = TEvent & {
-		delegateTarget: TElement;
-	};
-}
+export type DelegateEvent<
+	TEvent extends Event = Event,
+	TElement extends Element = Element,
+> = TEvent & {
+	delegateTarget: TElement;
+};
 
 /** Keeps track of raw listeners added to the base elements to avoid duplication */
 const ledger = new WeakMap<
 EventTarget,
-WeakMap<delegate.EventHandler, Set<string>>
+WeakMap<DelegateEventHandler, Set<string>>
 >();
 
 function editLedger(
 	wanted: boolean,
 	baseElement: EventTarget | Document,
-	callback: delegate.EventHandler<any, any>,
+	callback: DelegateEventHandler<any, any>,
 	setup: string,
 ): boolean {
 	if (!wanted && !ledger.has(baseElement)) {
@@ -36,7 +33,7 @@ function editLedger(
 
 	const elementMap
 		= ledger.get(baseElement)
-		?? new WeakMap<delegate.EventHandler, Set<string>>();
+		?? new WeakMap<DelegateEventHandler, Set<string>>();
 	ledger.set(baseElement, elementMap);
 
 	if (!wanted && !ledger.has(baseElement)) {
@@ -89,7 +86,7 @@ function delegate<
 	base: EventTarget | Document | ArrayLike<Element> | string,
 	selector: Selector,
 	type: TEventType,
-	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
+	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions
 ): AbortController;
 
@@ -100,7 +97,7 @@ function delegate<
 	base: EventTarget | Document | ArrayLike<Element> | string,
 	selector: string,
 	type: TEventType,
-	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
+	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions
 ): AbortController;
 
@@ -112,7 +109,7 @@ function delegate<
 	base: EventTarget | Document | ArrayLike<Element> | string,
 	selector: string,
 	type: TEventType,
-	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
+	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions,
 ): AbortController {
 	const internalController = new AbortController();
@@ -152,11 +149,11 @@ function delegate<
 
 	// Handle the regular Element usage
 	const capture = Boolean(typeof options === 'object' ? options.capture : options);
-	const listenerFn: EventListener = (event: Event): void => {
+	const listenerFn = (event: Event): void => {
 		const delegateTarget = safeClosest(event, selector);
 		if (delegateTarget) {
-			(event as any).delegateTarget = delegateTarget;
-			callback.call(baseElement, event as delegate.Event<GlobalEventHandlersEventMap[TEventType], TElement>);
+			const delegateEvent = Object.assign(event, {delegateTarget});
+			callback.call(baseElement, delegateEvent as DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement>);
 		}
 	};
 
