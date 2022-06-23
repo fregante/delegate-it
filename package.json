@@ -39,7 +39,6 @@
 		],
 		"rules": {
 			"max-params": "off",
-			"@typescript-eslint/no-namespace": "off",
 			"@typescript-eslint/naming-convention": "off"
 		}
 	},

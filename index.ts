@@ -54,7 +54,7 @@ function editLedger(
 }
 
 function isEventTarget(
-	elements: EventTarget | Document | ArrayLike<Element> | string,
+	elements: EventTarget | Document | Iterable<Element> | string,
 ): elements is EventTarget {
 	return typeof (elements as EventTarget).addEventListener === 'function';
 }
@@ -83,7 +83,7 @@ function delegate<
 	TElement extends Element = ParseSelector<Selector, HTMLElement>,
 	TEventType extends EventType = EventType,
 >(
-	base: EventTarget | Document | ArrayLike<Element> | string,
+	base: EventTarget | Document | Iterable<Element> | string,
 	selector: Selector,
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
@@ -94,7 +94,7 @@ function delegate<
 	TElement extends Element = HTMLElement,
 	TEventType extends EventType = EventType,
 >(
-	base: EventTarget | Document | ArrayLike<Element> | string,
+	base: EventTarget | Document | Iterable<Element> | string,
 	selector: string,
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
@@ -106,7 +106,7 @@ function delegate<
 	TElement extends Element,
 	TEventType extends EventType = EventType,
 >(
-	base: EventTarget | Document | ArrayLike<Element> | string,
+	base: EventTarget | Document | Iterable<Element> | string,
 	selector: string,
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
@@ -137,9 +137,9 @@ function delegate<
 
 	// Handle Array-like based usage
 	if (!isEventTarget(base)) {
-		Array.prototype.forEach.call(base, element => {
+		for (const element of base) {
 			delegate(element, selector, type, callback, listenerOptions);
-		});
+		}
 
 		return internalController;
 	}
