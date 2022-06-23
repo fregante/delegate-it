@@ -18,6 +18,7 @@ global.Event = window.Event;
 global.Element = window.Element;
 global.Document = window.Document;
 global.MouseEvent = window.MouseEvent;
+global.AbortController = window.AbortController;
 global.document = window.document;
 const container = window.document.querySelector('ul');
 const anchor = window.document.querySelector('a');
@@ -51,13 +52,24 @@ test.serial('should handle events on text nodes', t => {
 });
 
 test.serial('should remove an event listener', t => {
-	const spy = sinon.spy(container, 'removeEventListener');
+	const spy = sinon.spy();
+	const controller = delegate(container, 'a', 'click', spy);
+	controller.abort();
 
-	const delegation = delegate(container, 'a', 'click', () => {});
-	delegation.destroy();
+	const anchor = document.querySelector('a');
+	anchor.click();
+	t.true(spy.notCalled);
+});
 
-	t.true(spy.calledOnce);
-	spy.restore();
+test.serial('should pass an AbortSignal to an event listener', t => {
+	const spy = sinon.spy();
+	const controller = new AbortController();
+	delegate(container, 'a', 'click', spy, {signal: controller.signal});
+	controller.abort();
+
+	const anchor = document.querySelector('a');
+	anchor.click();
+	t.true(spy.notCalled);
 });
 
 test.serial('should add event listeners to all the elements in a base selector', t => {
@@ -71,17 +83,28 @@ test.serial('should add event listeners to all the elements in a base selector',
 });
 
 test.serial('should remove the event listeners from all the elements in a base selector', t => {
-	const items = document.querySelectorAll('li');
-	const spies = Array.prototype.map.call(items, li => sinon.spy(li, 'removeEventListener'));
+	const spy = sinon.spy();
+	const controller = delegate('li', 'a', 'click', spy);
+	controller.abort();
 
-	const delegation = delegate('li', 'a', 'click', () => {});
-	delegation.destroy();
+	for (const anchor of document.querySelectorAll('a')) {
+		anchor.click();
+	}
 
-	t.true(spies.every(spy => {
-		const success = spy.calledOnce;
-		spy.restore();
-		return success;
-	}));
+	t.true(spy.notCalled);
+});
+
+test.serial('should pass an AbortSignal to the event listeners on all the elements in a base selector', t => {
+	const spy = sinon.spy();
+	const controller = new AbortController();
+	delegate('li', 'a', 'click', spy, {signal: controller.signal});
+	controller.abort();
+
+	for (const anchor of document.querySelectorAll('a')) {
+		anchor.click();
+	}
+
+	t.true(spy.notCalled);
 });
 
 test.serial('should add event listeners to all the elements in a base array', t => {
@@ -96,22 +119,43 @@ test.serial('should add event listeners to all the elements in a base array', t 
 });
 
 test.serial('should remove the event listeners from all the elements in a base array', t => {
+	const spy = sinon.spy();
 	const items = document.querySelectorAll('li');
-	const spies = Array.prototype.map.call(items, li => sinon.spy(li, 'removeEventListener'));
+	const controller = delegate(items, 'a', 'click', spy);
+	controller.abort();
 
-	const delegation = delegate(items, 'a', 'click', () => {});
-	delegation.destroy();
+	for (const anchor of document.querySelectorAll('a')) {
+		anchor.click();
+	}
 
-	t.true(spies.every(spy => {
-		const success = spy.calledOnce;
-		spy.restore();
-		return success;
-	}));
+	t.true(spy.notCalled);
+});
+
+test.serial('should pass an AbortSignal to the event listeners on all the elements in a base array', t => {
+	const spy = sinon.spy();
+	const items = document.querySelectorAll('li');
+	const controller = new AbortController();
+	delegate(items, 'a', 'click', spy, {signal: controller.signal});
+	controller.abort();
+
+	for (const anchor of document.querySelectorAll('a')) {
+		anchor.click();
+	}
+
+	t.true(spy.notCalled);
 });
 
 test.serial('should not fire when the selector matches an ancestor of the base element', t => {
 	const spy = sinon.spy();
 	delegate(container, 'body', 'click', spy);
+
+	anchor.click();
+	t.true(spy.notCalled);
+});
+
+test.serial('should not add an event listener when passed an already aborted signal', t => {
+	const spy = sinon.spy(container, 'addEventListener');
+	delegate(container, 'a', 'click', spy, {signal: AbortSignal.abort()});
 
 	anchor.click();
 	t.true(spy.notCalled);

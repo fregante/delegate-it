@@ -5,10 +5,6 @@ export type EventType = keyof GlobalEventHandlersEventMap;
 type GlobalEvent = Event;
 
 namespace delegate {
-	export type Subscription = {
-		destroy: VoidFunction;
-	};
-
 	export type EventHandler<
 		TEvent extends GlobalEvent = GlobalEvent,
 		TElement extends Element = Element,
@@ -95,7 +91,7 @@ function delegate<
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions
-): delegate.Subscription;
+): AbortController;
 
 function delegate<
 	TElement extends Element = HTMLElement,
@@ -106,7 +102,7 @@ function delegate<
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions
-): delegate.Subscription;
+): AbortController;
 
 // This type isn't exported as a declaration, so it needs to be duplicated above
 function delegate<
@@ -118,7 +114,25 @@ function delegate<
 	type: TEventType,
 	callback: delegate.EventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions,
-): delegate.Subscription {
+): AbortController {
+	const internalController = new AbortController();
+	const listenerOptions: AddEventListenerOptions = typeof options === 'object' ? options : {capture: options};
+	// Drop unsupported `once` option https://github.com/fregante/delegate-it/pull/28#discussion_r863467939
+	delete listenerOptions.once;
+
+	if (listenerOptions.signal) {
+		if (listenerOptions.signal.aborted) {
+			internalController.abort();
+			return internalController;
+		}
+
+		listenerOptions.signal.addEventListener('abort', () => {
+			internalController.abort();
+		});
+	} else {
+		listenerOptions.signal = internalController.signal;
+	}
+
 	// Handle Selector-based usage
 	if (typeof base === 'string') {
 		base = document.querySelectorAll(base);
@@ -126,24 +140,11 @@ function delegate<
 
 	// Handle Array-like based usage
 	if (!isEventTarget(base)) {
-		const subscriptions = Array.prototype.map.call(
-			base,
-			(element: EventTarget) => delegate(
-				element,
-				selector,
-				type,
-				callback,
-				options,
-			),
-		) as delegate.Subscription[];
+		Array.prototype.forEach.call(base, element => {
+			delegate(element, selector, type, callback, listenerOptions);
+		});
 
-		return {
-			destroy(): void {
-				for (const subscription of subscriptions) {
-					subscription.destroy();
-				}
-			},
-		};
+		return internalController;
 	}
 
 	// `document` should never be the base, it's just an easy way to define "global event listeners"
@@ -159,25 +160,17 @@ function delegate<
 		}
 	};
 
-	// Drop unsupported `once` option https://github.com/fregante/delegate-it/pull/28#discussion_r863467939
-	if (typeof options === 'object') {
-		delete (options as AddEventListenerOptions).once;
-	}
-
 	const setup = JSON.stringify({selector, type, capture});
 	const isAlreadyListening = editLedger(true, baseElement, callback, setup);
-	const delegateSubscription = {
-		destroy() {
-			baseElement.removeEventListener(type, listenerFn, options);
-			editLedger(false, baseElement, callback, setup);
-		},
-	};
-
 	if (!isAlreadyListening) {
-		baseElement.addEventListener(type, listenerFn, options);
+		baseElement.addEventListener(type, listenerFn, listenerOptions);
 	}
 
-	return delegateSubscription;
+	internalController.signal.addEventListener('abort', () => {
+		editLedger(false, baseElement, callback, setup);
+	});
+
+	return internalController;
 }
 
 export default delegate;
