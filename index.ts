@@ -128,8 +128,6 @@ function delegate<
 
 		listenerOptions.signal.addEventListener('abort', () => {
 			internalController.abort();
-		}, {
-			once: true,
 		});
 	} else {
 		listenerOptions.signal = internalController.signal;
@@ -170,8 +168,6 @@ function delegate<
 
 	internalController.signal.addEventListener('abort', () => {
 		editLedger(false, baseElement, callback, setup);
-	}, {
-		once: true,
 	});
 
 	return internalController;
