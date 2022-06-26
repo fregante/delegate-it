@@ -1,4 +1,4 @@
-import type {ParseSelector} from 'typed-query-selector/parser';
+import type {ParseSelector} from 'typed-query-selector/parser.d.js';
 
 export type DelegateOptions = boolean | Omit<AddEventListenerOptions, 'once'>;
 export type EventType = keyof GlobalEventHandlersEventMap;

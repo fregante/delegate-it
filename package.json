@@ -46,7 +46,7 @@
 		"typed-query-selector": "^2.6.1"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^2.0.0",
+		"@sindresorhus/tsconfig": "^3.0.1",
 		"ava": "^4.3.0",
 		"jsdom": "^20.0.0",
 		"npm-run-all": "^4.1.5",
