@@ -53,7 +53,8 @@ test.serial('should handle events on text nodes', t => {
 
 test.serial('should remove an event listener', t => {
 	const spy = sinon.spy();
-	const controller = delegate(container, 'a', 'click', spy);
+	const controller = new AbortController();
+	delegate(container, 'a', 'click', spy, {signal: controller.signal});
 	controller.abort();
 
 	const anchor = document.querySelector('a');
@@ -84,7 +85,8 @@ test.serial('should add event listeners to all the elements in a base selector',
 
 test.serial('should remove the event listeners from all the elements in a base selector', t => {
 	const spy = sinon.spy();
-	const controller = delegate('li', 'a', 'click', spy);
+	const controller = new AbortController();
+	delegate('li', 'a', 'click', spy, {signal: controller.signal});
 	controller.abort();
 
 	for (const anchor of document.querySelectorAll('a')) {
@@ -121,7 +123,8 @@ test.serial('should add event listeners to all the elements in a base array', t 
 test.serial('should remove the event listeners from all the elements in a base array', t => {
 	const spy = sinon.spy();
 	const items = document.querySelectorAll('li');
-	const controller = delegate(items, 'a', 'click', spy);
+	const controller = new AbortController();
+	delegate(items, 'a', 'click', spy, {signal: controller.signal});
 	controller.abort();
 
 	for (const anchor of document.querySelectorAll('a')) {
