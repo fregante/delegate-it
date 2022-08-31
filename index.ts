@@ -88,7 +88,7 @@ function delegate<
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions
-): AbortController;
+): void;
 
 function delegate<
 	TElement extends Element = HTMLElement,
@@ -99,7 +99,7 @@ function delegate<
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions
-): AbortController;
+): void;
 
 // This type isn't exported as a declaration, so it needs to be duplicated above
 function delegate<
@@ -111,23 +111,15 @@ function delegate<
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions,
-): AbortController {
-	const internalController = new AbortController();
+): void {
 	const listenerOptions: AddEventListenerOptions = typeof options === 'object' ? options : {capture: options};
 	// Drop unsupported `once` option https://github.com/fregante/delegate-it/pull/28#discussion_r863467939
 	delete listenerOptions.once;
 
-	if (listenerOptions.signal) {
-		if (listenerOptions.signal.aborted) {
-			internalController.abort();
-			return internalController;
-		}
+	const {signal} = listenerOptions;
 
-		listenerOptions.signal.addEventListener('abort', () => {
-			internalController.abort();
-		});
-	} else {
-		listenerOptions.signal = internalController.signal;
+	if (signal?.aborted) {
+		return;
 	}
 
 	// Handle Selector-based usage
@@ -141,7 +133,7 @@ function delegate<
 			delegate(element, selector, type, callback, listenerOptions);
 		}
 
-		return internalController;
+		return;
 	}
 
 	// `document` should never be the base, it's just an easy way to define "global event listeners"
@@ -163,11 +155,9 @@ function delegate<
 		baseElement.addEventListener(type, listenerFn, listenerOptions);
 	}
 
-	internalController.signal.addEventListener('abort', () => {
+	signal?.addEventListener('abort', () => {
 		editLedger(false, baseElement, callback, setup);
 	});
-
-	return internalController;
 }
 
 export default delegate;
