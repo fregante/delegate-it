@@ -73,14 +73,6 @@ delegate(document.body, '.btn', 'click', event => {
 ### Remove event delegation
 
 ```js
-const controller = delegate(document.body, '.btn', 'click', event => {
-	console.log(event.delegateTarget);
-});
-
-controller.abort();
-```
-
-```js
 const controller = new AbortController();
 delegate(document.body, '.btn', 'click', event => {
 	console.log(event.delegateTarget);
