@@ -36,10 +36,6 @@ function editLedger(
 		?? new WeakMap<DelegateEventHandler, Set<string>>();
 	ledger.set(baseElement, elementMap);
 
-	if (!wanted && !ledger.has(baseElement)) {
-		return false;
-	}
-
 	const setups = elementMap.get(callback) ?? new Set<string>();
 	elementMap.set(callback, setups);
 
