@@ -1,5 +1,5 @@
-import test from 'ava';
-import {container, anchor} from './ava.setup.js';
+import {test, assert as t} from 'vitest';
+import {container, anchor} from './vitest.setup.js';
 import oneEvent from './one-event.js';
 
 test.serial('should resolve after one event', async t => {

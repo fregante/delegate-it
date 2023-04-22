@@ -34,10 +34,9 @@
 	"scripts": {
 		"build": "tsc",
 		"prepack": "tsc --sourceMap false",
-		"test": "tsc && xo && ava",
-		"watch": "run-p --silent watch:*",
-		"watch:build": "tsc --watch",
-		"watch:test": "ava --watch"
+		"test": "tsc && xo && vitest run",
+		"watch": "tsc --watch",
+		"watch:test": "vitest"
 	},
 	"xo": {
 		"envs": [
@@ -53,11 +52,11 @@
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^3.0.1",
-		"ava": "^5.2.0",
 		"jsdom": "^21.1.1",
 		"npm-run-all": "^4.1.5",
 		"sinon": "^15.0.4",
 		"typescript": "^5.0.4",
+		"vitest": "^0.30.1",
 		"xo": "^0.54.1"
 	}
 }
