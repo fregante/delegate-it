@@ -1,5 +1,10 @@
 import type {ParseSelector} from 'typed-query-selector/parser.d.js';
-import delegate, {castAddEventListenerOptions, type DelegateEvent, type DelegateOptions, type EventType} from './lib.js';
+import delegate, {
+	castAddEventListenerOptions,
+	type DelegateEvent,
+	type DelegateOptions,
+	type EventType,
+} from './delegate.js';
 
 /**
  * Delegates event to a selector and resolves after the first event

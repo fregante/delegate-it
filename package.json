@@ -26,8 +26,8 @@
 	"files": [
 		"index.js",
 		"index.d.ts",
-		"lib.js",
-		"lib.d.ts",
+		"delegate.js",
+		"delegate.d.ts",
 		"one-event.js",
 		"one-event.d.ts"
 	],

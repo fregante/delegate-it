@@ -1,27 +1,7 @@
 import test from 'ava';
 import sinon from 'sinon';
-import {JSDOM} from 'jsdom';
-import delegate from './lib.js';
-
-const {window} = new JSDOM(`
-	<ul>
-		<li><a>Item 1</a></li>
-		<li><a>Item 2</a></li>
-		<li><a>Item 3</a></li>
-		<li><a>Item 4</a></li>
-		<li><a>Item 5</a></li>
-	</ul>
-`);
-
-global.Text = window.Text;
-global.Event = window.Event;
-global.Element = window.Element;
-global.Document = window.Document;
-global.MouseEvent = window.MouseEvent;
-global.AbortController = window.AbortController;
-global.document = window.document;
-const container = window.document.querySelector('ul');
-const anchor = window.document.querySelector('a');
+import {container, anchor} from './ava.setup.js';
+import delegate from './delegate.js';
 
 test.serial('should add an event listener', t => {
 	delegate(container, 'a', 'click', t.pass);
@@ -43,7 +23,7 @@ test.serial('should remove an event listener', t => {
 	t.true(spy.notCalled);
 });
 
-test.serial('should not add an event listener of the controller has already aborted', async t => {
+test.serial('should not add an event listener of the controller has already aborted', t => {
 	const spy = sinon.spy();
 	delegate(container, 'a', 'click', spy, {signal: AbortSignal.abort()});
 
