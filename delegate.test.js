@@ -1,48 +1,51 @@
-import {test, assert as t} from 'vitest';
-import sinon from 'sinon';
+import {test, vi, expect} from 'vitest';
 import {container, anchor} from './vitest.setup.js';
 import delegate from './delegate.js';
 
-test.serial('should add an event listener', () => {
-	delegate(container, 'a', 'click', t.pass);
+test('should add an event listener', () => {
+	const spy = vi.fn();
+	delegate(container, 'a', 'click', spy);
 	anchor.click();
+	expect(spy).toHaveBeenCalledTimes(1);
 });
 
-test.serial('should handle events on text nodes', () => {
-	delegate(container, 'a', 'click', t.pass);
+test('should handle events on text nodes', () => {
+	const spy = vi.fn();
+	delegate(container, 'a', 'click', spy);
 	anchor.firstChild.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+	expect(spy).toHaveBeenCalledTimes(1);
 });
 
-test.serial('should remove an event listener', () => {
-	const spy = sinon.spy();
+test('should remove an event listener', () => {
+	const spy = vi.fn();
 	const controller = new AbortController();
 	delegate(container, 'a', 'click', spy, {signal: controller.signal});
 	controller.abort();
 
 	anchor.click();
-	t.true(spy.notCalled);
+	expect(spy).toHaveBeenCalledTimes(0);
 });
 
-test.serial('should not add an event listener of the controller has already aborted', () => {
-	const spy = sinon.spy();
+test('should not add an event listener of the controller has already aborted', () => {
+	const spy = vi.fn();
 	delegate(container, 'a', 'click', spy, {signal: AbortSignal.abort()});
 
 	anchor.click();
-	t.true(spy.notCalled);
+	expect(spy).toHaveBeenCalledTimes(0);
 });
 
-test.serial('should add event listeners to all the elements in a base selector', () => {
-	const spy = sinon.spy();
+test('should add event listeners to all the elements in a base selector', () => {
+	const spy = vi.fn();
 	delegate('li', 'a', 'click', spy);
 
 	const anchors = document.querySelectorAll('a');
 	anchors[0].click();
 	anchors[1].click();
-	t.true(spy.calledTwice);
+	expect(spy).toHaveBeenCalledTimes(2);
 });
 
-test.serial('should remove the event listeners from all the elements in a base selector', () => {
-	const spy = sinon.spy();
+test('should remove the event listeners from all the elements in a base selector', () => {
+	const spy = vi.fn();
 	const controller = new AbortController();
 	delegate('li', 'a', 'click', spy, {signal: controller.signal});
 	controller.abort();
@@ -51,11 +54,11 @@ test.serial('should remove the event listeners from all the elements in a base s
 		anchor.click();
 	}
 
-	t.true(spy.notCalled);
+	expect(spy).toHaveBeenCalledTimes(0);
 });
 
-test.serial('should pass an AbortSignal to the event listeners on all the elements in a base selector', () => {
-	const spy = sinon.spy();
+test('should pass an AbortSignal to the event listeners on all the elements in a base selector', () => {
+	const spy = vi.fn();
 	const controller = new AbortController();
 	delegate('li', 'a', 'click', spy, {signal: controller.signal});
 	controller.abort();
@@ -64,22 +67,22 @@ test.serial('should pass an AbortSignal to the event listeners on all the elemen
 		anchor.click();
 	}
 
-	t.true(spy.notCalled);
+	expect(spy).toHaveBeenCalledTimes(0);
 });
 
-test.serial('should add event listeners to all the elements in a base array', () => {
-	const spy = sinon.spy();
+test('should add event listeners to all the elements in a base array', () => {
+	const spy = vi.fn();
 	const items = document.querySelectorAll('li');
 	delegate(items, 'a', 'click', spy);
 
 	const anchors = document.querySelectorAll('a');
 	anchors[0].click();
 	anchors[1].click();
-	t.true(spy.calledTwice);
+	expect(spy).toHaveBeenCalledTimes(2);
 });
 
-test.serial('should remove the event listeners from all the elements in a base array', () => {
-	const spy = sinon.spy();
+test('should remove the event listeners from all the elements in a base array', () => {
+	const spy = vi.fn();
 	const items = document.querySelectorAll('li');
 	const controller = new AbortController();
 	delegate(items, 'a', 'click', spy, {signal: controller.signal});
@@ -89,11 +92,11 @@ test.serial('should remove the event listeners from all the elements in a base a
 		anchor.click();
 	}
 
-	t.true(spy.notCalled);
+	expect(spy).toHaveBeenCalledTimes(0);
 });
 
-test.serial('should pass an AbortSignal to the event listeners on all the elements in a base array', () => {
-	const spy = sinon.spy();
+test('should pass an AbortSignal to the event listeners on all the elements in a base array', () => {
+	const spy = vi.fn();
 	const items = document.querySelectorAll('li');
 	const controller = new AbortController();
 	delegate(items, 'a', 'click', spy, {signal: controller.signal});
@@ -103,68 +106,69 @@ test.serial('should pass an AbortSignal to the event listeners on all the elemen
 		anchor.click();
 	}
 
-	t.true(spy.notCalled);
+	expect(spy).toHaveBeenCalledTimes(0);
 });
 
-test.serial('should not fire when the selector matches an ancestor of the base element', () => {
-	const spy = sinon.spy();
+test('should not fire when the selector matches an ancestor of the base element', () => {
+	const spy = vi.fn();
 	delegate(container, 'body', 'click', spy);
 
 	anchor.click();
-	t.true(spy.notCalled);
+	expect(spy).toHaveBeenCalledTimes(0);
 });
 
-test.serial('should not add an event listener when passed an already aborted signal', () => {
-	const spy = sinon.spy(container, 'addEventListener');
+test('should not add an event listener when passed an already aborted signal', () => {
+	const spy = vi.spyOn(container, 'addEventListener');
 	delegate(container, 'a', 'click', spy, {signal: AbortSignal.abort()});
 
 	anchor.click();
-	t.true(spy.notCalled);
+	expect(spy).toHaveBeenCalledTimes(0);
 });
 
-test.serial('should call the listener once with the `once` option', () => {
-	const spy = sinon.spy();
+test('should call the listener once with the `once` option', () => {
+	const spy = vi.fn();
 	delegate(container, 'a', 'click', spy, {once: true});
 
 	container.click();
-	t.true(spy.notCalled, 'It should not be called on the container');
+	expect(spy).toHaveBeenCalledTimes(0); // It should not be called on the container
 	anchor.click();
-	t.true(spy.calledOnce, 'It should be called on the delegate target');
+	expect(spy).toHaveBeenCalledTimes(1); // It should be called on the delegate target
 	anchor.click();
-	t.true(spy.calledOnce, 'It should not be called again on the delegate target');
+	expect(spy).toHaveBeenCalledTimes(1); // It should not be called again on the delegate target
 });
 
-test.serial('should add a specific event listener only once', () => {
-	t.plan(2);
+test('should add a specific event listener only once', () => {
+	const spy = vi.fn();
 
 	// Only deduplicates the `capture` flag
 	// https://github.com/fregante/delegate-it/pull/11#discussion_r285481625
 
 	// Capture: false
-	delegate(container, 'a', 'click', t.pass);
-	delegate(container, 'a', 'click', t.pass, {passive: true});
-	delegate(container, 'a', 'click', t.pass, {capture: false});
+	delegate(container, 'a', 'click', spy);
+	delegate(container, 'a', 'click', spy, {passive: true});
+	delegate(container, 'a', 'click', spy, {capture: false});
 
 	// Capture: true
-	delegate(container, 'a', 'click', t.pass, true);
-	delegate(container, 'a', 'click', t.pass, {capture: true});
+	delegate(container, 'a', 'click', spy, true);
+	delegate(container, 'a', 'click', spy, {capture: true});
 
 	// Once
-	delegate(container, 'a', 'click', t.pass, {once: true});
-	delegate(container, 'a', 'click', t.pass, {once: false});
+	delegate(container, 'a', 'click', spy, {once: true});
+	delegate(container, 'a', 'click', spy, {once: false});
 
 	anchor.click();
+	expect(spy).toHaveBeenCalledTimes(2);
 });
 
-test.serial('should deduplicate identical listeners added after `once:true`', () => {
-	const spy = sinon.spy();
+test('should deduplicate identical listeners added after `once:true`', () => {
+	const spy = vi.fn();
 	delegate(container, 'a', 'click', spy, {once: true});
 	delegate(container, 'a', 'click', spy, {once: false});
 
 	container.click();
-	t.true(spy.notCalled, 'It should not be called on the container');
+	expect(spy).toHaveBeenCalledTimes(0); // It should not be called on the container
 	anchor.click();
-	t.true(spy.calledOnce, 'It should be called on the delegate target');
+	expect(spy).toHaveBeenCalledTimes(1); // It should be called on the delegate target
 	anchor.click();
-	t.true(spy.calledOnce, 'It should not be called again on the delegate target');
+	expect(spy).toHaveBeenCalledTimes(1); // It should not be called again on the delegate target
 });
