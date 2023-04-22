@@ -169,9 +169,9 @@ test.serial('should called the listener once with the `once` option', t => {
 	delegate(container, 'a', 'click', spy, {once: true});
 
 	container.click();
-	t.true(spy.notCalled);
+	t.true(spy.notCalled, 'It should not be called on the container');
 	anchor.click();
-	t.true(spy.calledOnce);
+	t.true(spy.calledOnce, 'It should be called on the delegate target');
 	anchor.click();
-	t.true(spy.calledOnce);
+	t.true(spy.calledOnce, 'It should not be called again on the delegate target');
 });
