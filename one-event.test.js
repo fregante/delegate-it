@@ -23,19 +23,24 @@ global.document = window.document;
 const container = window.document.querySelector('ul');
 const anchor = window.document.querySelector('a');
 
-test.serial('should add an event listener', async t => {
+test.serial('should resolve after one event', async t => {
 	const promise = oneEvent(container, 'a', 'click');
 	anchor.click();
 	const event = await promise;
 	t.true(event instanceof MouseEvent);
 });
 
-test.serial('should remove an event listener', async t => {
-	const spy = sinon.spy();
+test.serial('should resolve with `undefined` after it’s aborted', async t => {
 	const controller = new AbortController();
 	const promise = oneEvent(container, 'a', 'click', {signal: controller.signal});
 	controller.abort();
 
+	const event = await promise;
+	t.is(event, undefined);
+});
+
+test.serial('should resolve with `undefined` if the signal has already aborted', async t => {
+	const promise = oneEvent(container, 'a', 'click', {signal: AbortSignal.abort()});
 	const event = await promise;
 	t.is(event, undefined);
 });

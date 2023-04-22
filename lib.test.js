@@ -39,7 +39,14 @@ test.serial('should remove an event listener', t => {
 	delegate(container, 'a', 'click', spy, {signal: controller.signal});
 	controller.abort();
 
-	const anchor = document.querySelector('a');
+	anchor.click();
+	t.true(spy.notCalled);
+});
+
+test.serial('should not add an event listener of the controller has already aborted', async t => {
+	const spy = sinon.spy();
+	delegate(container, 'a', 'click', spy, {signal: AbortSignal.abort()});
+
 	anchor.click();
 	t.true(spy.notCalled);
 });
