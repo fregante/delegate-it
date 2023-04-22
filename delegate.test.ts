@@ -12,7 +12,7 @@ test('should add an event listener', () => {
 test('should handle events on text nodes', () => {
 	const spy = vi.fn();
 	delegate(container, 'a', 'click', spy);
-	anchor.firstChild.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+	anchor.firstChild!.dispatchEvent(new MouseEvent('click', {bubbles: true}));
 	expect(spy).toHaveBeenCalledTimes(1);
 });
 
@@ -119,7 +119,7 @@ test('should not fire when the selector matches an ancestor of the base element'
 
 test('should not add an event listener when passed an already aborted signal', () => {
 	const spy = vi.spyOn(container, 'addEventListener');
-	delegate(container, 'a', 'click', spy, {signal: AbortSignal.abort()});
+	delegate(container, 'a', 'click', () => ({}), {signal: AbortSignal.abort()});
 
 	anchor.click();
 	expect(spy).toHaveBeenCalledTimes(0);

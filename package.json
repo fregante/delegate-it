@@ -52,8 +52,8 @@
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^3.0.1",
+		"@types/jsdom": "^21.1.1",
 		"jsdom": "^21.1.1",
-		"npm-run-all": "^4.1.5",
 		"typescript": "^5.0.4",
 		"vitest": "^0.30.1",
 		"xo": "^0.54.1"
