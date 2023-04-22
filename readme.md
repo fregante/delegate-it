@@ -68,16 +68,6 @@ delegate(document.body, '.btn', 'click', event => {
 });
 ```
 
-#### Listen to one event only
-
-```js
-delegate(document.body, '.btn', 'click', event => {
-	console.log('This will only be called once');
-}, {
-	once: true
-});
-```
-
 ### Remove event delegation
 
 ```js
@@ -89,6 +79,25 @@ delegate(document.body, '.btn', 'click', event => {
 });
 
 controller.abort();
+```
+
+#### Listen to one event only
+
+```js
+delegate(document.body, '.btn', 'click', event => {
+	console.log('This will only be called once');
+}, {
+	once: true
+});
+```
+
+#### Listen to one event only, with a promise
+
+```js
+import {oneEvent} from 'delegate-it';
+
+await oneEvent(document.body, '.btn', 'click');
+console.log('The body was clicked');
 ```
 
 ### Custom event types in Typescript
