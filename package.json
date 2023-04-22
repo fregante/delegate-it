@@ -16,11 +16,13 @@
 		"event"
 	],
 	"repository": "fregante/delegate-it",
+	"funding": "https://github.com/sponsors/fregante",
 	"license": "MIT",
 	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
 	"type": "module",
-	"main": "index.js",
-	"module": "index.js",
+	"exports": "./index.js",
+	"main": "./index.js",
+	"types": "./index.d.ts",
 	"files": [
 		"index.js",
 		"index.d.ts"
@@ -43,15 +45,15 @@
 		}
 	},
 	"dependencies": {
-		"typed-query-selector": "^2.6.1"
+		"typed-query-selector": "^2.10.0"
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^3.0.1",
-		"ava": "^4.3.0",
-		"jsdom": "^20.0.0",
+		"ava": "^5.2.0",
+		"jsdom": "^21.1.1",
 		"npm-run-all": "^4.1.5",
-		"sinon": "^14.0.0",
-		"typescript": "^4.7.4",
-		"xo": "^0.50.0"
+		"sinon": "^15.0.4",
+		"typescript": "^5.0.4",
+		"xo": "^0.54.1"
 	}
 }
