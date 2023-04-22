@@ -4,6 +4,8 @@
 		"target": "es2021"
 	},
 	"files": [
-		"index.ts"
+		"index.ts",
+		"lib.ts",
+		"one-event.ts"
 	]
 }

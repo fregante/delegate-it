@@ -1,7 +1,7 @@
 import test from 'ava';
 import sinon from 'sinon';
 import {JSDOM} from 'jsdom';
-import delegate from './index.js';
+import delegate from './lib.js';
 
 const {window} = new JSDOM(`
 	<ul>
@@ -34,17 +34,6 @@ test.serial('should handle events on text nodes', t => {
 });
 
 test.serial('should remove an event listener', t => {
-	const spy = sinon.spy();
-	const controller = new AbortController();
-	delegate(container, 'a', 'click', spy, {signal: controller.signal});
-	controller.abort();
-
-	const anchor = document.querySelector('a');
-	anchor.click();
-	t.true(spy.notCalled);
-});
-
-test.serial('should pass an AbortSignal to an event listener', t => {
 	const spy = sinon.spy();
 	const controller = new AbortController();
 	delegate(container, 'a', 'click', spy, {signal: controller.signal});
