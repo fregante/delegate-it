@@ -1,6 +1,6 @@
 import type {ParseSelector} from 'typed-query-selector/parser.d.js';
 
-export type DelegateOptions = boolean | Omit<AddEventListenerOptions, 'once'>;
+export type DelegateOptions = boolean | AddEventListenerOptions;
 export type EventType = keyof GlobalEventHandlersEventMap;
 
 export type DelegateEventHandler<
@@ -72,7 +72,7 @@ function safeClosest(event: Event, selector: string): Element | void {
 
 /**
  * Delegates event to a selector.
- * @param options A boolean value setting options.capture or an options object of type AddEventListenerOptions without the `once` option
+ * @param options A boolean value setting options.capture or an options object of type AddEventListenerOptions
  */
 function delegate<
 	Selector extends string,
@@ -109,8 +109,6 @@ function delegate<
 	options?: DelegateOptions,
 ): void {
 	const listenerOptions: AddEventListenerOptions = typeof options === 'object' ? options : {capture: options};
-	// Drop unsupported `once` option https://github.com/fregante/delegate-it/pull/28#discussion_r863467939
-	delete listenerOptions.once;
 
 	const {signal} = listenerOptions;
 
@@ -132,6 +130,9 @@ function delegate<
 		return;
 	}
 
+	// Don't pass `once` to `addEventListener` because it needs to be handled in `delegate-it`
+	const {once, ...nativeListenerOptions} = listenerOptions;
+
 	// `document` should never be the base, it's just an easy way to define "global event listeners"
 	const baseElement = base instanceof Document ? base.documentElement : base;
 
@@ -142,13 +143,17 @@ function delegate<
 		if (delegateTarget) {
 			const delegateEvent = Object.assign(event, {delegateTarget});
 			callback.call(baseElement, delegateEvent as DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement>);
+			if (once) {
+				baseElement.removeEventListener(type, listenerFn, nativeListenerOptions);
+				editLedger(false, baseElement, callback, setup);
+			}
 		}
 	};
 
 	const setup = JSON.stringify({selector, type, capture});
 	const isAlreadyListening = editLedger(true, baseElement, callback, setup);
 	if (!isAlreadyListening) {
-		baseElement.addEventListener(type, listenerFn, listenerOptions);
+		baseElement.addEventListener(type, listenerFn, nativeListenerOptions);
 	}
 
 	signal?.addEventListener('abort', () => {

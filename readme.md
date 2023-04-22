@@ -68,7 +68,15 @@ delegate(document.body, '.btn', 'click', event => {
 });
 ```
 
-**Note:** the `once` option is currently not supported.
+#### Listen to one event only
+
+```js
+delegate(document.body, '.btn', 'click', event => {
+	console.log('This will only be called once');
+}, {
+	once: true
+});
+```
 
 ### Remove event delegation
 
