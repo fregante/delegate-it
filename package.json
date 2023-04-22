@@ -25,7 +25,11 @@
 	"types": "./index.d.ts",
 	"files": [
 		"index.js",
-		"index.d.ts"
+		"index.d.ts",
+		"delegate.js",
+		"delegate.d.ts",
+		"one-event.js",
+		"one-event.d.ts"
 	],
 	"scripts": {
 		"build": "tsc",
