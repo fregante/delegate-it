@@ -28,24 +28,6 @@ test.serial('should add an event listener', t => {
 	anchor.click();
 });
 
-test.serial('should add an event listener only once', t => {
-	t.plan(2);
-
-	// Only deduplicates the `capture` flag
-	// https://github.com/fregante/delegate-it/pull/11#discussion_r285481625
-
-	// Capture: false
-	delegate(container, 'a', 'click', t.pass);
-	delegate(container, 'a', 'click', t.pass, {passive: true});
-	delegate(container, 'a', 'click', t.pass, {capture: false});
-
-	// Capture: true
-	delegate(container, 'a', 'click', t.pass, true);
-	delegate(container, 'a', 'click', t.pass, {capture: true});
-
-	anchor.click();
-});
-
 test.serial('should handle events on text nodes', t => {
 	delegate(container, 'a', 'click', t.pass);
 	anchor.firstChild.dispatchEvent(new MouseEvent('click', {bubbles: true}));
@@ -164,9 +146,44 @@ test.serial('should not add an event listener when passed an already aborted sig
 	t.true(spy.notCalled);
 });
 
-test.serial('should called the listener once with the `once` option', t => {
+test.serial('should call the listener once with the `once` option', t => {
 	const spy = sinon.spy();
 	delegate(container, 'a', 'click', spy, {once: true});
+
+	container.click();
+	t.true(spy.notCalled, 'It should not be called on the container');
+	anchor.click();
+	t.true(spy.calledOnce, 'It should be called on the delegate target');
+	anchor.click();
+	t.true(spy.calledOnce, 'It should not be called again on the delegate target');
+});
+
+test.serial('should add a specific event listener only once', t => {
+	t.plan(2);
+
+	// Only deduplicates the `capture` flag
+	// https://github.com/fregante/delegate-it/pull/11#discussion_r285481625
+
+	// Capture: false
+	delegate(container, 'a', 'click', t.pass);
+	delegate(container, 'a', 'click', t.pass, {passive: true});
+	delegate(container, 'a', 'click', t.pass, {capture: false});
+
+	// Capture: true
+	delegate(container, 'a', 'click', t.pass, true);
+	delegate(container, 'a', 'click', t.pass, {capture: true});
+
+	// Once
+	delegate(container, 'a', 'click', t.pass, {once: true});
+	delegate(container, 'a', 'click', t.pass, {once: false});
+
+	anchor.click();
+});
+
+test.serial('should deduplicate identical listeners added after `once:true`', t => {
+	const spy = sinon.spy();
+	delegate(container, 'a', 'click', spy, {once: true});
+	delegate(container, 'a', 'click', spy, {once: false});
 
 	container.click();
 	t.true(spy.notCalled, 'It should not be called on the container');

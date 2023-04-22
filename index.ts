@@ -145,6 +145,7 @@ function delegate<
 			callback.call(baseElement, delegateEvent as DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement>);
 			if (once) {
 				baseElement.removeEventListener(type, listenerFn, nativeListenerOptions);
+				editLedger(false, baseElement, callback, setup);
 			}
 		}
 	};
