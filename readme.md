@@ -32,23 +32,7 @@ import delegate from 'delegate-it';
 #### With an element as base
 
 ```js
-delegate(document.body, '.btn', 'click', event => {
-	console.log(event.delegateTarget);
-});
-```
-
-#### With a selector (of existing elements) as base
-
-```js
-delegate('.container', '.btn', 'click', event => {
-	console.log(event.delegateTarget);
-});
-```
-
-#### With an array/array-like of elements as base
-
-```js
-delegate(document.querySelectorAll('.container'), '.btn', 'click', event => {
+delegate(document, '.btn', 'click', event => {
 	console.log(event.delegateTarget);
 });
 ```
@@ -56,12 +40,12 @@ delegate(document.querySelectorAll('.container'), '.btn', 'click', event => {
 #### With listener options
 
 ```js
-delegate(document.body, '.btn', 'click', event => {
+delegate(document, '.btn', 'click', event => {
 	console.log(event.delegateTarget);
 }, true);
 
 // Or equivalent:
-delegate(document.body, '.btn', 'click', event => {
+delegate(document, '.btn', 'click', event => {
 	console.log(event.delegateTarget);
 }, {
 	capture: true
@@ -72,7 +56,7 @@ delegate(document.body, '.btn', 'click', event => {
 
 ```js
 const controller = new AbortController();
-delegate(document.body, '.btn', 'click', event => {
+delegate(document, '.btn', 'click', event => {
 	console.log(event.delegateTarget);
 }, {
 	signal: controller.signal,
@@ -84,7 +68,7 @@ controller.abort();
 #### Listen to one event only
 
 ```js
-delegate(document.body, '.btn', 'click', event => {
+delegate(document, '.btn', 'click', event => {
 	console.log('This will only be called once');
 }, {
 	once: true
@@ -96,7 +80,7 @@ delegate(document.body, '.btn', 'click', event => {
 ```js
 import {oneEvent} from 'delegate-it';
 
-await oneEvent(document.body, '.btn', 'click');
+await oneEvent(document, '.btn', 'click');
 console.log('The body was clicked');
 ```
 
