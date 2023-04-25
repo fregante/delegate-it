@@ -1,7 +1,7 @@
 import type {ParseSelector} from 'typed-query-selector/parser.d.js';
 import delegate, {
 	type DelegateEvent,
-	type DelegateOptions,
+	type OneEventOptions,
 	type EventType,
 } from './delegate.js';
 
@@ -15,7 +15,7 @@ async function oneEvent<
 >(
 	selector: Selector,
 	type: TEventType,
-	options?: DelegateOptions
+	options?: OneEventOptions
 ): Promise<DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement>>;
 
 async function oneEvent<
@@ -24,7 +24,7 @@ async function oneEvent<
 >(
 	selector: string,
 	type: TEventType,
-	options?: DelegateOptions
+	options?: OneEventOptions
 ): Promise<DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement>>;
 
 // This type isn't exported as a declaration, so it needs to be duplicated above
@@ -34,7 +34,7 @@ async function oneEvent<
 >(
 	selector: string,
 	type: TEventType,
-	options: DelegateOptions = {},
+	options: OneEventOptions = {},
 ): Promise<DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement> | undefined> {
 	return new Promise(resolve => {
 		options.once = true;
@@ -50,9 +50,12 @@ async function oneEvent<
 		delegate(
 			selector,
 			type,
-			// @ts-expect-error Seems to work fine
-			resolve,
-			options,
+			{
+				...options,
+
+				// @ts-expect-error Seems to work fine
+				callback: resolve,
+			},
 		);
 	});
 }
