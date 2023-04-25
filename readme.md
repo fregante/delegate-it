@@ -5,7 +5,7 @@
 
 > Lightweight event delegation
 
-This is a fork of the popular [`delegate`](https://github.com/zenorocha/delegate) with some improvements:
+This is a fork of the popular but abandoned [`delegate`](https://github.com/zenorocha/delegate) with some improvements:
 
 - modern: ES2021, TypeScript, Edge 16+ (it uses `WeakMap` and `Element.closest()`)
 - idempotent: identical listeners aren't added multiple times, just like the native `addEventListener`
@@ -29,34 +29,16 @@ import delegate from 'delegate-it';
 
 ### Add event delegation
 
-#### With an element as base
-
 ```js
-delegate(document.body, '.btn', 'click', event => {
+delegate(document, '.btn', 'click', event => {
 	console.log(event.delegateTarget);
 });
 ```
 
-#### With a selector (of existing elements) as base
+### With listener options
 
 ```js
-delegate('.container', '.btn', 'click', event => {
-	console.log(event.delegateTarget);
-});
-```
-
-#### With an array/array-like of elements as base
-
-```js
-delegate(document.querySelectorAll('.container'), '.btn', 'click', event => {
-	console.log(event.delegateTarget);
-});
-```
-
-#### With listener options
-
-```js
-delegate(document.body, '.btn', 'click', event => {
+delegate(document, '.btn', 'click', event => {
 	console.log(event.delegateTarget);
 }, {
 	capture: true
@@ -67,7 +49,7 @@ delegate(document.body, '.btn', 'click', event => {
 
 ```js
 const controller = new AbortController();
-delegate(document.body, '.btn', 'click', event => {
+delegate(document, '.btn', 'click', event => {
 	console.log(event.delegateTarget);
 }, {
 	signal: controller.signal,
@@ -76,26 +58,26 @@ delegate(document.body, '.btn', 'click', event => {
 controller.abort();
 ```
 
-#### Listen to one event only
+### Listen to one event only
 
 ```js
-delegate(document.body, '.btn', 'click', event => {
+delegate(document, '.btn', 'click', event => {
 	console.log('This will only be called once');
 }, {
 	once: true
 });
 ```
 
-#### Listen to one event only, with a promise
+### Listen to one event only, with a promise
 
 ```js
 import {oneEvent} from 'delegate-it';
 
-await oneEvent(document.body, '.btn', 'click');
+await oneEvent(document, '.btn', 'click');
 console.log('The body was clicked');
 ```
 
-### Custom event types in Typescript
+## TypeScript
 
 If you're using TypeScript and have event types that are custom, you can override the global `GlobalEventHandlersEventMap` interface via declaration merging. e.g. say you have a `types/globals.d.ts` file, you can add the following.
 

@@ -23,7 +23,7 @@ WeakMap<DelegateEventHandler, Set<string>>
 
 function editLedger(
 	wanted: boolean,
-	baseElement: EventTarget | Document,
+	baseElement: EventTarget,
 	callback: DelegateEventHandler<any, any>,
 	setup: string,
 ): boolean {
@@ -47,12 +47,6 @@ function editLedger(
 	}
 
 	return existed && wanted;
-}
-
-function isEventTarget(
-	elements: EventTarget | Document | Iterable<Element> | string,
-): elements is EventTarget {
-	return typeof (elements as EventTarget).addEventListener === 'function';
 }
 
 function safeClosest(event: Event, selector: string): Element | void {
@@ -79,7 +73,7 @@ function delegate<
 	TElement extends Element = ParseSelector<Selector, HTMLElement>,
 	TEventType extends EventType = EventType,
 >(
-	base: EventTarget | Document | Iterable<Element> | string,
+	base: EventTarget,
 	selector: Selector,
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
@@ -90,7 +84,7 @@ function delegate<
 	TElement extends Element = HTMLElement,
 	TEventType extends EventType = EventType,
 >(
-	base: EventTarget | Document | Iterable<Element> | string,
+	base: EventTarget,
 	selector: string,
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
@@ -102,7 +96,7 @@ function delegate<
 	TElement extends Element,
 	TEventType extends EventType = EventType,
 >(
-	base: EventTarget | Document | Iterable<Element> | string,
+	base: EventTarget,
 	selector: string,
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
@@ -111,20 +105,6 @@ function delegate<
 	const {signal} = options;
 
 	if (signal?.aborted) {
-		return;
-	}
-
-	// Handle Selector-based usage
-	if (typeof base === 'string') {
-		base = document.querySelectorAll(base);
-	}
-
-	// Handle Array-like based usage
-	if (!isEventTarget(base)) {
-		for (const element of base) {
-			delegate(element, selector, type, callback, listenerOptions);
-		}
-
 		return;
 	}
 
