@@ -14,7 +14,7 @@ async function oneEvent<
 	TElement extends Element = ParseSelector<Selector, HTMLElement>,
 	TEventType extends EventType = EventType,
 >(
-	base: EventTarget | Document | Iterable<Element> | string,
+	base: EventTarget,
 	selector: Selector,
 	type: TEventType,
 	options?: DelegateOptions
@@ -24,7 +24,7 @@ async function oneEvent<
 	TElement extends Element = HTMLElement,
 	TEventType extends EventType = EventType,
 >(
-	base: EventTarget | Document | Iterable<Element> | string,
+	base: EventTarget,
 	selector: string,
 	type: TEventType,
 	options?: DelegateOptions
@@ -35,7 +35,7 @@ async function oneEvent<
 	TElement extends Element,
 	TEventType extends EventType = EventType,
 >(
-	base: EventTarget | Document | Iterable<Element> | string,
+	base: EventTarget,
 	selector: string,
 	type: TEventType,
 	options?: DelegateOptions,
