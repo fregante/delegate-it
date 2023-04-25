@@ -1,7 +1,22 @@
 import type {ParseSelector} from 'typed-query-selector/parser.d.js';
 
-export type DelegateOptions = AddEventListenerOptions & {base?: EventTarget};
 export type EventType = keyof GlobalEventHandlersEventMap;
+
+type ThirdParameter<
+	TEvent extends Event = Event,
+	TElement extends Element = Element,
+> = DelegateEventHandler<TEvent, TElement> | DelegateOptions<TEvent, TElement>;
+
+export type OneEventOptions = AddEventListenerOptions & {
+	base?: EventTarget;
+};
+
+export type DelegateOptions<
+	TEvent extends Event = Event,
+	TElement extends Element = Element,
+> = OneEventOptions & {
+	callback: DelegateEventHandler<TEvent, TElement>;
+};
 
 export type DelegateEventHandler<
 	TEvent extends Event = Event,
@@ -75,8 +90,7 @@ function delegate<
 >(
 	selector: Selector,
 	type: TEventType,
-	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: DelegateOptions
+	optionsOrCallback: ThirdParameter<GlobalEventHandlersEventMap[TEventType], TElement>,
 ): void;
 
 function delegate<
@@ -85,8 +99,7 @@ function delegate<
 >(
 	selector: string,
 	type: TEventType,
-	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: DelegateOptions
+	optionsOrCallback: ThirdParameter<GlobalEventHandlersEventMap[TEventType], TElement>,
 ): void;
 
 // This type isn't exported as a declaration, so it needs to be duplicated above
@@ -96,17 +109,19 @@ function delegate<
 >(
 	selector: string,
 	type: TEventType,
-	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options: DelegateOptions = {},
+	optionsOrCallback: ThirdParameter<GlobalEventHandlersEventMap[TEventType], TElement>,
 ): void {
+	const options = typeof optionsOrCallback === 'object' ? optionsOrCallback : {
+		callback: optionsOrCallback,
+	};
 	const {signal, base = document} = options;
 
 	if (signal?.aborted) {
 		return;
 	}
 
-	// Don't pass `once` to `addEventListener` because it needs to be handled in `delegate-it`
-	const {once, ...nativeListenerOptions} = options;
+	// Don't pass `once`/`callback` to `addEventListener` because they're handled in `delegate-it`
+	const {once, callback, ...nativeListenerOptions} = options;
 
 	// `document` should never be the base, it's just an easy way to define "global event listeners"
 	const baseElement = base instanceof Document ? base.documentElement : base;
