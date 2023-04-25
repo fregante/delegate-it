@@ -4,14 +4,14 @@ import delegate from './delegate.js';
 
 test('should add an event listener', () => {
 	const spy = vi.fn();
-	delegate(container, 'a', 'click', spy);
+	delegate('a', 'click', spy);
 	anchor.click();
 	expect(spy).toHaveBeenCalledTimes(1);
 });
 
 test('should handle events on text nodes', () => {
 	const spy = vi.fn();
-	delegate(container, 'a', 'click', spy);
+	delegate('a', 'click', spy);
 	anchor.firstChild!.dispatchEvent(new MouseEvent('click', {bubbles: true}));
 	expect(spy).toHaveBeenCalledTimes(1);
 });
@@ -19,7 +19,7 @@ test('should handle events on text nodes', () => {
 test('should remove an event listener', () => {
 	const spy = vi.fn();
 	const controller = new AbortController();
-	delegate(container, 'a', 'click', spy, {signal: controller.signal});
+	delegate('a', 'click', spy, {signal: controller.signal});
 	controller.abort();
 
 	anchor.click();
@@ -28,7 +28,7 @@ test('should remove an event listener', () => {
 
 test('should not add an event listener of the controller has already aborted', () => {
 	const spy = vi.fn();
-	delegate(container, 'a', 'click', spy, {signal: AbortSignal.abort()});
+	delegate('a', 'click', spy, {signal: AbortSignal.abort()});
 
 	anchor.click();
 	expect(spy).toHaveBeenCalledTimes(0);
@@ -36,7 +36,7 @@ test('should not add an event listener of the controller has already aborted', (
 
 test('should not fire when the selector matches an ancestor of the base element', () => {
 	const spy = vi.fn();
-	delegate(container, 'body', 'click', spy);
+	delegate('body', 'click', spy);
 
 	anchor.click();
 	expect(spy).toHaveBeenCalledTimes(0);
@@ -44,7 +44,7 @@ test('should not fire when the selector matches an ancestor of the base element'
 
 test('should not add an event listener when passed an already aborted signal', () => {
 	const spy = vi.spyOn(container, 'addEventListener');
-	delegate(container, 'a', 'click', () => ({}), {signal: AbortSignal.abort()});
+	delegate('a', 'click', () => ({}), {base: container, signal: AbortSignal.abort()});
 
 	anchor.click();
 	expect(spy).toHaveBeenCalledTimes(0);
@@ -52,7 +52,7 @@ test('should not add an event listener when passed an already aborted signal', (
 
 test('should call the listener once with the `once` option', () => {
 	const spy = vi.fn();
-	delegate(container, 'a', 'click', spy, {once: true});
+	delegate('a', 'click', spy, {base: container, once: true});
 
 	container.click();
 	expect(spy).toHaveBeenCalledTimes(0); // It should not be called on the container
@@ -69,16 +69,16 @@ test('should add a specific event listener only once', () => {
 	// https://github.com/fregante/delegate-it/pull/11#discussion_r285481625
 
 	// Capture: false
-	delegate(container, 'a', 'click', spy);
-	delegate(container, 'a', 'click', spy, {passive: true});
-	delegate(container, 'a', 'click', spy, {capture: false});
+	delegate('a', 'click', spy);
+	delegate('a', 'click', spy, {passive: true});
+	delegate('a', 'click', spy, {capture: false});
 
 	// Capture: true
-	delegate(container, 'a', 'click', spy, {capture: true});
+	delegate('a', 'click', spy, {capture: true});
 
 	// Once
-	delegate(container, 'a', 'click', spy, {once: true});
-	delegate(container, 'a', 'click', spy, {once: false});
+	delegate('a', 'click', spy, {once: true});
+	delegate('a', 'click', spy, {once: false});
 
 	anchor.click();
 	expect(spy).toHaveBeenCalledTimes(2);
@@ -86,8 +86,8 @@ test('should add a specific event listener only once', () => {
 
 test('should deduplicate identical listeners added after `once:true`', () => {
 	const spy = vi.fn();
-	delegate(container, 'a', 'click', spy, {once: true});
-	delegate(container, 'a', 'click', spy, {once: false});
+	delegate('a', 'click', spy, {once: true});
+	delegate('a', 'click', spy, {once: false});
 
 	container.click();
 	expect(spy).toHaveBeenCalledTimes(0); // It should not be called on the container

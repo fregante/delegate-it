@@ -1,6 +1,6 @@
 import type {ParseSelector} from 'typed-query-selector/parser.d.js';
 
-export type DelegateOptions = AddEventListenerOptions;
+export type DelegateOptions = AddEventListenerOptions & {base?: EventTarget};
 export type EventType = keyof GlobalEventHandlersEventMap;
 
 export type DelegateEventHandler<
@@ -73,7 +73,6 @@ function delegate<
 	TElement extends Element = ParseSelector<Selector, HTMLElement>,
 	TEventType extends EventType = EventType,
 >(
-	base: EventTarget,
 	selector: Selector,
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
@@ -84,7 +83,6 @@ function delegate<
 	TElement extends Element = HTMLElement,
 	TEventType extends EventType = EventType,
 >(
-	base: EventTarget,
 	selector: string,
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
@@ -96,13 +94,12 @@ function delegate<
 	TElement extends Element,
 	TEventType extends EventType = EventType,
 >(
-	base: EventTarget,
 	selector: string,
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options: DelegateOptions = {},
 ): void {
-	const {signal} = options;
+	const {signal, base = document} = options;
 
 	if (signal?.aborted) {
 		return;
