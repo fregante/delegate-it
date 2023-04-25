@@ -1,6 +1,6 @@
 import type {ParseSelector} from 'typed-query-selector/parser.d.js';
 
-export type DelegateOptions = boolean | AddEventListenerOptions;
+export type DelegateOptions = AddEventListenerOptions;
 export type EventType = keyof GlobalEventHandlersEventMap;
 
 export type DelegateEventHandler<
@@ -14,12 +14,6 @@ export type DelegateEvent<
 > = TEvent & {
 	delegateTarget: TElement;
 };
-
-export function castAddEventListenerOptions(
-	options: DelegateOptions | undefined,
-): AddEventListenerOptions {
-	return typeof options === 'object' ? options : {capture: options};
-}
 
 /** Keeps track of raw listeners added to the base elements to avoid duplication */
 const ledger = new WeakMap<
@@ -106,18 +100,16 @@ function delegate<
 	selector: string,
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
-	options?: DelegateOptions,
+	options: DelegateOptions = {},
 ): void {
-	const listenerOptions = castAddEventListenerOptions(options);
-
-	const {signal} = listenerOptions;
+	const {signal} = options;
 
 	if (signal?.aborted) {
 		return;
 	}
 
 	// Don't pass `once` to `addEventListener` because it needs to be handled in `delegate-it`
-	const {once, ...nativeListenerOptions} = listenerOptions;
+	const {once, ...nativeListenerOptions} = options;
 
 	// `document` should never be the base, it's just an easy way to define "global event listeners"
 	const baseElement = base instanceof Document ? base.documentElement : base;

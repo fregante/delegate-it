@@ -5,7 +5,7 @@
 
 > Lightweight event delegation
 
-This is a fork of the popular [`delegate`](https://github.com/zenorocha/delegate) with some improvements:
+This is a fork of the popular but abandoned [`delegate`](https://github.com/zenorocha/delegate) with some improvements:
 
 - modern: ES2021, TypeScript, Edge 16+ (it uses `WeakMap` and `Element.closest()`)
 - idempotent: identical listeners aren't added multiple times, just like the native `addEventListener`
@@ -29,22 +29,15 @@ import delegate from 'delegate-it';
 
 ### Add event delegation
 
-#### With an element as base
-
 ```js
 delegate(document, '.btn', 'click', event => {
 	console.log(event.delegateTarget);
 });
 ```
 
-#### With listener options
+### With listener options
 
 ```js
-delegate(document, '.btn', 'click', event => {
-	console.log(event.delegateTarget);
-}, true);
-
-// Or equivalent:
 delegate(document, '.btn', 'click', event => {
 	console.log(event.delegateTarget);
 }, {
@@ -65,7 +58,7 @@ delegate(document, '.btn', 'click', event => {
 controller.abort();
 ```
 
-#### Listen to one event only
+### Listen to one event only
 
 ```js
 delegate(document, '.btn', 'click', event => {
@@ -75,7 +68,7 @@ delegate(document, '.btn', 'click', event => {
 });
 ```
 
-#### Listen to one event only, with a promise
+### Listen to one event only, with a promise
 
 ```js
 import {oneEvent} from 'delegate-it';
@@ -84,7 +77,7 @@ await oneEvent(document, '.btn', 'click');
 console.log('The body was clicked');
 ```
 
-### Custom event types in Typescript
+## TypeScript
 
 If you're using TypeScript and have event types that are custom, you can override the global `GlobalEventHandlersEventMap` interface via declaration merging. e.g. say you have a `types/globals.d.ts` file, you can add the following.
 

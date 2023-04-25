@@ -74,7 +74,6 @@ test('should add a specific event listener only once', () => {
 	delegate(container, 'a', 'click', spy, {capture: false});
 
 	// Capture: true
-	delegate(container, 'a', 'click', spy, true);
 	delegate(container, 'a', 'click', spy, {capture: true});
 
 	// Once
