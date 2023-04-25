@@ -1,6 +1,5 @@
 import type {ParseSelector} from 'typed-query-selector/parser.d.js';
 import delegate, {
-	castAddEventListenerOptions,
 	type DelegateEvent,
 	type DelegateOptions,
 	type EventType,
@@ -38,17 +37,16 @@ async function oneEvent<
 	base: EventTarget | Document | Iterable<Element> | string,
 	selector: string,
 	type: TEventType,
-	options?: DelegateOptions,
+	options: DelegateOptions = {},
 ): Promise<DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement> | undefined> {
 	return new Promise(resolve => {
-		const listenerOptions = castAddEventListenerOptions(options);
-		listenerOptions.once = true;
+		options.once = true;
 
-		if (listenerOptions.signal?.aborted) {
+		if (options.signal?.aborted) {
 			resolve(undefined);
 		}
 
-		listenerOptions.signal?.addEventListener('abort', () => {
+		options.signal?.addEventListener('abort', () => {
 			resolve(undefined);
 		});
 
@@ -58,7 +56,7 @@ async function oneEvent<
 			type,
 			// @ts-expect-error Seems to work fine
 			resolve,
-			listenerOptions,
+			options,
 		);
 	});
 }
