@@ -1,7 +1,7 @@
 {
 	"extends": "@sindresorhus/tsconfig",
 	"compilerOptions": {
-		"target": "es2021"
+		"target": "es2022"
 	},
 	"files": [
 		"index.ts",
