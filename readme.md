@@ -30,7 +30,7 @@ import delegate from 'delegate-it';
 ### Add event delegation
 
 ```js
-delegate(document, '.btn', 'click', event => {
+delegate('.btn', 'click', event => {
 	console.log(event.delegateTarget);
 });
 ```
@@ -38,10 +38,22 @@ delegate(document, '.btn', 'click', event => {
 ### With listener options
 
 ```js
-delegate(document, '.btn', 'click', event => {
+delegate('.btn', 'click', event => {
 	console.log(event.delegateTarget);
 }, {
 	capture: true
+});
+```
+
+### On a custom base
+
+Use this option if you don't want to have a global listener attached on `html`, it improves performance:
+
+```js
+delegate('.btn', 'click', event => {
+	console.log(event.delegateTarget);
+}, {
+	base: document.querySelector('main')
 });
 ```
 
@@ -49,7 +61,7 @@ delegate(document, '.btn', 'click', event => {
 
 ```js
 const controller = new AbortController();
-delegate(document, '.btn', 'click', event => {
+delegate('.btn', 'click', event => {
 	console.log(event.delegateTarget);
 }, {
 	signal: controller.signal,
@@ -61,7 +73,7 @@ controller.abort();
 ### Listen to one event only
 
 ```js
-delegate(document, '.btn', 'click', event => {
+delegate('.btn', 'click', event => {
 	console.log('This will only be called once');
 }, {
 	once: true
@@ -73,7 +85,7 @@ delegate(document, '.btn', 'click', event => {
 ```js
 import {oneEvent} from 'delegate-it';
 
-await oneEvent(document, '.btn', 'click');
+await oneEvent('.btn', 'click');
 console.log('The body was clicked');
 ```
 

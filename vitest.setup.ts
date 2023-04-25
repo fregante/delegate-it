@@ -17,5 +17,5 @@ global.Document = window.Document;
 global.MouseEvent = window.MouseEvent;
 global.AbortController = window.AbortController;
 global.document = window.document;
-export const container = window.document.querySelector('ul')!;
+export const base = window.document.querySelector('ul')!;
 export const anchor = window.document.querySelector('a')!;
