@@ -58,11 +58,6 @@ delegate(document.querySelectorAll('.container'), '.btn', 'click', event => {
 ```js
 delegate(document.body, '.btn', 'click', event => {
 	console.log(event.delegateTarget);
-}, true);
-
-// Or equivalent:
-delegate(document.body, '.btn', 'click', event => {
-	console.log(event.delegateTarget);
 }, {
 	capture: true
 });
