@@ -113,13 +113,13 @@ function delegate<
 
 	// Handle the regular Element usage
 	const capture = Boolean(typeof options === 'object' ? options.capture : options);
-	const listenerFn = (event: Event): void => {
+	const listenerFunction = (event: Event): void => {
 		const delegateTarget = safeClosest(event, selector);
 		if (delegateTarget) {
 			const delegateEvent = Object.assign(event, {delegateTarget});
 			callback.call(baseElement, delegateEvent as DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement>);
 			if (once) {
-				baseElement.removeEventListener(type, listenerFn, nativeListenerOptions);
+				baseElement.removeEventListener(type, listenerFunction, nativeListenerOptions);
 				editLedger(false, baseElement, callback, setup);
 			}
 		}
@@ -128,7 +128,7 @@ function delegate<
 	const setup = JSON.stringify({selector, type, capture});
 	const isAlreadyListening = editLedger(true, baseElement, callback, setup);
 	if (!isAlreadyListening) {
-		baseElement.addEventListener(type, listenerFn, nativeListenerOptions);
+		baseElement.addEventListener(type, listenerFunction, nativeListenerOptions);
 	}
 
 	signal?.addEventListener('abort', () => {
