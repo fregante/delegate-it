@@ -50,7 +50,6 @@ async function oneEvent<
 		delegate(
 			selector,
 			type,
-			// @ts-expect-error Seems to work fine
 			resolve,
 			options,
 		);
