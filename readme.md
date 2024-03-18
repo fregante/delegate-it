@@ -12,8 +12,6 @@ This is a fork of the popular but abandoned [`delegate`](https://github.com/zeno
 - debugged ([2d54c11](https://github.com/fregante/delegate-it/commit/2d54c1182aefd3ec9d8250fda76290971f5d7166), [c6bb88c](https://github.com/fregante/delegate-it/commit/c6bb88c2aa8097b25f22993a237cf09c96bcbfb8))
 - supports [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)
 
-If you need IE support, you can keep using [`delegate`](https://github.com/zenorocha/delegate)
-
 ## Install
 
 ```
@@ -108,13 +106,6 @@ const someEventType1: EventType = 'details:toggled'; // all good
 const someEventType2: EventType = 'click'; // all good
 const someEventType3: EventType = 'some-invalid-event-type'; // no good
 ```
-
-## Browser Support
-
-| <img src="https://clipboardjs.com/assets/images/chrome.png" width="48px" height="48px" alt="Chrome logo"> | <img src="https://clipboardjs.com/assets/images/edge.png" width="48px" height="48px" alt="Edge logo"> | <img src="https://clipboardjs.com/assets/images/firefox.png" width="48px" height="48px" alt="Firefox logo"> | <img src="https://clipboardjs.com/assets/images/ie.png" width="48px" height="48px" alt="Internet Explorer logo"> | <img src="https://clipboardjs.com/assets/images/opera.png" width="48px" height="48px" alt="Opera logo"> | <img src="https://clipboardjs.com/assets/images/safari.png" width="48px" height="48px" alt="Safari logo"> |
-|:---:|:---:|:---:|:---:|:---:|:---:|
-| Latest ✔ | Latest ✔ | Latest ✔ | No ✕ | Latest ✔ | Latest ✔ |
-
 
 ## Related
 
