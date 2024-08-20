@@ -73,7 +73,7 @@ function delegate<
 	TElement extends Element = ParseSelector<Selector, HTMLElement>,
 	TEventType extends EventType = EventType,
 >(
-	selector: Selector,
+	selector: Selector | Selector[],
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions
@@ -83,7 +83,7 @@ function delegate<
 	TElement extends Element = HTMLElement,
 	TEventType extends EventType = EventType,
 >(
-	selector: string,
+	selector: string | string[],
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions
@@ -94,7 +94,7 @@ function delegate<
 	TElement extends Element,
 	TEventType extends EventType = EventType,
 >(
-	selector: string,
+	selector: string | string[],
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options: DelegateOptions = {},
@@ -114,7 +114,7 @@ function delegate<
 	// Handle the regular Element usage
 	const capture = Boolean(typeof options === 'object' ? options.capture : options);
 	const listenerFunction = (event: Event): void => {
-		const delegateTarget = safeClosest(event, selector);
+		const delegateTarget = safeClosest(event, String(selector));
 		if (delegateTarget) {
 			const delegateEvent = Object.assign(event, {delegateTarget});
 			callback.call(baseElement, delegateEvent as DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement>);
