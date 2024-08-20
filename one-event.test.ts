@@ -23,3 +23,10 @@ test('should resolve with `undefined` if the signal has already aborted', async 
 	const event = await promise;
 	expect(event).toBeUndefined();
 });
+
+test('should accept an array of selectors', async t => {
+	const promise = oneEvent(['a', 'b'], 'click');
+	anchor.click();
+	const event = await promise;
+	expect(event).toBeInstanceOf(MouseEvent);
+});

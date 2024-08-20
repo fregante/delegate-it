@@ -13,7 +13,7 @@ async function oneEvent<
 	TElement extends Element = ParseSelector<Selector, HTMLElement>,
 	TEventType extends EventType = EventType,
 >(
-	selector: Selector,
+	selector: Selector | Selector[],
 	type: TEventType,
 	options?: DelegateOptions
 ): Promise<DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement>>;
@@ -22,7 +22,7 @@ async function oneEvent<
 	TElement extends Element = HTMLElement,
 	TEventType extends EventType = EventType,
 >(
-	selector: string,
+	selector: string | string[],
 	type: TEventType,
 	options?: DelegateOptions
 ): Promise<DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement>>;
@@ -32,7 +32,7 @@ async function oneEvent<
 	TElement extends Element,
 	TEventType extends EventType = EventType,
 >(
-	selector: string,
+	selector: string | string[],
 	type: TEventType,
 	options: DelegateOptions = {},
 ): Promise<DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement> | undefined> {
