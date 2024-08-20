@@ -1,6 +1,6 @@
 {
 	"name": "delegate-it",
-	"version": "6.1.0",
+	"version": "6.2.0",
 	"description": "Lightweight and modern event delegation in the browser",
 	"keywords": [
 		"delegate",
