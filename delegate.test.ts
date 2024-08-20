@@ -26,6 +26,13 @@ test('should remove an event listener', () => {
 	expect(spy).toHaveBeenCalledTimes(0);
 });
 
+test('should handle multiple selectors', () => {
+	const spy = vi.fn();
+	delegate(['a', 'b'], 'click', spy);
+	anchor.click();
+	expect(spy).toHaveBeenCalledTimes(1);
+});
+
 test('should not add an event listener of the controller has already aborted', () => {
 	const spy = vi.fn();
 	delegate('a', 'click', spy, {signal: AbortSignal.abort()});
