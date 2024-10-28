@@ -73,7 +73,7 @@ function delegate<
 	TElement extends Element = ParseSelector<Selector, HTMLElement>,
 	TEventType extends EventType = EventType,
 >(
-	selector: Selector | Selector[],
+	selector: Selector | readonly Selector[],
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions
@@ -83,7 +83,7 @@ function delegate<
 	TElement extends Element = HTMLElement,
 	TEventType extends EventType = EventType,
 >(
-	selector: string | string[],
+	selector: string | readonly string[],
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions
@@ -94,7 +94,7 @@ function delegate<
 	TElement extends Element,
 	TEventType extends EventType = EventType,
 >(
-	selector: string | string[],
+	selector: string | readonly string[],
 	type: TEventType,
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options: DelegateOptions = {},
