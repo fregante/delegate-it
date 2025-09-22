@@ -13,6 +13,7 @@ const {window} = new JSDOM(`
 global.Text = window.Text;
 global.Event = window.Event;
 global.Element = window.Element;
+global.Node = window.Node;
 global.Document = window.Document;
 global.MouseEvent = window.MouseEvent;
 global.AbortController = window.AbortController;
