@@ -1,5 +1,5 @@
 import {test, vi, expect} from 'vitest';
-import {base, anchor} from './vitest.setup.js';
+import {base, anchor, custom} from './vitest.setup.js';
 import delegate from './delegate.js';
 
 test('should add an event listener', () => {
@@ -102,4 +102,9 @@ test('should deduplicate identical listeners added after `once:true`', () => {
 	expect(spy).toHaveBeenCalledTimes(1); // It should be called on the delegate target
 	anchor.click();
 	expect(spy).toHaveBeenCalledTimes(1); // It should not be called again on the delegate target
+});
+
+test('should allow using a ShadowRoot as delegate target', () => {
+	custom.clickLinks();
+	expect(custom.linksClicked).toBe(2);
 });
