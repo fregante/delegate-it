@@ -55,7 +55,7 @@ function safeClosest(event: Event, selector: string): Element | void {
 		target = target.parentElement;
 	}
 
-	// currentTarget could be an Element or e.g. a ShadowRoot
+	// The currentTarget could be an Element or e.g. a ShadowRoot
 	if (target instanceof Element && event.currentTarget instanceof Node) {
 		// `.closest()` may match ancestors of `currentTarget` but we only need its children
 		const closest = target.closest(selector);
