@@ -54,3 +54,17 @@ test('DelegateEventHandler type should accept the correct event type', () => {
 	type ButtonClickHandler = DelegateEventHandler<MouseEvent, HTMLButtonElement>;
 	expectTypeOf<ButtonClickHandler>().toMatchTypeOf<(event: DelegateEvent<MouseEvent, HTMLButtonElement>) => void>();
 });
+
+test('should handle multiple event types as array', () => {
+	// Two mouse events: union collapses to MouseEvent
+	delegate('a', ['click', 'auxclick'], event => {
+		expectTypeOf(event.delegateTarget).toEqualTypeOf<HTMLAnchorElement>();
+		expectTypeOf(event).toMatchTypeOf<MouseEvent>();
+	});
+
+	// Mixed event types: event is the union type
+	delegate('a', ['click', 'keypress'], event => {
+		expectTypeOf(event.delegateTarget).toEqualTypeOf<HTMLAnchorElement>();
+		expectTypeOf(event).toMatchTypeOf<MouseEvent | KeyboardEvent>();
+	});
+});
