@@ -101,6 +101,17 @@ const event = await oneEvent('.btn', 'click');
 console.log(event.delegateTarget); // The element matching '.btn' that was clicked
 ```
 
+### Wait for a specific event with a filter
+
+```js
+import {oneEvent} from 'delegate-it';
+
+// Resolves only when a .btn with data-id="42" is clicked
+const event = await oneEvent('.btn', 'click', {
+	filter: event => event.delegateTarget.dataset.id === '42',
+});
+```
+
 ## API
 
 ### `delegate(selector, type, callback, options?)`
@@ -169,9 +180,16 @@ The event type to listen for.
 
 #### `options`
 
-Type: `DelegateOptions`
+Type: `OneEventOptions`
 
-Same as `delegate` options. Note that `once` is always `true` and is set automatically.
+Same as `delegate` options, minus `once` (which is always set automatically), plus:
+
+| Option | Type | Description |
+|---|---|---|
+| `base` | `EventTarget` | The element to attach the listener to. Defaults to `document.documentElement`. |
+| `capture` | `boolean` | Whether to use capture phase. Default: `false`. |
+| `signal` | `AbortSignal` | If provided, the promise resolves with `undefined` when the signal is aborted. |
+| `filter` | `(event: DelegateEvent) => boolean` | If provided, the promise only resolves when this function returns `true`. Events that don't pass the filter are ignored and the listener stays active. |
 
 ---
 

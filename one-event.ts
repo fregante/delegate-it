@@ -5,6 +5,13 @@ import delegate, {
 	type EventType,
 } from './delegate.js';
 
+export type OneEventOptions<
+	TEvent extends Event = Event,
+	TElement extends Element = Element,
+> = Omit<DelegateOptions, 'once'> & {
+	filter?: (event: DelegateEvent<TEvent, TElement>) => boolean;
+};
+
 /**
  * Delegates event to a selector and resolves after the first event
  */
@@ -15,7 +22,7 @@ async function oneEvent<
 >(
 	selector: Selector | Selector[],
 	type: TEventType,
-	options?: DelegateOptions
+	options?: OneEventOptions<GlobalEventHandlersEventMap[TEventType], TElement>
 ): Promise<DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement>>;
 
 async function oneEvent<
@@ -24,7 +31,7 @@ async function oneEvent<
 >(
 	selector: string | string[],
 	type: TEventType,
-	options?: DelegateOptions
+	options?: OneEventOptions<GlobalEventHandlersEventMap[TEventType], TElement>
 ): Promise<DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement>>;
 
 // This type isn't exported as a declaration, so it needs to be duplicated above
@@ -34,25 +41,47 @@ async function oneEvent<
 >(
 	selector: string | string[],
 	type: TEventType,
-	options: DelegateOptions = {},
+	options: OneEventOptions<GlobalEventHandlersEventMap[TEventType], TElement> = {},
 ): Promise<DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement> | undefined> {
 	return new Promise(resolve => {
-		options.once = true;
+		const {filter, ...delegateOptions} = options;
 
-		if (options.signal?.aborted) {
+		if (delegateOptions.signal?.aborted) {
 			resolve(undefined);
+			return;
 		}
 
-		options.signal?.addEventListener('abort', () => {
-			resolve(undefined);
-		});
+		if (filter) {
+			const controller = new AbortController();
 
-		delegate(
-			selector,
-			type,
-			resolve,
-			options,
-		);
+			delegateOptions.signal?.addEventListener('abort', () => {
+				controller.abort();
+				resolve(undefined);
+			});
+
+			delegate<TElement, TEventType>(
+				selector,
+				type,
+				event => {
+					if (filter(event)) {
+						controller.abort();
+						resolve(event);
+					}
+				},
+				{...delegateOptions, signal: controller.signal},
+			);
+		} else {
+			delegateOptions.signal?.addEventListener('abort', () => {
+				resolve(undefined);
+			});
+
+			delegate(
+				selector,
+				type,
+				resolve,
+				{...delegateOptions, once: true},
+			);
+		}
 	});
 }
 
