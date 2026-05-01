@@ -87,6 +87,17 @@ await oneEvent('.btn', 'click');
 console.log('The body was clicked');
 ```
 
+### Listen to one event only, with a filter
+
+```js
+import {oneEvent} from 'delegate-it';
+
+await oneEvent('.btn', 'click', {
+	filter: event => event.target.dataset.id === '42',
+});
+console.log('Button 42 was clicked');
+```
+
 ## TypeScript
 
 If you're using TypeScript and have event types that are custom, you can override the global `GlobalEventHandlersEventMap` interface via declaration merging. e.g. say you have a `types/globals.d.ts` file, you can add the following.

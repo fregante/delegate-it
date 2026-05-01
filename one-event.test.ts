@@ -30,3 +30,32 @@ test('should accept an array of selectors', async t => {
 	const event = await promise;
 	expect(event).toBeInstanceOf(MouseEvent);
 });
+
+test('should resolve only when filter returns true', async t => {
+	let callCount = 0;
+	const promise = oneEvent('a', 'click', {
+		filter(event) {
+			callCount++;
+			return callCount >= 3;
+		},
+	});
+
+	anchor.click();
+	anchor.click();
+	anchor.click();
+	const event = await promise;
+	expect(event).toBeInstanceOf(MouseEvent);
+	expect(callCount).toBe(3);
+});
+
+test('should resolve with `undefined` when aborted before filter passes', async t => {
+	const controller = new AbortController();
+	const promise = oneEvent('a', 'click', {
+		signal: controller.signal,
+		filter: () => false,
+	});
+	controller.abort();
+
+	const event = await promise;
+	expect(event).toBeUndefined();
+});
