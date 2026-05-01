@@ -34,7 +34,7 @@
 	"scripts": {
 		"build": "tsc",
 		"prepack": "tsc --sourceMap false",
-		"test": "tsc && xo && vitest run",
+		"test": "tsc && xo && vitest run --typecheck",
 		"watch": "tsc --watch",
 		"watch:test": "vitest"
 	},
