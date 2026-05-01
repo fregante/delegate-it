@@ -75,7 +75,7 @@ function delegate<
 	TEventType extends EventType = EventType,
 >(
 	selector: Selector | readonly Selector[],
-	type: TEventType,
+	type: TEventType | readonly TEventType[],
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions
 ): void;
@@ -85,7 +85,7 @@ function delegate<
 	TEventType extends EventType = EventType,
 >(
 	selector: string | readonly string[],
-	type: TEventType,
+	type: TEventType | readonly TEventType[],
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options?: DelegateOptions
 ): void;
@@ -96,10 +96,22 @@ function delegate<
 	TEventType extends EventType = EventType,
 >(
 	selector: string | readonly string[],
-	type: TEventType,
+	type: TEventType | readonly TEventType[],
 	callback: DelegateEventHandler<GlobalEventHandlersEventMap[TEventType], TElement>,
 	options: DelegateOptions = {},
 ): void {
+	if (Array.isArray(type)) {
+		for (const t of type as readonly TEventType[]) {
+			delegate(selector, t, callback, options);
+		}
+
+		return;
+	}
+
+	// After the Array.isArray early-return above, `type` is a single event type string.
+	// TypeScript doesn't narrow generic union types through Array.isArray, so we cast here.
+	const singleType = type as TEventType;
+
 	const {signal, base = document} = options;
 
 	if (signal?.aborted) {
@@ -120,16 +132,16 @@ function delegate<
 			const delegateEvent = Object.assign(event, {delegateTarget});
 			callback.call(baseElement, delegateEvent as DelegateEvent<GlobalEventHandlersEventMap[TEventType], TElement>);
 			if (once) {
-				baseElement.removeEventListener(type, listenerFunction, nativeListenerOptions);
+				baseElement.removeEventListener(singleType, listenerFunction, nativeListenerOptions);
 				editLedger(false, baseElement, callback, setup);
 			}
 		}
 	};
 
-	const setup = JSON.stringify({selector, type, capture});
+	const setup = JSON.stringify({selector, type: singleType, capture});
 	const isAlreadyListening = editLedger(true, baseElement, callback, setup);
 	if (!isAlreadyListening) {
-		baseElement.addEventListener(type, listenerFunction, nativeListenerOptions);
+		baseElement.addEventListener(singleType, listenerFunction, nativeListenerOptions);
 	}
 
 	signal?.addEventListener('abort', () => {
