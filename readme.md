@@ -129,7 +129,7 @@ The function to call when the event is triggered. Receives a [`DelegateEvent`](#
 
 #### `options`
 
-Type: [`DelegateOptions`](#delegateoptions)
+Type: `DelegateOptions`
 
 Optional object extending [`AddEventListenerOptions`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options) with one extra field:
 
@@ -169,7 +169,7 @@ The event type to listen for.
 
 #### `options`
 
-Type: [`DelegateOptions`](#delegateoptions)
+Type: `DelegateOptions`
 
 Same as `delegate` options. Note that `once` is always `true` and is set automatically.
 
@@ -191,28 +191,6 @@ delegate('.btn', 'click', event => {
 	event.delegateTarget; // always the <button> matching '.btn'
 });
 ```
-
----
-
-### `DelegateOptions`
-
-Type: `AddEventListenerOptions & {base?: EventTarget}`
-
-The options object accepted by `delegate` and `oneEvent`. Extends the standard [`AddEventListenerOptions`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options) with an optional `base` property.
-
----
-
-### `DelegateEventHandler<TEvent, TElement>`
-
-The type of the callback passed to `delegate`. This is a function that receives a `DelegateEvent<TEvent, TElement>`.
-
----
-
-### `EventType`
-
-Type: `keyof GlobalEventHandlersEventMap`
-
-A union of all known DOM event type strings (e.g. `'click'`, `'keydown'`, etc.). Can be extended via [declaration merging](#typescript).
 
 ## TypeScript
 
