@@ -8,7 +8,7 @@ import delegate, {
 export type OneEventOptions<
 	TEvent extends Event = Event,
 	TElement extends Element = Element,
-> = DelegateOptions & {
+> = Omit<DelegateOptions, 'once'> & {
 	filter?: (event: DelegateEvent<TEvent, TElement>) => boolean;
 };
 
@@ -71,8 +71,6 @@ async function oneEvent<
 				{...delegateOptions, signal: controller.signal},
 			);
 		} else {
-			delegateOptions.once = true;
-
 			delegateOptions.signal?.addEventListener('abort', () => {
 				resolve(undefined);
 			});
@@ -81,7 +79,7 @@ async function oneEvent<
 				selector,
 				type,
 				resolve,
-				delegateOptions,
+				{...delegateOptions, once: true},
 			);
 		}
 	});
