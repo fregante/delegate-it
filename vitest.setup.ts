@@ -10,6 +10,7 @@ global.HTMLElement = window.HTMLElement;
 global.Node = window.Node;
 global.Document = window.Document;
 global.MouseEvent = window.MouseEvent;
+global.KeyboardEvent = window.KeyboardEvent;
 global.AbortController = window.AbortController;
 global.document = window.document;
 

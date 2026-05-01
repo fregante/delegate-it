@@ -108,3 +108,29 @@ test('should allow using a ShadowRoot as delegate target', () => {
 	custom.clickLinks();
 	expect(custom.linksClicked).toBe(2);
 });
+
+test('should handle multiple event types', () => {
+	const spy = vi.fn();
+	delegate('a', ['click', 'keypress'], spy);
+	anchor.click();
+	anchor.dispatchEvent(new KeyboardEvent('keypress', {bubbles: true}));
+	expect(spy).toHaveBeenCalledTimes(2);
+});
+
+test('should deduplicate listeners across multiple event types', () => {
+	const spy = vi.fn();
+	delegate('a', ['click', 'keypress'], spy);
+	delegate('a', ['click', 'keypress'], spy);
+	anchor.click();
+	expect(spy).toHaveBeenCalledTimes(1);
+});
+
+test('should remove multiple event type listeners via signal', () => {
+	const spy = vi.fn();
+	const controller = new AbortController();
+	delegate('a', ['click', 'keypress'], spy, {signal: controller.signal});
+	controller.abort();
+	anchor.click();
+	anchor.dispatchEvent(new KeyboardEvent('keypress', {bubbles: true}));
+	expect(spy).toHaveBeenCalledTimes(0);
+});
